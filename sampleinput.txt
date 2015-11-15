@@ -1,0 +1,12 @@
+ZYXWVUTSRQPONMLKJIHGFEDCBA
+8 8
+xxxxoxxx
+xooCooox
+xAxxxxDx
+xoooooox
+xxxoxxxx
+xooBooox
+xAxxxBxx
+oooooooo
+4 0
+4 7
