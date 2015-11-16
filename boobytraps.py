@@ -24,12 +24,12 @@ class Map:
     trapDominationOrder = None
 
     # map given as array (rows) of array (fields)
-    def __init__(self, map, trapDominationOrder):
+    def __init__(self, width, height, map, trapDominationOrder):
         self.map = map  # TODO deep copy?
         for i, row in enumerate(self.map):
             self.map[i] = list(row)
-        self.width = len(self.map[0])
-        self.height = len(self.map)
+        self.width = width
+        self.height = height
 
         self.trapDominationOrder = list(trapDominationOrder)
 
@@ -92,7 +92,7 @@ class Map:
         self.map[coords.y][coords.x] = char
 
 
-# TODO implement
+# TODO implement, possibly based on http://rebrained.com/?p=392
 def raidtomb(map, start, end):
     return 17
 
@@ -105,9 +105,9 @@ def main():
 
     # parse input
     trapDominationOrder = input[0]
-    #mapWidth = int(input[1][0])
+    mapWidth = int(input[1][0])
     mapHeight = int(input[1][2])
-    map = Map(input[2:mapHeight+2], trapDominationOrder)
+    map = Map(mapWidth, mapHeight, input[2:mapHeight+2], trapDominationOrder)
 
     startX = int(input[mapHeight+2][0])
     startY = int(input[mapHeight+2][2])
@@ -123,8 +123,11 @@ def main():
     #print map
 
     # test getAdjacient
-    #for i in map.getAdjacient(Coords(3, 3)):
+    #print map.getAt(Coords(3, 5))
+    #for i in map.getAdjacient(Coords(3, 5)):
     #    print i
+    #    print map.getAt(i)
+    #print map.getAt(Coords(1, 2))
 
     #map.updateTraps('B')
     #print map
