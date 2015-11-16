@@ -18,13 +18,17 @@ class Coords:
 
 class Map:
     map = None
+    width = 0
+    height = 0
     trapDominationOrder = None
 
     # map given as array (rows) of array (fields)
     def __init__(self, map, trapDominationOrder):
         self.map = map
         for i, row in enumerate(map):
-            map[i] = list(row)
+            self.map[i] = list(row)
+        self.width = len(self.map[0])
+        self.height = len(self.map)
 
         self.trapDominationOrder = list(trapDominationOrder)
 
@@ -35,15 +39,40 @@ class Map:
     def clone(self):
         return copy.deepcopy(self)
 
-    #TODO set triggered (<(=?) trapTriggered)) to o
+    #TODO set triggered (<(=?) trapTriggered)) to x
     def updateTraps(self, trapTriggered):
         # for each cell, if in trapDomination order and smaller than traptriggered, set to o
         pass
 
-    # TODO implement
+    # return array of (max four) adjacient coords that aren't x
     def getAdjacient(self, coords):
-        # return array of (max four) adjacient coords
-        pass
+        adj = []
+
+        # left
+        if coords.x > 0:
+            candidate = Coords(coords.x - 1, coords.y)
+            if self.getAt(candidate) != 'x':
+                adj.append(candidate)
+
+        # right
+        if coords.x < self.width - 1:
+            candidate = Coords(coords.x + 1, coords.y)
+            if self.getAt(candidate) != 'x':
+                adj.append(candidate)
+
+        # top
+        if coords.y > 0:
+            candidate = Coords(coords.x, coords.y - 1)
+            if self.getAt(candidate) != 'x':
+                adj.append(candidate)
+
+        # bottom
+        if coords.y < self.height - 1:
+            candidate = Coords(coords.x, coords.y + 1)
+            if self.getAt(candidate) != 'x':
+                adj.append(candidate)
+
+        return adj
 
     def getAt(self, coords):
         return self.map[coords.y][coords.x]
@@ -80,6 +109,10 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position
     print raidtomb(map, start, end)
+
+    # test getAdjacient
+    #for i in map.getAdjacient(Coords(3, 3)):
+    #    print i
 
 if __name__ == "__main__":
     main()
