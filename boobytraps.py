@@ -1,4 +1,5 @@
 #TODO maybe cell class with coords and value, change map accordingly
+#TODO getAt, setAt neccessary, especially in the map class itself?
 
 import fileinput
 import copy
@@ -24,25 +25,35 @@ class Map:
 
     # map given as array (rows) of array (fields)
     def __init__(self, map, trapDominationOrder):
-        self.map = map
-        for i, row in enumerate(map):
+        self.map = map  # TODO deep copy?
+        for i, row in enumerate(self.map):
             self.map[i] = list(row)
         self.width = len(self.map[0])
         self.height = len(self.map)
 
         self.trapDominationOrder = list(trapDominationOrder)
 
-    def __str__(self):
+    def __str__(self):  # TODO make prettier
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
     # returns a copy of this map
     def clone(self):
         return copy.deepcopy(self)
 
-    #TODO set triggered (<(=?) trapTriggered)) to x
+    # set triggered (<(=?) trapTriggered)) to x
+    # for each cell, if in trapDomination order and smaller than traptriggered, set to x
     def updateTraps(self, trapTriggered):
-        # for each cell, if in trapDomination order and smaller than traptriggered, set to o
-        pass
+        # get now-triggered traps
+        triggeredTraps = []
+        for trap in self.trapDominationOrder:
+            triggeredTraps.append(trap)
+            if trap == trapTriggered:
+                break
+
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                if field in triggeredTraps:
+                    self.setAt(Coords(x, y), 'x')
 
     # return array of (max four) adjacient coords that aren't x
     def getAdjacient(self, coords):
@@ -109,10 +120,14 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position
     print raidtomb(map, start, end)
+    #print map
 
     # test getAdjacient
     #for i in map.getAdjacient(Coords(3, 3)):
     #    print i
+
+    #map.updateTraps('B')
+    #print map
 
 if __name__ == "__main__":
     main()
