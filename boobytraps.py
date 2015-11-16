@@ -1,6 +1,7 @@
-# TODO rethink function names, class needed?
+#TODO maybe cell class with coords and value, change map accordingly
 
 import fileinput
+import copy
 
 
 class Coords:
@@ -19,22 +20,30 @@ class Map:
     map = None
     trapDominationOrder = None
 
-    # given as array (rows) of array (fields)
+    # map given as array (rows) of array (fields)
     def __init__(self, map, trapDominationOrder):
         self.map = map
-        self.trapDominationOrder = trapDominationOrder
+        for i, row in enumerate(map):
+            map[i] = list(row)
+
+        self.trapDominationOrder = list(trapDominationOrder)
 
     def __str__(self):
-        return 'map: ' + str(self.map) + ', trapDominationOrder: ' + self.trapDominationOrder
+        return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
-    #TODO copy constructor?
+    # returns a copy of this map
+    def clone(self):
+        return copy.deepcopy(self)
 
     #TODO set triggered (<(=?) trapTriggered)) to o
     def updateTraps(self, trapTriggered):
+        # for each cell, if in trapDomination order and smaller than traptriggered, set to o
         pass
 
+    # TODO implement
     def getAdjacient(self, coords):
-        pass  # TODO
+        # return array of (max four) adjacient coords
+        pass
 
     def getAt(self, coords):
         return self.map[coords.y][coords.x]
@@ -71,8 +80,6 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position
     print raidtomb(map, start, end)
-
-    #print map
 
 if __name__ == "__main__":
     main()
