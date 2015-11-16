@@ -36,7 +36,7 @@ fi
 # Run script and verify output
 printf "\e[1;34mRunning $PY_FILE:\e[0m\n"
 if [ ! -z "$OUTPUT" ]; then
-	if [ $(time python "$PY_FILE" < "$INPUT") = $(cat $OUTPUT) ]; then
+	if [ "$(time python "$PY_FILE" < "$INPUT")" = "$(cat $OUTPUT)" ]; then
 		printf "\e[1;32m+-----------------+\e[0m\n"
 		printf "\e[1;32m| TEST SUCCESSFUL |\e[0m\n"
 		printf "\e[1;32m+-----------------+\e[0m\n"
