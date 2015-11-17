@@ -1,8 +1,8 @@
 # TODO
 
 * add docstrings
-* create more sample inputs to show off pathfinding
-* refactor everything after cloning the map
+* fix "IMPOSSIBLE" output
+* refactor everything after cloning the map in raidtomb()
 * maybe change coords class to cell class with coords and value, change map accordingly
 * maybe identify coords by integer, like width*y+x
 * getAt, setAt neccessary, especially in the map class itself?
