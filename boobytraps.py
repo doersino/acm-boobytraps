@@ -3,6 +3,7 @@
 #TODO """-style function comments
 #TODO maybe identify coords by integer, like width*y+x
 #TODO print IMPOSSIBLE if impossible
+#TODO -v flag? with colorized map + path output after each step
 
 import fileinput
 import copy
@@ -137,8 +138,44 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
     if map.isTrap(map.getAt(start)):
         map.updateTraps(map.getAt(start))
     unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in map.getVisitables() if k not in visited)
+    raided = False
+    while unvisiteds:
+        closestnode = min(unvisiteds, key=unvisiteds.get)
+        try:
+            raided = raidtomb(map,closestnode,end,visited,distances,predecessors)
+            break
+        except KeyError, e:
+            del unvisiteds[closestnode]
+        except:
+            raise
+
+    return raided or "IMPOSSIBLE"
+    #else backtrack
+
+# TODO implement, possibly based on http://rebrained.com/?p=392
+def raidtomb_buggy(map, start, end, visited=[], distances={}, predecessors={}):
+    print start
+    if not visited:
+        distances[start] = 0
+    if start == end:
+        path = []
+        while end != None:
+            path.append(end)
+            end = predecessors.get(end)
+        return distances[start], path[::-1]
+    for neighbor in map.getAdjacent(start):
+        if neighbor not in visited:
+            neighbordist = distances.get(neighbor, sys.maxint)
+            tentativedist = distances[start] + 1
+            if tentativedist < neighbordist:
+                distances[neighbor] = tentativedist
+                predecessors[neighbor] = start
+    visited.append(start)
+    if map.isTrap(map.getAt(start)):
+        map.updateTraps(map.getAt(start))
+    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in map.getVisitables() if k not in visited)
     closestnode = min(unvisiteds, key=unvisiteds.get)
-    return raidtomb(map,closestnode,end,visited,distances,predecessors)
+    return raidtomb_buggy(map,closestnode,end,visited,distances,predecessors)
 
 
 def main():
