@@ -114,11 +114,12 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
     # if the end has been reached, return distance and path
     if start == end:
         path = []
-        while end != None:
+        while end is not None:
             path.append(end)
             end = predecessors.get(end)
         return distances[start], path[::-1]
 
+    # process neighbors and mark current cell as visited
     for neighbor in map.getAdjacent(start):
         if neighbor not in visited:
             neighbordist = distances.get(neighbor, sys.maxint)
@@ -128,6 +129,7 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
                 predecessors[neighbor] = start
     visited.append(start)
 
+    # recurse with closest unvisited cell
     map = map.clone()
     if map.isTrap(map.getAt(start)):
         map.updateTraps(map.getAt(start))
@@ -172,11 +174,9 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
     #print raidtomb(map, start, end)
-    for i in raidtomb(map, start, end):
-        print i
-        if i != 17:
-            for j in i:
-                print j
+    raided = raidtomb(map, start, end)
+    for i in raided[1]: print i
+    print raided[0]
 
 if __name__ == "__main__":
     main()
