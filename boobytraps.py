@@ -43,6 +43,7 @@ class Map:
         self.height = height
 
         self.trapDominationOrder = list(trapDominationOrder)
+        self.activeTraps = list(trapDominationOrder)
 
     def __str__(self):  # TODO make prettier, with coord "axes"?, maybe color
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
@@ -60,6 +61,7 @@ class Map:
             triggeredTraps.append(trap)
             if trap == trapTriggered:
                 break
+        self.activeTraps = list(set(self.trapDominationOrder) - set(triggeredTraps)) # TODO this is terrible
 
         for y, row in enumerate(self.map):
             for x, field in enumerate(row):
@@ -100,7 +102,7 @@ class Map:
         visitable = []
         for y, row in enumerate(self.map):
             for x, field in enumerate(row):
-                if field in ['o'] + self.trapDominationOrder:  # this works because any triggered traps will have been converted to x
+                if field in ['o'] + self.activeTraps:  # this works because any triggered traps will have been converted to x
                     visitable.append(Coords(x, y))
 
         return visitable
@@ -118,9 +120,11 @@ class Map:
 
 # TODO implement, possibly based on http://rebrained.com/?p=392
 def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
-    for predecessor in predecessors:
-        print predecessor
-    print
+    #for predecessor in predecessors:
+    #    print predecessor
+    #print
+    print start
+    print map.activeTraps
 
     if not visited:
         distances[start] = 0
