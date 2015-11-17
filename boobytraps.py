@@ -138,7 +138,8 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
                 distances[neighbor] = tentativedist
                 predecessors[neighbor] = start
     visited.append(start)
-    if map.isTrap(map.getAt(start)):
+    map = map.clone()                     # done here
+    if map.isTrap(map.getAt(start)): # TODO clone map first!!!
         map.updateTraps(map.getAt(start))
     unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in map.getVisitables() if k not in visited)
     raided = False
@@ -206,7 +207,13 @@ def main():
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position
-    print raidtomb(map, start, end)
+    #print raidtomb(map, start, end)
+    for i in raidtomb(map, start, end):
+        print i
+        if i != 17:
+            for j in i:
+                print j
+
     #print map
 
     # test getAdjacent
