@@ -118,7 +118,10 @@ class Map:
 
 # TODO implement, possibly based on http://rebrained.com/?p=392
 def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
-    print start
+    for predecessor in predecessors:
+        print predecessor
+    print
+
     if not visited:
         distances[start] = 0
     if start == end:
@@ -143,7 +146,10 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
         closestnode = min(unvisiteds, key=unvisiteds.get)
         try:
             raided = raidtomb(map,closestnode,end,visited,distances,predecessors)
-            break
+            if raided != "IMPOSSIBLE":
+                break
+            else:
+                del unvisiteds[closestnode]
         except KeyError, e:
             del unvisiteds[closestnode]
         except:
