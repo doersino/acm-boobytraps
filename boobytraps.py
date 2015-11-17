@@ -145,12 +145,12 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
     map = map.clone()                     # done here
     if map.isTrap(map.getAt(start)): # TODO clone map first!!!
         map.updateTraps(map.getAt(start))
-    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in map.getVisitables() if k not in visited)
+    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in map.getAdjacent(start) if k not in visited)
     raided = False
     while unvisiteds:
         closestnode = min(unvisiteds, key=unvisiteds.get)
         try:
-            raided = raidtomb(map,closestnode,end,visited,distances,predecessors)
+            raided = raidtomb(map,closestnode,end,copy.deepcopy(visited),copy.deepcopy(distances),predecessors)
             if raided != "IMPOSSIBLE":
                 break
             else:
