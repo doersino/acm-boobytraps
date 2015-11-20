@@ -1,5 +1,6 @@
 # TODO
 
+## `boobytraps.py`
 * add docstrings
 * fix "IMPOSSIBLE" output
 * refactor everything after cloning the map in raidtomb()
@@ -12,3 +13,12 @@
 	* collapse paths: o -> o -> o => o -2> o
 * instead of entire map, pass max triggered trap, then ignore all traps <= max
 * build data generator for large maps
+
+## `tombraider.sh`
+* dynamically determine if input and output given are files or plaintext
+* don't compare with example if -v flag?
+
+## `gravedigger.sh`
+* parse options
+* generate maps
+* setting for start/end?

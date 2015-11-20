@@ -6,8 +6,6 @@
 #
 # Usage:
 # ./test.sh [-i SAMPLE_INPUT [-o SAMPLE_OUTPUT]]
-#
-# #TODO determine dynamically if input and output given are files or plaintext
 
 PY_FILE="boobytraps.py"
 DEFAULT_INPUT="sampleinput.txt"
@@ -51,7 +49,3 @@ if [ ! -z "$OUTPUT" ]; then
 else
 	time python "$PY_FILE" < "$INPUT"
 fi
-
-
-
-# TODO compare output
