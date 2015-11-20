@@ -19,6 +19,5 @@
 * don't compare with example if -v flag?
 
 ## `gravedigger.sh`
-* parse options
 * generate maps
 * setting for start/end?
