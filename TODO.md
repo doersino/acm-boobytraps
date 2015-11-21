@@ -19,5 +19,5 @@
 * don't compare with example if -v flag?
 
 ## `gravedigger.sh`
-* generate maps
-* setting for start/end?
+* generate interesting maps
+* option for start/end: --start X,Y --end X,Y, otherwise random?
