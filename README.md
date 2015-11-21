@@ -6,6 +6,7 @@ My Python 2.x solution of the ACM Programming Contest problem ["Booby Traps"](ht
 Books have one, so why shouldn't software?
 
 * `boobytraps.py` contains the code solving the problem.
+* `gravedigger.py` is a simple map generator I wrote for testing the performance of `boobytraps.py` on large maps.
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleoutput.txt` contains the sample output with which to test the solution.
 * `tombraider.sh` is a short shell script for efficiently testing the solution.
