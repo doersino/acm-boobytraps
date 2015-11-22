@@ -29,19 +29,43 @@ random.seed(seed)
 trapDominationOrdering = "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 width = args.width
 height = args.height
+
+# initialize empty map of wall cells
 map = [['x' for field in range(width)] for row in range(height)]
 
-#TODO fill map
+# add some empty cells
+for i in xrange(1, width * height * 2):
+    randomWidth = random.randint(0, width-1)
+    randomHeight = random.randint(0, height-1)
+    map[randomHeight][randomWidth] = 'o'
 
+# add some traps
+for i in trapDominationOrdering[::-1]:
+    randomWidth = random.randint(0, width-1)
+    randomHeight = random.randint(0, height-1)
+    map[randomHeight][randomWidth] = i
+    if random.random() < 0.2:
+        break
 
-# set start and end points, make sure they aren't walls
-#TODO randomize
+# set start and end points
 startX = 0
 startY = 0
 endX = width - 1
 endY = height - 1
-map[startY][startX] = 'o'
-map[endY][endX] = 'o'
+#startX = random.randint(0, width-1)
+#startY = random.randint(0, height-1)
+#endX = random.randint(0, width-1)
+#while endX != startX:
+#    endX = random.randint(0, width-1)
+#endY = random.randint(0, height-1)
+#while endY != startY:
+#    random.randint(0, height-1)
+
+# make sure that start and end aren't walls
+if map[startY][startX] == 'x':
+    map[startY][startX] = 'o'
+if map[endY][endX] == 'x':
+    map[endY][endX] = 'o'
 
 # print map
 print trapDominationOrdering

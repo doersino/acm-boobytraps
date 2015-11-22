@@ -11,6 +11,7 @@
 
 * use graph representation of map
 	* collapse paths: o -> o -> o => o -2> o
+	* graph nodes as cells with x, y, value, maybe bool: visited
 * instead of entire map, pass max triggered trap, then ignore all traps <= max
 * build data generator for large maps
 
@@ -21,3 +22,4 @@
 ## `gravedigger.sh`
 * generate interesting maps
 * option for start/end: --start X,Y --end X,Y, otherwise random?
+* option for ratio of wall cells to empty cells, remove magic number
