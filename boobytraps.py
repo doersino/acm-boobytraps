@@ -159,16 +159,13 @@ def main():
 
     # parse input
     trapDominationOrder = input[0]
-    mapWidth = int(input[1][0])
-    mapHeight = int(input[1][2])
+    mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
     map = Map(mapWidth, mapHeight, input[2:mapHeight+2], trapDominationOrder)
 
-    startX = int(input[mapHeight+2][0])
-    startY = int(input[mapHeight+2][2])
+    startX, startY = [int(i) for i in input[mapHeight+2].split(" ")]
     start = Coords(startX, startY)
 
-    endX = int(input[mapHeight+3][0])
-    endY = int(input[mapHeight+3][2])
+    endX, endY = [int(i) for i in input[mapHeight+3].split(" ")]
     end = Coords(endX, endY)
 
     # compute and output minimum number of moves needed to reach the end
