@@ -95,8 +95,8 @@ elif mode == "dungeon":
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         randomRadius = random.randint(1, math.floor((height-1) / 2))
-        randomYStart = max(0, min(width-1, randomY - randomRadius - 1))
-        randomYStop = max(0, min(width-1, randomY + randomRadius))
+        randomYStart = max(0, min(height-1, randomY - randomRadius - 1))
+        randomYStop = max(0, min(height-1, randomY + randomRadius))
         for y in xrange(randomYStart, randomYStop + 1):
             map[y][randomX] = 'o'
 
@@ -126,8 +126,8 @@ elif mode == "dungeon":
         randomYRadius = random.randint(1, int(math.sqrt((height-1) / 2)))
         randomXStart = max(0, min(width-1, randomX - randomXRadius - 1))
         randomXStop = max(0, min(width-1, randomX + randomXRadius))
-        randomYStart = max(0, min(width-1, randomY - randomYRadius - 1))
-        randomYStop = max(0, min(width-1, randomY + randomYRadius))
+        randomYStart = max(0, min(height-1, randomY - randomYRadius - 1))
+        randomYStop = max(0, min(height-1, randomY + randomYRadius))
         for x in xrange(randomXStart, randomXStop + 1):
             for y in xrange(randomYStart, randomYStop + 1):
                 map[y][x] = 'o'
