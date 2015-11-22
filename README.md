@@ -10,3 +10,15 @@ Books have one, so why shouldn't software?
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleoutput.txt` contains the sample output with which to test the solution.
 * `tombraider.sh` is a short shell script for efficiently testing the solution.
+
+## Example Usage
+
+Test the shortest path finder on the sample input and output given with the problem statement:
+```
+./tombraider.sh -i sampleinput.txt -o sampleoutput.txt
+```
+
+Randomly generate a 15x15 map and find the shortest path from start to end:
+```
+python gravedigger.py 15 15 | python boobytraps.py
+```

@@ -24,3 +24,4 @@
 * option for start/end: --start X,Y --end X,Y, otherwise random?
 * if start/end is 'x', generate new position
 * option for ratio of wall cells to empty cells, remove magic number
+* generate multiple traps of same kind
