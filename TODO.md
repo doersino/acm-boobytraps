@@ -6,7 +6,7 @@
 * maybe change coords class to cell class with coords and value, change map accordingly
 * maybe identify coords by integer, like width*y+x
 * getAt, setAt neccessary, especially in the map class itself?
-* maybe add -v flag with colorized map with coord axes, as well as path output after each step
+* maybe add -v flag with colorized map (using a highlight(map, [coords], color) function) with coord axes, as well as path output after each step
 
 * use graph representation of map
 	* collapse paths: o -> o -> o => o -2> o
