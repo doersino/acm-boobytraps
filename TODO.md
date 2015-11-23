@@ -20,8 +20,6 @@
 * don't compare with example if -v flag?
 
 ## `gravedigger.sh`
-* generate interesting maps: place lines, boxes
-* option for start/end: --start X,Y --end X,Y, otherwise random?
-* if start/end is 'x', generate new position
-* option for ratio of wall cells to empty cells, remove magic number
-* generate multiple traps of same kind
+* option for start/end: --start X,Y --end X,Y, make sure to set to o
+* otherwise random but with minimum euclidean distance, and: if start/end is 'x', generate new position
+* option for ratio of wall cells to empty cells ("density"? in [0, 1], default .5) => allows removal of magic numbers
