@@ -84,7 +84,7 @@ elif mode == "dungeon":
     for i in xrange(1, int(math.floor((width + height) / 4))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
-        randomRadius = random.randint(1, math.floor((width-1) / 2))
+        randomRadius = random.randint(1, max(1, math.floor((width-1) / 2)))
         randomXStart = max(0, min(width-1, randomX - randomRadius - 1))
         randomXStop = max(0, min(width-1, randomX + randomRadius))
         for x in xrange(randomXStart, randomXStop + 1):
@@ -94,7 +94,7 @@ elif mode == "dungeon":
     for i in xrange(1, int(math.floor((width + height) / 4))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
-        randomRadius = random.randint(1, math.floor((height-1) / 2))
+        randomRadius = random.randint(1, max(1, math.floor((height-1) / 2)))
         randomYStart = max(0, min(height-1, randomY - randomRadius - 1))
         randomYStop = max(0, min(height-1, randomY + randomRadius))
         for y in xrange(randomYStart, randomYStop + 1):
@@ -122,8 +122,8 @@ elif mode == "dungeon":
     for i in xrange(1, int(math.floor((width + height) / 8))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
-        randomXRadius = random.randint(1, int(math.sqrt((width-1) / 2)))
-        randomYRadius = random.randint(1, int(math.sqrt((height-1) / 2)))
+        randomXRadius = random.randint(1, max(1, int(math.sqrt((width-1) / 2))))
+        randomYRadius = random.randint(1, max(1, int(math.sqrt((height-1) / 2))))
         randomXStart = max(0, min(width-1, randomX - randomXRadius - 1))
         randomXStop = max(0, min(width-1, randomX + randomXRadius))
         randomYStart = max(0, min(height-1, randomY - randomYRadius - 1))
