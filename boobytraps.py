@@ -152,6 +152,11 @@ def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
 
 
 def main():
+    # process verbose option
+    if len(sys.argv) > 1 and sys.argv[1] == "-v":
+        verbose = True
+        del sys.argv[1]
+
     # get input without line terminators
     input = []
     for line in fileinput.input():
@@ -170,10 +175,19 @@ def main():
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
-    #print raidtomb(map, start, end)
     raided = raidtomb(map, start, end)
-    for i in raided[1]: print i
-    print raided[0]
+    if verbose:
+        if raided == "IMPOSSIBLE":
+            print raided
+        else:
+            for i in raided[1]:
+                print i
+            print raided[0]
+    else:
+        if raided == "IMPOSSIBLE":
+            print raided
+        else:
+            print raided[0]
 
 if __name__ == "__main__":
     main()
