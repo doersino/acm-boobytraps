@@ -43,6 +43,13 @@ class Map:
     def __str__(self):
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
+    def prettyprint(self, path):
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                #TODO highlight traps
+                #TODO hightlight path
+                pass
+
     def clone(self):
         return copy.deepcopy(self)
 
