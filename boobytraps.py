@@ -43,12 +43,20 @@ class Map:
     def __str__(self):
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
-    def prettyprint(self, path):
+    def prettyprint(self, path=[]):
         for y, row in enumerate(self.map):
             for x, field in enumerate(row):
-                #TODO highlight traps
+                prefix = ""
+                suffix = "\033[0m"
+
+                # highlight traps
+                if field in self.trapDominationOrder:
+                    prefix = prefix + '\033[31m'
                 #TODO hightlight path
-                pass
+                if Coords(x, y) in path:
+                    prefix = prefix + '\033[42m'
+                sys.stdout.write(prefix + field + suffix)
+            print
 
     def clone(self):
         return copy.deepcopy(self)
@@ -183,12 +191,20 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
     raided = raidtomb(map, start, end)
+
+    # print result
     if verbose:
         if raided == "IMPOSSIBLE":
+            print "Map:"
+            map.prettyprint()
             print raided
         else:
-            for i in raided[1]:
-                print i
+            #print "Path:"
+            #for i in raided[1]:
+            #    print i
+            print "Map:"
+            map.prettyprint(raided[1])
+            print "Minimum number of moves to reach the end position from the start position:"
             print raided[0]
     else:
         if raided == "IMPOSSIBLE":
