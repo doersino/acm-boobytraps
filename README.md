@@ -11,7 +11,7 @@ Books have one, so why shouldn't software?
 * `gravedigger.py` is a simple map generator I wrote for testing the performance of `boobytraps.py` on large maps.
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleoutput.txt` contains the sample output with which to test the solution.
-* `screenshot.png` shows the code in action.
+* `screenshot.png` shows my solution in action.
 * `tombraider.sh` is a short shell script for efficiently testing the solution.
 
 ## Example Usage
@@ -24,4 +24,9 @@ Test the shortest path finder on the sample input and output given with the prob
 Randomly generate a 15x15 map and find the shortest path from start to end:
 ```
 python gravedigger.py 15 15 | python boobytraps.py
+```
+
+Randomly generate a 15x10 map (with a fixed seed and using the "dungeon" mode), find the shortest path from start to end and highlight the path in the map:
+```
+python gravedigger.py 15 10 --seed donghwa --mode dungeon | python boobytraps.py -v
 ```

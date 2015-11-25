@@ -44,17 +44,29 @@ class Map:
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
     def prettyprint(self, path=[]):
+        xLabel = "  0123->x"
+        yLabel = "0123|vy"
+        print xLabel
+
         for y, row in enumerate(self.map):
+            # print y-axis label
+            if y < len(yLabel):
+                sys.stdout.write(yLabel[y] + " ")
+            else:
+                sys.stdout.write("  ")
+
             for x, field in enumerate(row):
                 prefix = ""
                 suffix = "\033[0m"
 
                 # highlight traps
                 if field in self.trapDominationOrder:
-                    prefix = prefix + '\033[31m'
-                #TODO hightlight path
+                    prefix = prefix + "\033[31m"
+
+                # hightlight path
                 if Coords(x, y) in path:
-                    prefix = prefix + '\033[42m'
+                    prefix = prefix + "\033[42m"
+
                 sys.stdout.write(prefix + field + suffix)
             print
 
