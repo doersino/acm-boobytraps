@@ -43,9 +43,11 @@ class Map:
     def __str__(self):
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
-    def prettyprint(self, path=[]):
+    def prettyprint(self, start, end, path=[]):
         xLabel = "  0123->x"
         yLabel = "0123|vy"
+
+        # print x-axis label
         print xLabel
 
         for y, row in enumerate(self.map):
@@ -61,11 +63,21 @@ class Map:
 
                 # highlight traps
                 if field in self.trapDominationOrder:
-                    prefix = prefix + "\033[31m"
+                    prefix = prefix + "\033[31m"  # red
 
-                # hightlight path
+                # highlight empty fields
+                if field == 'o':
+                    prefix = prefix + "\033[37m"  # light gray
+
+                # highlight start and end
+                if Coords(x, y) == start:
+                    prefix = prefix + "\033[1m\033[90m"  # bold dark gray
+                if Coords(x, y) == end:
+                    prefix = prefix + "\033[1m\033[4m\033[90m"  # bold underlined dark gray
+
+                # highlight path
                 if Coords(x, y) in path:
-                    prefix = prefix + "\033[42m"
+                    prefix = prefix + "\033[42m"  # green background
 
                 sys.stdout.write(prefix + field + suffix)
             print
@@ -208,14 +220,14 @@ def main():
     if verbose:
         if raided == "IMPOSSIBLE":
             print "Map:"
-            map.prettyprint()
+            map.prettyprint(start, end)
             print raided
         else:
             #print "Path:"
             #for i in raided[1]:
             #    print i
             print "Map:"
-            map.prettyprint(raided[1])
+            map.prettyprint(start, end, raided[1])
             print "Minimum number of moves to reach the end position from the start position:"
             print raided[0]
     else:
