@@ -222,6 +222,7 @@ def main():
             print "Map:"
             map.prettyprint(start, end)
             print raided
+            sys.exit(1)
         else:
             #print "Path:"
             #for i in raided[1]:
@@ -233,6 +234,7 @@ def main():
     else:
         if raided == "IMPOSSIBLE":
             print raided
+            sys.exit(1)
         else:
             print raided[0]
 
