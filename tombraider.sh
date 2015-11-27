@@ -1,11 +1,15 @@
 #!/bin/bash
 
-# Tests boobytraps.py with some input (if no input file is given,
+# Tests boobytraps.py with some input (if no input (or input file) is given,
 # sampleinput.txt will be used) and optionally verifies the output.
 # Additionally prints the time taken.
 #
 # Usage:
-# ./test.sh [-i SAMPLE_INPUT [-o SAMPLE_OUTPUT]]
+# ./tombraider.sh [-i SAMPLE_INPUT [-o SAMPLE_OUTPUT]]
+#
+# Examples:
+# ./tombraider.sh -i sampleinput.txt -o sampleoutput.txt
+# ./tombraider.sh -i sampleinput2.txt -o 2
 
 PY_FILE="boobytraps.py"
 DEFAULT_INPUT="sampleinput.txt"
