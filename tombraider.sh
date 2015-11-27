@@ -56,5 +56,5 @@ if [ ! -z "$OUTPUT" ]; then
 		exit 1
 	fi
 else
-	time python "$PY_FILE" -v < "$INPUT"
+	echo "$INPUT" | time python "$PY_FILE" -v
 fi
