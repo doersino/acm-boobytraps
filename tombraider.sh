@@ -51,10 +51,10 @@ if [ ! -z "$OUTPUT" ]; then
 		printf "\e[1;31m+-------------------+\e[0m\n"
 		printf "\e[1;31m| TEST UNSUCCESSFUL |\e[0m\n"
 		printf "\e[1;31m+-------------------+\e[0m\n"
-		printf "\e[1;31mActual output:\e[0m\n"
-		echo "$INPUT" | python "$PY_FILE" 2>/dev/null
+		printf "\e[1;31mActual output (with the -v flag):\e[0m\n"
+		echo "$INPUT" | python "$PY_FILE" -v 2>/dev/null
 		exit 1
 	fi
 else
-	time python "$PY_FILE" < "$INPUT"
+	time python "$PY_FILE" -v < "$INPUT"
 fi
