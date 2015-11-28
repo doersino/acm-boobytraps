@@ -138,7 +138,7 @@ class Map:
         self.map[coords.y][coords.x] = char
 
     def isTrap(self, char):
-        return char in self.trapDominationOrder
+        return char in self.activeTraps
 
 
 # algorithm based on http://rebrained.com/?p=392

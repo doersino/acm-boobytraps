@@ -2,7 +2,7 @@
 
 ## `boobytraps.py`
 * add docstrings
-* refactor everything after cloning the map in raidtomb(): make sure it actually finds the shortest path
+* refactor everything after cloning the map in raidtomb(): make sure it actually finds the shortest path and doesn't end in an infinite loop
 * maybe return and prettyprint (with red background) the "best effort" if no path is found
 * maybe change coords class to cell class with coords and value, change map accordingly
 * maybe identify coords by integer, like width*y+x
@@ -12,7 +12,6 @@
 	* collapse paths: o -> o -> o => o -2> o
 	* graph nodes as cells with x, y, value, maybe bool: visited
 * instead of entire map, pass max triggered trap, then ignore all traps <= max
-* build data generator for large maps
 
 ## `tombraider.sh`
 
