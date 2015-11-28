@@ -141,6 +141,47 @@ class Map:
         return char in self.activeTraps
 
 
+class Graph:
+    graph = None
+
+    def __init__(self, map):
+        self.fromMap(map)
+        self.optimize()
+
+    def __str__(self):
+        return 'graph: ' + str(self.graph)
+
+    def prettyprint(self):
+        for field in self.graph:
+            sys.stdout.write("'" + str(field) + "': {")
+            for adj in self.graph[field]:
+                sys.stdout.write("'" + str(adj) + "': " + str(self.graph[field][adj]) + ",")
+            sys.stdout.write("}")
+            print
+
+    def fromMap(self, map):
+        self.graph = {}
+
+        for y, row in enumerate(map.map):
+            for x, field in enumerate(row):
+                if field != 'x':
+                    coords = Coords(x, y)
+                    adj = map.getAdjacent(coords)
+                    adjDict = {}
+                    for i in adj:
+                        adjDict[i] = 1
+                    self.graph[coords] = adjDict
+
+    def optimize(self):
+        # if only one neighbor and both not traps, concat
+        # do recursively until no change?
+        #for field in self.graph:
+        #    if len(self.graph[field]) == 1:
+        #        self.graph[field] = self.graph[field][self.graph[field].keys()[0]]
+        #        del self.graph[self.graph[field][self.graph[field].keys()[0]]]
+        pass
+
+
 # algorithm based on http://rebrained.com/?p=392
 def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
     #print start
@@ -211,6 +252,9 @@ def main():
 
     endX, endY = [int(i) for i in input[mapHeight+3].split(" ")]
     end = Coords(endX, endY)
+
+    graph = Graph(map)
+    #graph.prettyprint()
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
