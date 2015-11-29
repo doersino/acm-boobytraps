@@ -2,11 +2,14 @@
 
 ## `boobytraps.py`
 * use graph representation of map
-    * collapse paths: o -> o -> o => o -2> o
+    * optimize: collapse paths: o -> o -> o => o -2> o
+    * optimize: remove deadends (if != start, end)
     * graph nodes as cells with x, y, value
 * instead of entire map/graph, pass max triggered trap, then ignore all traps <= max
 * add docstrings
 * return and prettyprint (with red background) the "best effort" if no path is found
+
+* if other approach fails, use simple iterative breadth-first search with backtracking, with triggered traps saved in queue along with cell
 
 ## `tombraider.sh`
 
