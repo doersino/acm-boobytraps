@@ -3,7 +3,7 @@
 ## `boobytraps.py`
 * use graph representation of map
     * optimize: collapse paths: o -> o -> o => o -2> o
-    * optimize: remove deadends (if != start, end)
+    * optimize: remove deadends (if != start, end) => save start, end in map
     * graph nodes as cells with x, y, value
 * instead of entire map/graph, pass max triggered trap, then ignore all traps <= max
 * add docstrings

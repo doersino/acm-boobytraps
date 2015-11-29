@@ -4,6 +4,8 @@ import sys
 
 
 class Cell:
+    """Cell with x and y coordinates and value."""
+
     x = 0
     y = 0
     value = 'x'
@@ -24,26 +26,28 @@ class Cell:
 
 
 class Map:
+    """Map with width, height and the trap domination order."""
+
     map = None
+    trapDominationOrder = None
     width = 0
     height = 0
-    trapDominationOrder = None
 
-    # map given as array (rows) of arrays (fields)
+    # map must be given as string array (rows) of string arrays (fields)
     def __init__(self, width, height, map, trapDominationOrder):
-        self.map = copy.deepcopy(map)
-        for i, row in enumerate(self.map):
-            self.map[i] = list(row)
-
         self.width = width
         self.height = height
 
+        self.map = copy.deepcopy(map)
+        for i, row in enumerate(self.map):
+            self.map[i] = list(row)
         self.trapDominationOrder = list(trapDominationOrder)
 
     def __str__(self):
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
 
     def prettyprint(self, start, end, path=[]):
+        """Print the map with coordinate axes and different colors for different cell types."""
         xLabel = "  0123->x"
         yLabel = "0123|vy"
 
@@ -83,27 +87,28 @@ class Map:
             print
 
     def getAdjacent(self, cell):
+        """Get the (up to four) adjacent cells."""
         adj = []
 
-        # left
+        # left neighbor
         if cell.x > 0:
             candidate = Cell(cell.x - 1, cell.y, self.map[cell.y][cell.x - 1])
             if candidate.value != 'x':
                 adj.append(candidate)
 
-        # right
+        # right neighbor
         if cell.x < self.width - 1:
             candidate = Cell(cell.x + 1, cell.y, self.map[cell.y][cell.x + 1])
             if candidate.value != 'x':
                 adj.append(candidate)
 
-        # top
+        # top neighbor
         if cell.y > 0:
             candidate = Cell(cell.x, cell.y - 1, self.map[cell.y - 1][cell.x])
             if candidate.value != 'x':
                 adj.append(candidate)
 
-        # bottom
+        # bottom neighbor
         if cell.y < self.height - 1:
             candidate = Cell(cell.x, cell.y + 1, self.map[cell.y + 1][cell.x])
             if candidate.value != 'x':
@@ -112,16 +117,21 @@ class Map:
         return adj
 
     def getAt(self, x, y):
+        """Get the cell value at position x, y."""
         return self.map[y][x]
 
     def setAt(self, cell):
+        """Set the cell value."""
         self.map[cell.y][cell.x] = cell.value
 
     def isTrap(self, char):
+        """Check if a cell value is a trap."""
         return char in self.trapDominationOrder
 
 
 class Graph:
+    """Graph represented as an adjacency list."""
+
     map = None
     graph = None
 
@@ -142,9 +152,10 @@ class Graph:
         self.optimize()
 
     def __str__(self):
-        return 'graph: ' + str(self.graph)
+        return 'map: ' + str(self.map) + ', graph: ' + str(self.graph)
 
     def prettyprint(self):
+        """Print the graph in a readable way."""
         for field in self.graph:
             sys.stdout.write("'" + str(field) + "': {")
             for adj in self.graph[field]:
@@ -153,7 +164,9 @@ class Graph:
             print
 
     def optimize(self):
+        """Optimize graph by removing deadends and collapsing adacent cells with no branches to other cells."""
         # do all this recursively until no change?
+        # if two neigbours and in line with no other neighbors, concat
         # if only one neighbor and both not traps, concat
         #for field in self.graph:
         #    if len(self.graph[field]) == 1:
@@ -182,7 +195,7 @@ class Graph:
 # algorithm based on http://rebrained.com/?p=392, test using
 # false; while [ $? -ne 0 ]; do time python gravedigger.py 40 20 --mode dungeon | python boobytraps.py -v; done
 def raidtomb(graph,start,end,visited=[],distances={},predecessors={}):
-    """Find the shortest path between start and end nodes in a graph"""
+    """Find the shortest path between start and end cells ("raid the tomb")"""
     # detect if it's the first time through, set current distance to zero
     if not visited: distances[start]=0
     if start==end:
