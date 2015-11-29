@@ -264,6 +264,10 @@ def raidtomb2(graph,start,end,visited=[],distances={},predecessors={}):
         if unvisiteds[i] < sys.maxint:
             test = False
     if test:
+        # TODO
+        # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as start)
+        # ignore that cell here and try again to recurse with another cell
+        # only if that fails if no previous recursive trap cell call was made => IMPOSSIBLE
         return "IMPOSSIBLE"
     closestnode = min(unvisiteds, key=unvisiteds.get)
     # now we can take the closest node and recurse, making it current
