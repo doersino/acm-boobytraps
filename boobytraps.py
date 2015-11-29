@@ -122,12 +122,23 @@ class Cell:
 
 
 class Graph:
-    map = None  # TODO chang
+    map = None
     graph = None
 
     def __init__(self, map):
-        self.map = map  # TODO chang
-        self.fromMap(map)
+        self.map = map
+
+        self.graph = {}
+        for y, row in enumerate(map.map):
+            for x, field in enumerate(row):
+                if field != 'x':
+                    cell = Cell(x, y, field)
+                    adj = map.getAdjacent(cell)
+                    adjDict = {}
+                    for i in adj:
+                        adjDict[i] = 1
+                    self.graph[cell] = adjDict
+
         self.optimize()
 
     def __str__(self):
@@ -141,19 +152,6 @@ class Graph:
             sys.stdout.write("}")
             print
 
-    def fromMap(self, map):
-        self.graph = {}
-
-        for y, row in enumerate(map.map):
-            for x, field in enumerate(row):
-                if field != 'x':
-                    cell = Cell(x, y, field)
-                    adj = map.getAdjacent(cell)
-                    adjDict = {}
-                    for i in adj:
-                        adjDict[i] = 1
-                    self.graph[cell] = adjDict
-
     def optimize(self):
         # do all this recursively until no change?
         # if only one neighbor and both not traps, concat
@@ -164,20 +162,11 @@ class Graph:
         # remove deadends (if != start, end)
         pass
 
-    def update(self, start):
-        # remove start and all pointers to it
-        del self.graph[start]
-        for cell in self.graph:
-            if start in self.graph[cell]:
-                del self.graph[cell][start]
-            #if len(self.graph[cell]) == 1: optimization step: remove now-deadends
-
-        # remove all cells with traps of kind in start and pointers to them
-        trapTriggered = start.value
+    def update(self, triggeredTrapCell):
         triggeredTraps = []
         for trap in self.map.trapDominationOrder:
             triggeredTraps.append(trap)
-            if trap == trapTriggered:
+            if trap == triggeredTrapCell.value:
                 break
 
         for cell in list(self.graph):
@@ -186,6 +175,8 @@ class Graph:
                 for cell2 in self.graph:
                     if cell in self.graph[cell2]:
                         del self.graph[cell2][cell]
+
+        self.optimize()
 
 
 # algorithm based on http://rebrained.com/?p=392, test using
