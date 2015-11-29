@@ -102,31 +102,31 @@ class Map:
                 if field in triggeredTraps:
                     self.setAt(Coords(x, y), 'x')
 
-    def getAdjacent(self, coords):
+    def getAdjacent(self, cell):
         adj = []
 
         # left
-        if coords.x > 0:
-            candidate = Coords(coords.x - 1, coords.y)
-            if self.getAt(candidate) != 'x':
+        if cell.x > 0:
+            candidate = Cell(cell.x - 1, cell.y, self.map[cell.y][cell.x - 1])
+            if candidate.value != 'x':
                 adj.append(candidate)
 
         # right
-        if coords.x < self.width - 1:
-            candidate = Coords(coords.x + 1, coords.y)
-            if self.getAt(candidate) != 'x':
+        if cell.x < self.width - 1:
+            candidate = Cell(cell.x + 1, cell.y, self.map[cell.y][cell.x + 1])
+            if candidate.value != 'x':
                 adj.append(candidate)
 
         # top
-        if coords.y > 0:
-            candidate = Coords(coords.x, coords.y - 1)
-            if self.getAt(candidate) != 'x':
+        if cell.y > 0:
+            candidate = Cell(cell.x, cell.y - 1, self.map[cell.y - 1][cell.x])
+            if candidate.value != 'x':
                 adj.append(candidate)
 
         # bottom
-        if coords.y < self.height - 1:
-            candidate = Coords(coords.x, coords.y + 1)
-            if self.getAt(candidate) != 'x':
+        if cell.y < self.height - 1:
+            candidate = Cell(cell.x, cell.y + 1, self.map[cell.y + 1][cell.x])
+            if candidate.value != 'x':
                 adj.append(candidate)
 
         return adj
@@ -141,10 +141,32 @@ class Map:
         return char in self.activeTraps
 
 
+class Cell:
+    x = 0
+    y = 0
+    value = 'x'
+
+    def __init__(self, x, y, value):
+        self.x = x
+        self.y = y
+        self.value = value
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.value == other.value
+
+    def __hash__(self):
+        return hash(self.x * self.y * self.value)
+
+    def __str__(self):
+        return 'x: ' + str(self.x) + ', y: ' + str(self.y) + ', value: ' + str(self.value)
+
+
 class Graph:
+    map = None  # TODO chang
     graph = None
 
     def __init__(self, map):
+        self.map = map  # TODO chang
         self.fromMap(map)
         self.optimize()
 
@@ -165,25 +187,49 @@ class Graph:
         for y, row in enumerate(map.map):
             for x, field in enumerate(row):
                 if field != 'x':
-                    coords = Coords(x, y)
-                    adj = map.getAdjacent(coords)
+                    cell = Cell(x, y, field)
+                    adj = map.getAdjacent(cell)
                     adjDict = {}
                     for i in adj:
                         adjDict[i] = 1
-                    self.graph[coords] = adjDict
+                    self.graph[cell] = adjDict
 
     def optimize(self):
+        # do all this recursively until no change?
         # if only one neighbor and both not traps, concat
-        # do recursively until no change?
         #for field in self.graph:
         #    if len(self.graph[field]) == 1:
         #        self.graph[field] = self.graph[field][self.graph[field].keys()[0]]
         #        del self.graph[self.graph[field][self.graph[field].keys()[0]]]
+        # TODO remove deadends (if != start, end)
         pass
+
+    def update(self, start):
+        # remove start and all pointers to it
+        del self.graph[start]
+        for cell in self.graph:
+            if start in self.graph[cell]:
+                del self.graph[cell][start]
+            #if len(self.graph[cell]) == 1: optimization step: remove now-deadends
+
+        # remove all cells with traps of kind in start and pointers to them
+        trapTriggered = start.value
+        triggeredTraps = []
+        for trap in self.map.trapDominationOrder:
+            triggeredTraps.append(trap)
+            if trap == trapTriggered:
+                break
+
+        for cell in list(self.graph):
+            if cell.value in triggeredTraps:
+                del self.graph[cell]
+                for cell2 in self.graph:
+                    if cell in self.graph[cell2]:
+                        del self.graph[cell2][cell]
 
 
 # algorithm based on http://rebrained.com/?p=392, test using
-# false; while [ $? -ne 0 ]; do python gravedigger.py 20 10 --mode dungeon | python boobytraps.py -v; done
+# false; while [ $? -ne 0 ]; do time python gravedigger.py 40 20 --mode dungeon | python boobytraps.py -v; done
 def raidtomb2(graph,start,end,visited=[],distances={},predecessors={}):
     """Find the shortest path between start and end nodes in a graph"""
     # detect if it's the first time through, set current distance to zero
@@ -196,17 +242,23 @@ def raidtomb2(graph,start,end,visited=[],distances={},predecessors={}):
             end=predecessors.get(end,None)
         return distances[start], path[::-1]
     # process neighbors as per algorithm, keep track of predecessors
-    for neighbor in graph[start]:
+    for neighbor in graph.graph[start]:
         if neighbor not in visited:
             neighbordist = distances.get(neighbor,sys.maxint)
-            tentativedist = distances[start] + graph[start][neighbor]
+            tentativedist = distances[start] + graph.graph[start][neighbor]
             if tentativedist < neighbordist:
                 distances[neighbor] = tentativedist
                 predecessors[neighbor]=start
     # neighbors processed, now mark the current node as visited
     visited.append(start)
+
+    #trigger traps
+    if start.value != 'o':
+        graph = copy.deepcopy(graph)
+        graph.update(start)
+
     # finds the closest unvisited node to the start
-    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in graph if k not in visited)
+    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in graph.graph if k not in visited)
     test = True
     for i in unvisiteds:
         if unvisiteds[i] < sys.maxint:
@@ -215,7 +267,7 @@ def raidtomb2(graph,start,end,visited=[],distances={},predecessors={}):
         return "IMPOSSIBLE"
     closestnode = min(unvisiteds, key=unvisiteds.get)
     # now we can take the closest node and recurse, making it current
-    return raidtomb2(graph,closestnode,end,visited,distances,predecessors)
+    return raidtomb2(graph,closestnode,end,copy.deepcopy(visited),copy.deepcopy(distances),predecessors)
 
 
 # algorithm based on http://rebrained.com/?p=392
@@ -290,12 +342,14 @@ def main():
     end = Coords(endX, endY)
 
     graph = Graph(map)
+    startCell = Cell(startX, startY, map.getAt(start))
+    endCell = Cell(endX, endY, map.getAt(end))
     #graph.prettyprint()
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
     #raided = raidtomb(map, start, end)
-    raided = raidtomb2(graph.graph, start, end)
+    raided = raidtomb2(graph, startCell, endCell)
 
     # print result
     if verbose:
