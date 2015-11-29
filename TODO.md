@@ -10,7 +10,7 @@
 
 * use graph representation of map
 	* collapse paths: o -> o -> o => o -2> o
-	* graph nodes as cells with x, y, value, maybe bool: visited
+	* graph nodes as cells with x, y, value
 * instead of entire map, pass max triggered trap, then ignore all traps <= max
 
 ## `tombraider.sh`

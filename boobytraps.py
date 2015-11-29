@@ -182,6 +182,42 @@ class Graph:
         pass
 
 
+# algorithm based on http://rebrained.com/?p=392, test using
+# false; while [ $? -ne 0 ]; do python gravedigger.py 20 10 --mode dungeon | python boobytraps.py -v; done
+def raidtomb2(graph,start,end,visited=[],distances={},predecessors={}):
+    """Find the shortest path between start and end nodes in a graph"""
+    # detect if it's the first time through, set current distance to zero
+    if not visited: distances[start]=0
+    if start==end:
+        # we've found our end node, now find the path to it, and return
+        path=[]
+        while end != None:
+            path.append(end)
+            end=predecessors.get(end,None)
+        return distances[start], path[::-1]
+    # process neighbors as per algorithm, keep track of predecessors
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            neighbordist = distances.get(neighbor,sys.maxint)
+            tentativedist = distances[start] + graph[start][neighbor]
+            if tentativedist < neighbordist:
+                distances[neighbor] = tentativedist
+                predecessors[neighbor]=start
+    # neighbors processed, now mark the current node as visited
+    visited.append(start)
+    # finds the closest unvisited node to the start
+    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in graph if k not in visited)
+    test = True
+    for i in unvisiteds:
+        if unvisiteds[i] < sys.maxint:
+            test = False
+    if test:
+        return "IMPOSSIBLE"
+    closestnode = min(unvisiteds, key=unvisiteds.get)
+    # now we can take the closest node and recurse, making it current
+    return raidtomb2(graph,closestnode,end,visited,distances,predecessors)
+
+
 # algorithm based on http://rebrained.com/?p=392
 def raidtomb(map, start, end, visited=[], distances={}, predecessors={}):
     #print start
@@ -258,7 +294,8 @@ def main():
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
-    raided = raidtomb(map, start, end)
+    #raided = raidtomb(map, start, end)
+    raided = raidtomb2(graph.graph, start, end)
 
     # print result
     if verbose:
