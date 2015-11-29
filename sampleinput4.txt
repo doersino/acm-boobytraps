@@ -1,0 +1,14 @@
+ZYXWVUTSRQPONMLKJIHGFEDCBA
+20 10
+oxxxoxxxxxIxxooNooOo
+oooooooooDooooKoKoxx
+oooxxoxxZxxxxoxxxoxx
+oooxooooXoooooPooooo
+oooxxoxxDxoxxxLxxxxx
+xoxSxoxooooxxGoxxoxx
+xoxxxoxooooxoxoxxxxx
+xoxxooxooooxoxoCxxxx
+xxxxooxooooooooooooo
+xxoxxoxxxxxxoxxxxxoo
+0 0
+19 9
