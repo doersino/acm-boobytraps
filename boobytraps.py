@@ -3,6 +3,26 @@ import copy
 import sys
 
 
+class Cell:
+    x = 0
+    y = 0
+    value = 'x'
+
+    def __init__(self, x, y, value):
+        self.x = x
+        self.y = y
+        self.value = value
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.value == other.value
+
+    def __hash__(self):
+        return hash(self.x * self.y * self.value)
+
+    def __str__(self):
+        return 'x: ' + str(self.x) + ', y: ' + str(self.y) + ', value: ' + str(self.value)
+
+
 class Map:
     map = None
     width = 0
@@ -99,26 +119,6 @@ class Map:
 
     def isTrap(self, char):
         return char in self.trapDominationOrder
-
-
-class Cell:
-    x = 0
-    y = 0
-    value = 'x'
-
-    def __init__(self, x, y, value):
-        self.x = x
-        self.y = y
-        self.value = value
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y and self.value == other.value
-
-    def __hash__(self):
-        return hash(self.x * self.y * self.value)
-
-    def __str__(self):
-        return 'x: ' + str(self.x) + ', y: ' + str(self.y) + ', value: ' + str(self.value)
 
 
 class Graph:
