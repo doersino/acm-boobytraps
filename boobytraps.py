@@ -141,6 +141,7 @@ class Graph:
         self.graph = {}
         for y, row in enumerate(map.map):
             for x, field in enumerate(row):
+                # ignore wall cells: irrelevant for path finding
                 if field != 'x':
                     cell = Cell(x, y, field)
                     adj = map.getAdjacent(cell)
@@ -164,7 +165,7 @@ class Graph:
             print
 
     def optimize(self):
-        """Optimize graph by removing deadends and collapsing adacent cells with no branches to other cells."""
+        """Reduce size and complexity of graph by removing deadends and collapsing adacent cells with no branches to other cells."""
         # do all this recursively until no change?
         # if two neigbours and in line with no other neighbors, concat
         # if only one neighbor and both not traps, concat
@@ -176,12 +177,14 @@ class Graph:
         pass
 
     def update(self, triggeredTrapCell):
+        # compute list of triggered traps
         triggeredTraps = []
         for trap in self.map.trapDominationOrder:
             triggeredTraps.append(trap)
             if trap == triggeredTrapCell.value:
                 break
 
+        # remove all referecences to triggered traps from the graph
         for cell in list(self.graph):
             if cell.value in triggeredTraps:
                 del self.graph[cell]
@@ -192,50 +195,55 @@ class Graph:
         self.optimize()
 
 
-# algorithm based on http://rebrained.com/?p=392, test using
-# false; while [ $? -ne 0 ]; do time python gravedigger.py 40 20 --mode dungeon | python boobytraps.py -v; done
-def raidtomb(graph,start,end,visited=[],distances={},predecessors={}):
+def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
     """Find the shortest path between start and end cells ("raid the tomb")"""
+    # algorithm based on http://rebrained.com/?p=392
+    #
     # detect if it's the first time through, set current distance to zero
-    if not visited: distances[start]=0
-    if start==end:
+    if not visited:
+        distances[start] = 0
+
+    if start == end:
         # we've found our end node, now find the path to it, and return
-        path=[]
-        while end != None:
+        path = []
+        while end is not None:
             path.append(end)
-            end=predecessors.get(end,None)
+            end = predecessors.get(end)
         return distances[start], path[::-1]
+
     # process neighbors as per algorithm, keep track of predecessors
     for neighbor in graph.graph[start]:
         if neighbor not in visited:
-            neighbordist = distances.get(neighbor,sys.maxint)
+            neighbordist = distances.get(neighbor, sys.maxint)
             tentativedist = distances[start] + graph.graph[start][neighbor]
             if tentativedist < neighbordist:
                 distances[neighbor] = tentativedist
-                predecessors[neighbor]=start
+                predecessors[neighbor] = start
+
     # neighbors processed, now mark the current node as visited
     visited.append(start)
 
-    #trigger traps
+    # trigger traps
     if start.value != 'o':
         graph = copy.deepcopy(graph)
         graph.update(start)
 
-    # finds the closest unvisited node to the start
-    unvisiteds = dict((k, distances.get(k,sys.maxint)) for k in graph.graph if k not in visited)
-    test = True
+    # find the closest reachable unvisited node to the start
+    unvisiteds = dict((k, distances.get(k, sys.maxint)) for k in graph.graph if k not in visited)
+    foundReachable = False
     for i in unvisiteds:
         if unvisiteds[i] < sys.maxint:
-            test = False
-    if test:
-        # TODO
+            foundReachable = True
+    if not foundReachable:
+        # TODO fix wrong behavior when traps were encountered toward the beginning
         # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as start)
-        # ignore that cell here and try again to recurse with another cell
-        # only if that fails if no previous recursive trap cell call was made => IMPOSSIBLE
+        # ignore that cell there and try again to recurse with another cell
+        # only if that fails and if no previous recursive trap cell call was made => IMPOSSIBLE
         return "IMPOSSIBLE"
     closestnode = min(unvisiteds, key=unvisiteds.get)
+
     # now we can take the closest node and recurse, making it current
-    return raidtomb(graph,closestnode,end,copy.deepcopy(visited),copy.deepcopy(distances),predecessors)
+    return raidtomb(graph, closestnode, end, copy.deepcopy(visited), copy.deepcopy(distances), predecessors)
 
 
 def main():
@@ -263,7 +271,6 @@ def main():
     end = Cell(endX, endY, endValue)
 
     graph = Graph(map)
-    #graph.prettyprint()
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
