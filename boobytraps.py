@@ -198,7 +198,7 @@ class Graph:
 def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
     """Find the shortest path between start and end cells ("raid the tomb")"""
     # algorithm based on http://rebrained.com/?p=392
-    #
+
     # detect if it's the first time through, set current distance to zero
     if not visited:
         distances[start] = 0
