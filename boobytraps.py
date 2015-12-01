@@ -165,7 +165,7 @@ class Graph:
             print
 
     def optimize(self):
-        """Reduce size and complexity of graph by removing deadends and collapsing adacent cells with no branches to other cells."""
+        """Reduce size and complexity of graph by removing deadends and collapsing adjacent cells with no branches to other cells."""
         # do all this recursively until no change?
         # if two neigbours and in line with no other neighbors, concat
         # if only one neighbor and both not traps, concat
