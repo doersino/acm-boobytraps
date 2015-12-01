@@ -235,15 +235,33 @@ def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
         if unvisiteds[i] < sys.maxint:
             foundReachable = True
     if not foundReachable:
-        # TODO fix wrong behavior when traps were encountered toward the beginning
-        # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as start)
-        # ignore that cell there and try again to recurse with another cell
-        # only if that fails and if no previous recursive trap cell call was made => IMPOSSIBLE
         return "IMPOSSIBLE"
     closestnode = min(unvisiteds, key=unvisiteds.get)
 
-    # now we can take the closest node and recurse, making it current
-    return raidtomb(graph, closestnode, end, copy.deepcopy(visited), copy.deepcopy(distances), predecessors)
+    #return raidtomb(graph, closestnode, end, copy.deepcopy(visited), copy.deepcopy(distances), predecessors)
+
+    # TODO fix wrong behavior when traps were encountered toward the beginning
+    # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as start)
+    # ignore that cell there and try again to recurse with another cell
+    # only if that fails and if no previous recursive trap cell call was made => IMPOSSIBLE
+    while unvisiteds.pop(closestnode, False):
+        # now we can take the closest node and recurse, making it current
+        raided = raidtomb(graph, closestnode, end, copy.deepcopy(visited), copy.deepcopy(distances), predecessors)
+
+        if raided == "IMPOSSIBLE":
+            if closestnode.value != 'o':
+                # try other adjacent cells
+                foundReachable = False
+                for i in unvisiteds:
+                    if unvisiteds[i] < sys.maxint:
+                        foundReachable = True
+                if not foundReachable:
+                    return "IMPOSSIBLE"
+                closestnode = min(unvisiteds, key=unvisiteds.get)
+            else:
+                return "IMPOSSIBLE"
+        else:
+            return raided
 
 
 def main():
