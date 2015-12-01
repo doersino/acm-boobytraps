@@ -258,6 +258,7 @@ def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
                 return "IMPOSSIBLE"
         else:
             return raided
+    return "IMPOSSIBLE"
 
 
 def main():
