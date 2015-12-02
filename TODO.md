@@ -13,6 +13,8 @@
 ## `tombraider.sh`
 
 ## `gravedigger.sh`
+* improve comments
 * option for start/end: --start X,Y --end X,Y, make sure to set to o
 * otherwise random but with minimum euclidean distance, and: if start/end is 'x', generate new position
+* fix start/end collision in commented-out random start/end implementation
 * option for ratio of wall cells to empty cells ("density"? in [0, 1], default .5) => allows removal of magic numbers
