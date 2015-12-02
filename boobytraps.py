@@ -239,14 +239,11 @@ def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
         raided = raidtomb(graph, closestnode, end, copy.deepcopy(visited), copy.deepcopy(distances), predecessors)
 
         # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as closestnode)
-        if raided == "IMPOSSIBLE":
-            if closestnode.value != 'o' and unvisiteds:
-                # ignore the trap cell and try other adjacent cells
-                closestnode = min(unvisiteds, key=unvisiteds.get)
-            else:
-                # only if that fails and if no previous recursive trap cell call was made, we can be sure that there is no path
-                return "IMPOSSIBLE"
+        if raided == "IMPOSSIBLE" and closestnode.value != 'o' and unvisiteds:
+            # ignore the trap cell and try other adjacent cells
+            closestnode = min(unvisiteds, key=unvisiteds.get)
         else:
+            # only if that fails and if no previous recursive trap cell call was made, we can be sure that the previous return value is correct
             return raided
     return "IMPOSSIBLE"
 
