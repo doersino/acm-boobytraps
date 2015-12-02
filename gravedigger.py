@@ -13,6 +13,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("width", metavar="WIDTH", type=int, choices=xrange(1, 40001), help="desired width of the map")
 parser.add_argument("height", metavar="HEIGHT", type=int, choices=xrange(1, 40001), help="desired height of the map")
 parser.add_argument("--seed", help="seed for random number generator used during map generation")
+parser.add_argument("--printseed", dest="printseed", action="store_true", help="print the seed to stderr after printing the map")
+parser.add_argument("--no-printseed", dest="printseed", action="store_false", help="don't print the seed to stderr after printing the map (default)")
+parser.set_defaults(printseed=False)
 parser.add_argument("--mode", choices=["random", "dungeon"], help="random (default) or dungeon (with corridors and rooms)")
 args = parser.parse_args()
 
@@ -21,7 +24,7 @@ if args.width * args.height > 40000:
 
 if not args.seed:
     rand = random.SystemRandom()
-    args.seed = rand.random()
+    args.seed = str(rand.randint(0, sys.maxint))
 
 if not args.mode:
     args.mode = "random"
@@ -159,3 +162,7 @@ for y in map:
     print ''.join(y)
 print str(startX) + " " + str(startY)
 print str(endX) + " " + str(endY)
+
+# print seed
+if args.printseed:
+    sys.stderr.write("Seed: " + str(seed) + "\n")
