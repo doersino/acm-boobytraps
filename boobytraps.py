@@ -229,12 +229,8 @@ def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
         graph.update(start)
 
     # find the closest reachable unvisited node to the start
-    unvisiteds = dict((k, distances.get(k, sys.maxint)) for k in graph.graph if k not in visited)
-    foundReachable = False
-    for i in unvisiteds:
-        if unvisiteds[i] < sys.maxint:
-            foundReachable = True
-    if not foundReachable:
+    unvisiteds = dict((k, distances.get(k, sys.maxint)) for k in graph.graph if k not in visited and distances.get(k, sys.maxint) < sys.maxint)
+    if not unvisiteds:
         return "IMPOSSIBLE"
     closestnode = min(unvisiteds, key=unvisiteds.get)
 
@@ -244,14 +240,8 @@ def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
 
         # return to recursive call before most recent trap cell (i.e. recursive call with trap cell as closestnode)
         if raided == "IMPOSSIBLE":
-            if closestnode.value != 'o':
+            if closestnode.value != 'o' and unvisiteds:
                 # ignore the trap cell and try other adjacent cells
-                foundReachable = False
-                for i in unvisiteds:
-                    if unvisiteds[i] < sys.maxint:
-                        foundReachable = True
-                if not foundReachable:
-                    return "IMPOSSIBLE"
                 closestnode = min(unvisiteds, key=unvisiteds.get)
             else:
                 # only if that fails and if no previous recursive trap cell call was made, we can be sure that there is no path
