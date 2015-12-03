@@ -31,9 +31,9 @@ Randomly generate a 15x15 map and find the shortest path from start to end:
 python gravedigger.py 15 15 | python boobytraps.py
 ```
 
-Randomly generate a 15x10 map (with a fixed seed and using the "dungeon" mode), find the shortest path from start to end and highlight the path in the map:
+Randomly generate a 15x10 map (with a fixed seed, using the "dungeon" mode and with start and end in the top left and bottom right corners), find the shortest path from start to end and highlight the path in the map:
 ```
-python gravedigger.py 15 10 --seed donghwa --mode dungeon | python boobytraps.py -v
+python gravedigger.py 15 10 --seed donghwa --mode dungeon --start 0,0 --end 14,9| python boobytraps.py -v
 ```
 
 Randomly generate 40x20 maps (using the "dungeon" mode) until one with a shortest path from start to end is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:

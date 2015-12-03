@@ -12,22 +12,42 @@ import math
 parser = argparse.ArgumentParser()
 parser.add_argument("width", metavar="WIDTH", type=int, choices=xrange(1, 40001), help="desired width of the map")
 parser.add_argument("height", metavar="HEIGHT", type=int, choices=xrange(1, 40001), help="desired height of the map")
+parser.add_argument("--start", metavar="STARTX,STARTY", choices=[str(x) + "," + str(y) for x in xrange(0, 200) for y in xrange(0, 200)], help="comma-separated coordinates (x,y) of the start postion, must be smaller than WIDTH,HEIGHT (default: random)")
+parser.add_argument("--end", metavar="ENDX,ENDY", choices=[str(x) + "," + str(y) for x in xrange(0, 200) for y in xrange(0, 200)], help="comma-separated coordinates (x,y) of the end postion, must be smaller than WIDTH,HEIGHT (default: random)")
+parser.add_argument("--mode", choices=["random", "dungeon"], help="random (default) or dungeon (with corridors and rooms)")
 parser.add_argument("--seed", help="seed for random number generator used during map generation")
 parser.add_argument("--printseed", dest="printseed", action="store_true", help="print the seed to stderr after printing the map")
 parser.add_argument("--no-printseed", dest="printseed", action="store_false", help="don't print the seed to stderr after printing the map (default)")
 parser.set_defaults(printseed=False)
-parser.add_argument("--mode", choices=["random", "dungeon"], help="random (default) or dungeon (with corridors and rooms)")
 args = parser.parse_args()
 
 if args.width * args.height > 40000:
-    sys.exit("usage: " + __file__ + " [-h] WIDTH HEIGHT\n" + __file__ + ": error: WIDTH * HEIGHT must not exceed 40000")
+    sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: WIDTH * HEIGHT must not exceed 40000")
+
+if args.start:
+    startX, startY = [int(i) for i in args.start.split(",")]
+    if startX > args.width:
+        sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: STARTX must be smaller than WIDTH")
+    if startY > args.height:
+        sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: STARTY must be smaller than HEIGHT")
+else:
+    startX = startY = False
+
+if args.end:
+    endX, endY = [int(i) for i in args.end.split(",")]
+    if endX > args.width:
+        sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: ENDX must be smaller than WIDTH")
+    if endY > args.height:
+        sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: ENDY must be smaller than HEIGHT")
+else:
+    endX = endY = False
+
+if not args.mode:
+    args.mode = "random"
 
 if not args.seed:
     rand = random.SystemRandom()
     args.seed = str(rand.randint(0, sys.maxint))
-
-if not args.mode:
-    args.mode = "random"
 
 # initialize random number generator
 seed = args.seed
@@ -61,18 +81,18 @@ if mode == "random":
             break
 
     # set start and end points
-    startX = 0
-    startY = 0
-    endX = width - 1
-    endY = height - 1
-    #startX = random.randint(0, width-1)
-    #startY = random.randint(0, height-1)
-    #endX = random.randint(0, width-1)
-    #while endX != startX:
-    #    endX = random.randint(0, width-1)
-    #endY = random.randint(0, height-1)
-    #while endY != startY:
-    #    random.randint(0, height-1)
+    if startX is False:
+        startX = random.randint(0, width-1)
+        startY = random.randint(0, height-1)
+        while map[startY][startX] == 'x':
+            startX = random.randint(0, width-1)
+            startY = random.randint(0, height-1)
+    if endX is False:
+        endX = random.randint(0, width-1)
+        endY = random.randint(0, height-1)
+        while (endX == startX and endY == startY) or map[endY][endX] == 'x':
+            endX = random.randint(0, width-1)
+            endY = random.randint(0, height-1)
 
     # make sure that start and end aren't walls
     if map[startY][startX] == 'x':
@@ -136,18 +156,18 @@ elif mode == "dungeon":
                 map[y][x] = 'o'
 
     # set start and end points
-    startX = 0
-    startY = 0
-    endX = width - 1
-    endY = height - 1
-    #startX = random.randint(0, width-1)
-    #startY = random.randint(0, height-1)
-    #endX = random.randint(0, width-1)
-    #while endX != startX:
-    #    endX = random.randint(0, width-1)
-    #endY = random.randint(0, height-1)
-    #while endY != startY:
-    #    random.randint(0, height-1)
+    if startX is False:
+        startX = random.randint(0, width-1)
+        startY = random.randint(0, height-1)
+        while map[startY][startX] == 'x':
+            startX = random.randint(0, width-1)
+            startY = random.randint(0, height-1)
+    if endX is False:
+        endX = random.randint(0, width-1)
+        endY = random.randint(0, height-1)
+        while (endX == startX and endY == startY) or map[endY][endX] == 'x':
+            endX = random.randint(0, width-1)
+            endY = random.randint(0, height-1)
 
     # make sure that start and end aren't walls
     if map[startY][startX] == 'x':
