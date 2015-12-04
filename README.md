@@ -26,6 +26,11 @@ Test the shortest path finder on another sample input, specifying the expected o
 ./tombraider.sh -i sampleinput2.txt -o 2
 ```
 
+Test the shortest path finder on a third sample input (on which it currently fails to find the shortest path):
+```
+./tombraider.sh -i sampleinput2.txt -o 2
+```
+
 Randomly generate a 15x15 map and find the shortest path from start to end:
 ```
 python gravedigger.py 15 15 | python boobytraps.py
