@@ -8,6 +8,7 @@ import sys
 import random
 import math
 
+
 # parse options
 parser = argparse.ArgumentParser()
 parser.add_argument("width", metavar="WIDTH", type=int, choices=xrange(1, 40001), help="desired width of the map")
@@ -15,8 +16,9 @@ parser.add_argument("height", metavar="HEIGHT", type=int, choices=xrange(1, 4000
 parser.add_argument("--start", metavar="STARTX,STARTY", choices=[str(x) + "," + str(y) for x in xrange(0, 200) for y in xrange(0, 200)], help="comma-separated coordinates (x,y) of the start postion, must be smaller than WIDTH,HEIGHT (default: random)")
 parser.add_argument("--end", metavar="ENDX,ENDY", choices=[str(x) + "," + str(y) for x in xrange(0, 200) for y in xrange(0, 200)], help="comma-separated coordinates (x,y) of the end postion, must be smaller than WIDTH,HEIGHT (default: random)")
 parser.add_argument("--mode", choices=["random", "dungeon"], help="random (default) or dungeon (with corridors and rooms)")
+parser.add_argument("--complexity", type=float, help="complexity of the generated map, in terms of wall cell/empty cell ratio and trap frequency, must be a positive float with larger numbers meaning higher complexity (default: 1)")
 parser.add_argument("--seed", help="seed for random number generator used during map generation")
-parser.add_argument("--printseed", dest="printseed", action="store_true", help="print the seed to stderr after printing the map")
+parser.add_argument("--printseed", dest="printseed", action="store_true", help="print the seed to stderr after printing the map (might come in handy when no seed is specified using the --seed option)")
 parser.add_argument("--no-printseed", dest="printseed", action="store_false", help="don't print the seed to stderr after printing the map (default)")
 parser.set_defaults(printseed=False)
 args = parser.parse_args()
@@ -45,9 +47,17 @@ else:
 if not args.mode:
     args.mode = "random"
 
+if not args.complexity:
+    args.complexity = 10.0
+elif args.complexity <= 0:
+    sys.exit("usage: see " + __file__ + " -h\n" + __file__ + ": error: COMPLEXITY must be a positive float")
+
 if not args.seed:
     rand = random.SystemRandom()
     args.seed = str(rand.randint(0, sys.maxint))
+
+# set complexity
+complexity = args.complexity
 
 # initialize random number generator
 seed = args.seed
@@ -67,7 +77,7 @@ mode = args.mode
 # normal map generation algorithm
 if mode == "random":
     # add some empty cells
-    for i in xrange(1, width * height * 2):
+    for i in xrange(1, int(width * height * 1.5 * (10/complexity))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         map[randomY][randomX] = 'o'
@@ -77,7 +87,7 @@ if mode == "random":
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         map[randomY][randomX] = i
-        if random.random() < 1 / math.sqrt(width * height):
+        if random.random() < 1 / math.sqrt(width * height * (complexity/10)):
             break
 
     # set start and end points
@@ -104,7 +114,7 @@ if mode == "random":
 elif mode == "dungeon":
     # add some corridors
     # horizontal
-    for i in xrange(1, int(math.floor((width + height) / 4))):
+    for i in xrange(1, int(math.floor(((width+height) * (10/complexity)) / 4))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         randomRadius = random.randint(1, max(1, math.floor((width-1) / 2)))
@@ -114,7 +124,7 @@ elif mode == "dungeon":
             map[randomY][x] = 'o'
 
     # vertical
-    for i in xrange(1, int(math.floor((width + height) / 4))):
+    for i in xrange(1, int(math.floor(((width + height) * (10/complexity)) / 4))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         randomRadius = random.randint(1, max(1, math.floor((height-1) / 2)))
@@ -124,25 +134,25 @@ elif mode == "dungeon":
             map[y][randomX] = 'o'
 
     # add some random empty cells
-    for i in xrange(1, width + height):
+    for i in xrange(1, int(math.floor((width+height) * (10/complexity)))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         map[randomY][randomX] = 'o'
 
     # add some traps: no traps wanted in rooms
     for i in trapDominationOrdering[::-1]:
-        while random.random() < .5:
+        while random.random() < .5 * (complexity/10):
             randomX = random.randint(0, width-1)
             randomY = random.randint(0, height-1)
             while map[randomY][randomX] == 'x':
                 randomX = random.randint(0, width-1)
                 randomY = random.randint(0, height-1)
             map[randomY][randomX] = i
-            if random.random() < 2 / math.log(width + height):
+            if random.random() < 2 / math.log((width+height) * (complexity/10)):
                 break
 
     # add some rooms
-    for i in xrange(1, int(math.floor((width + height) / 8))):
+    for i in xrange(1, int(math.floor(((width + height) * (10/complexity)) / 8))):
         randomX = random.randint(0, width-1)
         randomY = random.randint(0, height-1)
         randomXRadius = random.randint(1, max(1, int(math.sqrt((width-1) / 2))))

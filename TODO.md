@@ -13,4 +13,3 @@
 ## `tombraider.sh`
 
 ## `gravedigger.sh`
-* option for ratio of wall cells to empty cells ("density"? in [0, 1], default .5) => allows removal of magic numbers
