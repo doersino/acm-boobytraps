@@ -94,15 +94,19 @@ if mode == "random":
     if startX is False:
         startX = random.randint(0, width-1)
         startY = random.randint(0, height-1)
-        while map[startY][startX] == 'x':
+        tries = 0
+        while map[startY][startX] == 'x' and tries < 42:
             startX = random.randint(0, width-1)
             startY = random.randint(0, height-1)
+            tries += 1
     if endX is False:
         endX = random.randint(0, width-1)
         endY = random.randint(0, height-1)
-        while (endX == startX and endY == startY) or map[endY][endX] == 'x':
+        tries = 0
+        while (endX == startX and endY == startY) or (map[endY][endX] == 'x' and tries < 42):
             endX = random.randint(0, width-1)
             endY = random.randint(0, height-1)
+            tries += 1
 
     # make sure that start and end aren't walls
     if map[startY][startX] == 'x':
@@ -144,10 +148,13 @@ elif mode == "dungeon":
         while random.random() < .5 * (complexity/10):
             randomX = random.randint(0, width-1)
             randomY = random.randint(0, height-1)
-            while map[randomY][randomX] == 'x':
+            tries = 0
+            while map[randomY][randomX] == 'x' and tries < 42:
                 randomX = random.randint(0, width-1)
                 randomY = random.randint(0, height-1)
-            map[randomY][randomX] = i
+                tries += 1
+            if tries < 42:
+                map[randomY][randomX] = i
             if random.random() < 2 / math.log((width+height) * (complexity/10)):
                 break
 
@@ -169,15 +176,19 @@ elif mode == "dungeon":
     if startX is False:
         startX = random.randint(0, width-1)
         startY = random.randint(0, height-1)
-        while map[startY][startX] == 'x':
+        tries = 0
+        while map[startY][startX] == 'x' and tries < 42:
             startX = random.randint(0, width-1)
             startY = random.randint(0, height-1)
+            tries += 1
     if endX is False:
         endX = random.randint(0, width-1)
         endY = random.randint(0, height-1)
-        while (endX == startX and endY == startY) or map[endY][endX] == 'x':
+        tries = 0
+        while (endX == startX and endY == startY) or (map[endY][endX] == 'x' and tries < 42):
             endX = random.randint(0, width-1)
             endY = random.randint(0, height-1)
+            tries += 1
 
     # make sure that start and end aren't walls
     if map[startY][startX] == 'x':
