@@ -174,6 +174,19 @@ class Graph:
         #        self.graph[field] = self.graph[field][self.graph[field].keys()[0]]
         #        del self.graph[self.graph[field][self.graph[field].keys()[0]]]
         # remove deadends (if != start, end)
+        # ---
+        #for field in list(self.graph):
+        #    try:
+        #        if len(self.graph[field]) == 1 and field.value == 'o':
+        #            for i in self.graph[field]:
+        #                child = i
+        #            if child.value == 'o':
+        #                print field
+        #                print self.graph[field].keys()[0]
+        #                self.graph[field] = self.graph[child]
+        #                del self.graph[child]
+        #    except KeyError:
+        #        pass
         pass
 
     def update(self, triggeredTrapCell):
