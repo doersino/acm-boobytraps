@@ -1,6 +1,7 @@
 import fileinput
 import copy
 import sys
+import Queue
 
 
 class Cell:
@@ -208,6 +209,31 @@ class Graph:
         self.optimize()
 
 
+def raidtombBacktracking(graph, start, end):
+    """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
+
+    # contains pairs cell, visited, path from start to cell, maybe triggered traps
+    g = graph.graph
+
+    q = Queue.Queue()
+    s = {'cell': start, 'visited': set([start]), 'path': [start]}
+    q.put(s)
+
+    c = s
+
+    while c['cell'] != end:
+        # add all neighbors of c to queue
+        for n in g[c['cell']].keys():
+            # create object n, set(visited(c)+n), path(c)+n, maybe traps(n) (+c if c is trap)
+            nObj = {'cell': n, 'visited': c['visited'].update(n), 'path': c['path'].append(n)}
+            q.put(nObj)
+
+        # get new c
+        c = q.pop()
+
+    return (len(c['path']), c['path']) or "IMPOSSIBLE"
+
+
 def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
     """Find the shortest path between start and end cells ("raid the tomb")"""
     # algorithm based on http://rebrained.com/?p=392
@@ -290,6 +316,7 @@ def main():
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
     raided = raidtomb(graph, start, end)
+    #raided = raidtombBacktracking(graph, start, end)
 
     # print result
     if verbose:
