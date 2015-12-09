@@ -227,7 +227,7 @@ def raidtombBacktracking(graph, start, end):
     while c['cell'] != end and not q.empty():
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
-            if neighbor not in c['path']:  # TODO and not < max triggered trap
+            if neighbor not in c['path']:
                 if neighbor.value != 'o':
                     v = neighbor.value
                     if trapDominationLookup[v] > c['triggered']:
