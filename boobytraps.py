@@ -214,23 +214,15 @@ def raidtombBacktracking(graph, start, end):
     g = graph.graph
     q = Queue.Queue()
 
-    s = {'cell': start, 'visited': set([start]), 'path': [start]}
+    s = {'cell': start, 'path': [start]}
     q.put(s)
 
     c = s
-    while c['cell'] != end:
+    while c['cell'] != end and not q.empty():
         # add all neighbors of c to queue
         for n in g[c['cell']].keys():
-            print str(n)
-            if n not in c['visited']:
-                print " " + str(n)
-                visited = copy.deepcopy(c['visited'])
-                visited.add(n)
-
-                path = copy.deepcopy(c['path'])
-                path.append(n)
-
-                nObj = {'cell': n, 'visited': visited, 'path': path}
+            if n not in c['path']:
+                nObj = {'cell': n, 'path': c['path'] + [n]}
                 q.put(nObj)
                 if nObj['cell'] == end:
                     c = nObj
@@ -239,7 +231,7 @@ def raidtombBacktracking(graph, start, end):
         # get new c
         c = q.get()
 
-    return (len(c['path']), c['path']) or "IMPOSSIBLE"
+    return "IMPOSSIBLE"
 
 
 def raidtomb(graph, start, end, visited=[], distances={}, predecessors={}):
