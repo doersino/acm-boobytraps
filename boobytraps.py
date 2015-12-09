@@ -215,7 +215,7 @@ def raidtombBacktracking(graph, start, end):
     trapDominationLookup = {}
     for i in enumerate(trapDominationOrder):
         trapDominationLookup[i[1]] = i[0]
-    print trapDominationLookup
+    #print trapDominationLookup
 
     graph = graph.graph
     q = Queue.Queue()
@@ -233,13 +233,13 @@ def raidtombBacktracking(graph, start, end):
                     if trapDominationLookup[v] > c['triggered']:
                         n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': trapDominationLookup[v]}
                         if neighbor == end:
-                            return (len(n['path']), n['path'])
+                            return (len(n['path']) - 1, n['path'])
                         else:
                             q.put(n)
                 else:
                     n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
                     if neighbor == end:
-                        return (len(n['path']), n['path'])
+                        return (len(n['path']) - 1, n['path'])
                     else:
                         q.put(n)
 
