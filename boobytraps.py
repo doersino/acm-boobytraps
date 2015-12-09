@@ -211,10 +211,16 @@ class Graph:
 
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
+    trapDominationOrder = graph.map.trapDominationOrder
+    trapDominationLookup = {}
+    for i in enumerate(trapDominationOrder):
+        trapDominationLookup[i[1]] = i[0]
+    print trapDominationLookup
+
     graph = graph.graph
     q = Queue.Queue()
 
-    start = {'cell': start, 'path': [start]}
+    start = {'cell': start, 'path': [start], 'triggered': False}
     q.put(start)
 
     c = start
@@ -222,12 +228,20 @@ def raidtombBacktracking(graph, start, end):
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
             if neighbor not in c['path']:  # TODO and not < max triggered trap
-                n = {'cell': neighbor, 'path': c['path'] + [neighbor]}
-
-                if neighbor == end:
-                    return (len(n['path']), n['path'])
+                if neighbor.value != 'o':
+                    v = neighbor.value
+                    if trapDominationLookup[v] > c['triggered']:
+                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': trapDominationLookup[v]}
+                        if neighbor == end:
+                            return (len(n['path']), n['path'])
+                        else:
+                            q.put(n)
                 else:
-                    q.put(n)
+                    n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
+                    if neighbor == end:
+                        return (len(n['path']), n['path'])
+                    else:
+                        q.put(n)
 
         # get new c
         c = q.get()
