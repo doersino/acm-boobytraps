@@ -27,7 +27,7 @@ Test the shortest path finder on another sample input, specifying the expected o
 ./tombraider.sh -i sampleinput2.txt -o 2
 ```
 
-Test the shortest path finder on a third sample input (on which it currently fails to find the shortest path):
+Test the shortest path finder on a third, more complex sample input:
 ```
 ./tombraider.sh -i sampleinput4.txt
 ```
