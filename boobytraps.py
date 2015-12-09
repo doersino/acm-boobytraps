@@ -211,25 +211,33 @@ class Graph:
 
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
-
-    # contains pairs cell, visited, path from start to cell, maybe triggered traps
     g = graph.graph
-
     q = Queue.Queue()
+
     s = {'cell': start, 'visited': set([start]), 'path': [start]}
     q.put(s)
 
     c = s
-
     while c['cell'] != end:
         # add all neighbors of c to queue
         for n in g[c['cell']].keys():
-            # create object n, set(visited(c)+n), path(c)+n, maybe traps(n) (+c if c is trap)
-            nObj = {'cell': n, 'visited': c['visited'].update(n), 'path': c['path'].append(n)}
-            q.put(nObj)
+            print str(n)
+            if n not in c['visited']:
+                print " " + str(n)
+                visited = copy.deepcopy(c['visited'])
+                visited.add(n)
+
+                path = copy.deepcopy(c['path'])
+                path.append(n)
+
+                nObj = {'cell': n, 'visited': visited, 'path': path}
+                q.put(nObj)
+                if nObj['cell'] == end:
+                    c = nObj
+                    return (len(c['path']), c['path']) or "IMPOSSIBLE"
 
         # get new c
-        c = q.pop()
+        c = q.get()
 
     return (len(c['path']), c['path']) or "IMPOSSIBLE"
 
@@ -315,8 +323,8 @@ def main():
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
-    raided = raidtomb(graph, start, end)
-    #raided = raidtombBacktracking(graph, start, end)
+    #raided = raidtomb(graph, start, end)
+    raided = raidtombBacktracking(graph, start, end)
 
     # print result
     if verbose:
