@@ -211,22 +211,23 @@ class Graph:
 
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
-    g = graph.graph
+    graph = graph.graph
     q = Queue.Queue()
 
-    s = {'cell': start, 'path': [start]}
-    q.put(s)
+    start = {'cell': start, 'path': [start]}
+    q.put(start)
 
-    c = s
+    c = start
     while c['cell'] != end and not q.empty():
         # add all neighbors of c to queue
-        for n in g[c['cell']].keys():
-            if n not in c['path']:
-                nObj = {'cell': n, 'path': c['path'] + [n]}
-                q.put(nObj)
-                if nObj['cell'] == end:
-                    c = nObj
-                    return (len(c['path']), c['path']) or "IMPOSSIBLE"
+        for neighbor in graph[c['cell']].keys():
+            if neighbor not in c['path']:  # TODO and not < max triggered trap
+                n = {'cell': neighbor, 'path': c['path'] + [neighbor]}
+
+                if neighbor == end:
+                    return (len(n['path']), n['path'])
+                else:
+                    q.put(n)
 
         # get new c
         c = q.get()
