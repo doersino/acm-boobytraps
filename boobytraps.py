@@ -90,23 +90,28 @@ class Map:
                 prefix = ""
                 suffix = "\033[0m"
 
-                # highlight traps
-                if self.traps.isTrap(field):
-                    prefix = prefix + "\033[31m"  # red
-
                 # highlight empty fields
                 if field == 'o':
                     prefix = prefix + "\033[37m"  # light gray
 
-                # highlight start and end
-                if Cell(x, y, self.getAt(x, y)) == start:
-                    prefix = prefix + "\033[1m\033[90m"  # bold dark gray
-                if Cell(x, y, self.getAt(x, y)) == end:
-                    prefix = prefix + "\033[1m\033[4m\033[90m"  # bold underlined dark gray
-
                 # highlight path
                 if Cell(x, y, self.getAt(x, y)) in path:
                     prefix = prefix + "\033[42m"  # green background
+                    #prefix = prefix + "\033[47m\033[90m"  # dark gray text on light gray background
+
+                # highlight traps
+                if self.traps.isTrap(field):
+                    prefix = prefix + "\033[31m"  # red
+
+                # highlight start and end
+                if Cell(x, y, self.getAt(x, y)) == start:
+                    prefix = prefix + "\033[1m\033[44m"  # bold on blue background
+                if Cell(x, y, self.getAt(x, y)) == end:
+                    prefix = prefix + "\033[1m\033[4m\033[41m"  # bold underlined on red background
+
+                # highlight end differently if it is a trap to maintain readability
+                if Cell(x, y, self.getAt(x, y)) == end and self.traps.isTrap(field):
+                    prefix = prefix + "\033[1m\033[4m\033[45m"  # pink background
 
                 sys.stdout.write(prefix + field + suffix)
             print
