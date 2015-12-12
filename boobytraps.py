@@ -26,8 +26,8 @@ class Cell:
         return 'x: ' + str(self.x) + ', y: ' + str(self.y) + ', value: ' + str(self.value)
 
 
-class TrapDominationOrder:
-    """Ordering of traps."""
+class Traps:
+    """Traps and their domaination order."""
 
     trapDominationOrder = None
     trapDominationLookup = None
@@ -41,7 +41,7 @@ class TrapDominationOrder:
     def __str__(self):
         return 'trapDominationOrder: ' + str(self.trapDominationOrder) + ', trapDominationLookup: ' + str(self.trapDominationLookup)
 
-    def lookup(self, char):
+    def getIndex(self, char):
         """Get the index of a trap."""
         return self.trapDominationLookup[char]
 
@@ -54,22 +54,22 @@ class Map:
     """Map with width, height and the trap domination order."""
 
     map = None
-    trapDominationOrder = None
+    traps = None
     width = 0
     height = 0
 
     # map must be given as string array (rows) of string arrays (fields)
-    def __init__(self, width, height, map, trapDominationOrder):
+    def __init__(self, width, height, map, traps):
         self.width = width
         self.height = height
 
         self.map = copy.deepcopy(map)
         for i, row in enumerate(self.map):
             self.map[i] = list(row)
-        self.trapDominationOrder = trapDominationOrder
+        self.traps = traps
 
     def __str__(self):
-        return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
+        return 'map: ' + str(self.map) + ', traps: ' + str(self.traps)
 
     def prettyprint(self, start, end, path=[]):
         """Print the map with coordinate axes and different colors for different cell types."""
@@ -91,7 +91,7 @@ class Map:
                 suffix = "\033[0m"
 
                 # highlight traps
-                if field in self.trapDominationOrder.trapDominationOrder:
+                if self.traps.isTrap(field):
                     prefix = prefix + "\033[31m"  # red
 
                 # highlight empty fields
@@ -213,7 +213,7 @@ class Graph:
     def update(self, triggeredTrapCell):
         # compute list of triggered traps
         triggeredTraps = []
-        for trap in self.map.trapDominationOrder.trapDominationOrder:
+        for trap in self.map.traps.trapDominationOrder:
             triggeredTraps.append(trap)
             if trap == triggeredTrapCell.value:
                 break
@@ -231,7 +231,7 @@ class Graph:
 
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
-    trapDominationOrder = graph.map.trapDominationOrder
+    traps = graph.map.traps
 
     graph = graph.graph
     q = Queue.Queue()
@@ -247,10 +247,10 @@ def raidtombBacktracking(graph, start, end):
             if neighbor not in c['path']:
 
                 # neigbor is trap cell
-                if trapDominationOrder.isTrap(neighbor.value):
+                if traps.isTrap(neighbor.value):
                     v = neighbor.value
-                    if trapDominationOrder.lookup(v) > c['triggered']:
-                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': trapDominationOrder.lookup(v)}
+                    if traps.getIndex(v) > c['triggered']:
+                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
                         if neighbor == end:
                             return (len(n['path']) - 1, n['path'])
                         else:
@@ -335,9 +335,9 @@ def main():
         input.append(line.strip())
 
     # parse input
-    trapDominationOrder = TrapDominationOrder(input[0])
+    traps = Traps(input[0])
     mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
-    map = Map(mapWidth, mapHeight, input[2:mapHeight+2], trapDominationOrder)
+    map = Map(mapWidth, mapHeight, input[2:mapHeight+2], traps)
 
     startX, startY = [int(i) for i in input[mapHeight+2].split(" ")]
     startValue = map.getAt(startX, startY)
