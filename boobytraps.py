@@ -251,16 +251,12 @@ def raidtombBacktracking(graph, start, end):
         # get new cell
         c = q.get()
 
-        print len(c["path"])
-
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
             if neighbor not in c['path'] and neighbor not in visited[c['triggered']]:
 
                 # neigbor is trap cell
                 if traps.isTrap(neighbor.value):
-                    #map.prettyprint(sstart, end, c['path'] + [neighbor])
-
                     v = neighbor.value
                     if traps.getIndex(v) > c['triggered']:
                         n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
