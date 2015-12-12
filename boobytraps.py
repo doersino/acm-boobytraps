@@ -231,8 +231,8 @@ class Graph:
 
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
-    traps = graph.map.traps
 
+    traps = graph.map.traps
     graph = graph.graph
     q = Queue.Queue()
 
@@ -240,7 +240,9 @@ def raidtombBacktracking(graph, start, end):
     q.put(start)
 
     c = start
-    while c['cell'] != end and not q.empty():
+    while not q.empty():
+        # get new cell
+        c = q.get()
 
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
@@ -248,6 +250,8 @@ def raidtombBacktracking(graph, start, end):
 
                 # neigbor is trap cell
                 if traps.isTrap(neighbor.value):
+                    #map.prettyprint(sstart, end, c['path'] + [neighbor])
+
                     v = neighbor.value
                     if traps.getIndex(v) > c['triggered']:
                         n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
@@ -263,9 +267,6 @@ def raidtombBacktracking(graph, start, end):
                         return (len(n['path']) - 1, n['path'])
                     else:
                         q.put(n)
-
-        # get new c
-        c = q.get()
 
     return "IMPOSSIBLE"
 
