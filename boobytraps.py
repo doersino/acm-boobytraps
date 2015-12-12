@@ -236,13 +236,13 @@ def raidtombBacktracking(graph, start, end):
     graph = graph.graph
     q = Queue.Queue()
 
-    visited = {False: set()}
+    visited = {False: set()}  # TODO fix
     for i in traps.trapDominationLookup.values():
         visited[i] = set()
 
     #print visited
 
-    start = {'cell': start, 'path': [start], 'triggered': False}
+    start = {'cell': start, 'path': [start], 'triggered': False}  # TODO fix if start is trap
     q.put(start)
 
     c = start
@@ -250,9 +250,7 @@ def raidtombBacktracking(graph, start, end):
         # get new cell
         c = q.get()
 
-        visited[c['triggered']].add(c['cell'])
-
-        #print len(c["path"])
+        print len(c["path"])
 
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
@@ -277,6 +275,8 @@ def raidtombBacktracking(graph, start, end):
                         return (len(n['path']) - 1, n['path'])
                     else:
                         q.put(n)
+
+                visited[c['triggered']].add(neighbor)
 
     return "IMPOSSIBLE"
 
