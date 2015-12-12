@@ -36,7 +36,7 @@ class Traps:
         self.trapDominationOrder = list(trapDominationOrder)
         self.trapDominationLookup = {}
         for i in enumerate(self.trapDominationOrder):
-            self.trapDominationLookup[i[1]] = i[0]
+            self.trapDominationLookup[i[1]] = i[0] + 1  # 0 is reserved for empty cells in the path finder
 
     def __str__(self):
         return 'trapDominationOrder: ' + str(self.trapDominationOrder) + ', trapDominationLookup: ' + str(self.trapDominationLookup)
@@ -232,6 +232,9 @@ class Graph:
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
 
+    sstart = start
+    map = graph.map
+
     traps = graph.map.traps
     graph = graph.graph
     q = Queue.Queue()
@@ -243,8 +246,10 @@ def raidtombBacktracking(graph, start, end):
     # add start to queue
     if traps.isTrap(start.value):
         start = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
+        visited[start['triggered']].add(start['cell'])
     else:
-        start = {'cell': start, 'path': [start], 'triggered': False}
+        start = {'cell': start, 'path': [start], 'triggered': 0}
+        visited[0].add(start['cell'])
     q.put(start)
 
     while not q.empty():
