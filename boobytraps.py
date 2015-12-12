@@ -26,6 +26,30 @@ class Cell:
         return 'x: ' + str(self.x) + ', y: ' + str(self.y) + ', value: ' + str(self.value)
 
 
+class TrapDominationOrder:
+    """Ordering of traps."""
+
+    trapDominationOrder = None
+    trapDominationLookup = None
+
+    def __init__(self, trapDominationOrder):
+        self.trapDominationOrder = list(trapDominationOrder)
+        self.trapDominationLookup = {}
+        for i in enumerate(self.trapDominationOrder):
+            self.trapDominationLookup[i[1]] = i[0]
+
+    def __str__(self):
+        return 'trapDominationOrder: ' + str(self.trapDominationOrder) + ', trapDominationLookup: ' + str(self.trapDominationLookup)
+
+    def lookup(self, char):
+        """Get the index of a trap."""
+        return self.trapDominationLookup[char]
+
+    def isTrap(self, char):
+        """Check if a cell value is a trap."""
+        return char in self.trapDominationOrder
+
+
 class Map:
     """Map with width, height and the trap domination order."""
 
@@ -42,7 +66,7 @@ class Map:
         self.map = copy.deepcopy(map)
         for i, row in enumerate(self.map):
             self.map[i] = list(row)
-        self.trapDominationOrder = list(trapDominationOrder)
+        self.trapDominationOrder = trapDominationOrder
 
     def __str__(self):
         return 'map: ' + str(self.map) + ', trapDominationOrder: ' + str(self.trapDominationOrder)
@@ -67,7 +91,7 @@ class Map:
                 suffix = "\033[0m"
 
                 # highlight traps
-                if field in self.trapDominationOrder:
+                if field in self.trapDominationOrder.trapDominationOrder:
                     prefix = prefix + "\033[31m"  # red
 
                 # highlight empty fields
@@ -124,10 +148,6 @@ class Map:
     def setAt(self, cell):
         """Set the cell value."""
         self.map[cell.y][cell.x] = cell.value
-
-    def isTrap(self, char):
-        """Check if a cell value is a trap."""
-        return char in self.trapDominationOrder
 
 
 class Graph:
@@ -193,7 +213,7 @@ class Graph:
     def update(self, triggeredTrapCell):
         # compute list of triggered traps
         triggeredTraps = []
-        for trap in self.map.trapDominationOrder:
+        for trap in self.map.trapDominationOrder.trapDominationOrder:
             triggeredTraps.append(trap)
             if trap == triggeredTrapCell.value:
                 break
@@ -212,10 +232,6 @@ class Graph:
 def raidtombBacktracking(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
     trapDominationOrder = graph.map.trapDominationOrder
-    trapDominationLookup = {}
-    for i in enumerate(trapDominationOrder):
-        trapDominationLookup[i[1]] = i[0]
-    #print trapDominationLookup
 
     graph = graph.graph
     q = Queue.Queue()
@@ -225,18 +241,22 @@ def raidtombBacktracking(graph, start, end):
 
     c = start
     while c['cell'] != end and not q.empty():
+
         # add all neighbors of c to queue
         for neighbor in graph[c['cell']].keys():
             if neighbor not in c['path']:
-                #print len(c['path'])
-                if neighbor.value != 'o':
+
+                # neigbor is trap cell
+                if trapDominationOrder.isTrap(neighbor.value):
                     v = neighbor.value
-                    if trapDominationLookup[v] > c['triggered']:
-                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': trapDominationLookup[v]}
+                    if trapDominationOrder.lookup(v) > c['triggered']:
+                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': trapDominationOrder.lookup(v)}
                         if neighbor == end:
                             return (len(n['path']) - 1, n['path'])
                         else:
                             q.put(n)
+
+                # neigbour is empty cell
                 else:
                     n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
                     if neighbor == end:
@@ -315,7 +335,7 @@ def main():
         input.append(line.strip())
 
     # parse input
-    trapDominationOrder = input[0]
+    trapDominationOrder = TrapDominationOrder(input[0])
     mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
     map = Map(mapWidth, mapHeight, input[2:mapHeight+2], trapDominationOrder)
 
