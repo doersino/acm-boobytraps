@@ -13,6 +13,9 @@
 
 * maybe use a faster language?
 
+## `gravedigger.sh`
+
 ## `tombraider.sh`
 
-## `gravedigger.sh`
+## `sampleinput5.txt`
+* maybe luke starting somewhere near the bottom right, separated by death ray
