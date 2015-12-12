@@ -12,6 +12,7 @@
 
 ## `gravedigger.sh`
 * permit start/end coordinates > 199 if within bounds of map
+* more traps on giant maps (more than 5000 cells)
 
 ## `tombraider.sh`
 
