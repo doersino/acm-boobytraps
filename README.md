@@ -12,7 +12,8 @@ Books have one, so why shouldn't software?
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleinput[0-9]+.txt` contain other interesting sample inputs.
 * `sampleoutput.txt` contains the sample output with which to test the solution.
-* `screenshot.png` shows my solution in action.
+* `screenshot.png` shows my shortest path finder in action on the sample input.
+* `screenshot2.png` shows my map generator and shortest path finder in action.
 * `tombraider.sh` is a short shell script for efficiently testing the solution.
 
 ## Example Usage
@@ -51,3 +52,10 @@ Randomly generate 40x20 maps (using the "dungeon" mode) until one with a shortes
 ```
 false; while [ $? -ne 0 ]; do time python gravedigger.py 40 20 --mode dungeon | python boobytraps.py -v; done
 ```
+
+Randomly generate giant 202x51 maps (using the "dungeon" mode and higher-than normal map complexity) and print the random seed used for map generation until one with a shortest path from the upper left cell to the lower right cell is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
+```
+false; while [ $? -ne 0 ]; do time python gravedigger.py 202 51 --printseed --complexity 15 --mode dungeon --start 0,0 --end 201,50 | python boobytraps.py -v; done
+```
+
+![screenshot2](https://github.com/doersino/acm-boobytraps/raw/master/screenshot2.png)
