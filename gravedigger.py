@@ -143,7 +143,7 @@ elif mode == "dungeon":
         randomY = random.randint(0, height-1)
         map[randomY][randomX] = 'o'
 
-    # add some traps: no traps wanted in rooms
+    # add some traps: no traps wanted in rooms on small maps
     for i in trapDominationOrdering[::-1]:
         while random.random() < .5 * (complexity/10):
             randomX = random.randint(0, width-1)
@@ -171,6 +171,22 @@ elif mode == "dungeon":
         for x in xrange(randomXStart, randomXStop + 1):
             for y in xrange(randomYStart, randomYStop + 1):
                 map[y][x] = 'o'
+
+    # add more traps on giant maps
+    if width * height >= 5000:
+        for i in trapDominationOrdering[::-1]:
+            while random.random() < .67 * (complexity/10):
+                randomX = random.randint(0, width-1)
+                randomY = random.randint(0, height-1)
+                tries = 0
+                while map[randomY][randomX] == 'x' and tries < 42:
+                    randomX = random.randint(0, width-1)
+                    randomY = random.randint(0, height-1)
+                    tries += 1
+                if tries < 42:
+                    map[randomY][randomX] = i
+                if random.random() < 1 / math.log((width*height) * (complexity/10)):
+                    break
 
     # set start and end points
     if startX is False:

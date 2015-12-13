@@ -10,11 +10,8 @@
 
 * maybe experiment with using a faster language?
 
-## `gravedigger.sh`
-* permit start/end coordinates > 199 if within bounds of map
-* more traps on giant maps (more than 5000 cells)
-
-## `tombraider.sh`
+## `README.md`
+* add giant map example
 
 ## `sampleinput5.txt`
 * maybe luke starting somewhere near the bottom right, separated by death ray
