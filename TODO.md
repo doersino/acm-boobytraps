@@ -9,9 +9,3 @@
 * rework main function
 
 * maybe experiment with using a faster language?
-
-## `README.md`
-* add giant map example
-
-## `sampleinput5.txt`
-* maybe luke starting somewhere near the bottom right, separated by death ray
