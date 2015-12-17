@@ -51,7 +51,7 @@ class Traps:
 
 
 class Map:
-    """Map with width, height and the trap domination order."""
+    """Map 2D array, along with width, height and the trap domination order."""
 
     map = None
     traps = None
@@ -117,7 +117,7 @@ class Map:
             print
 
     def getAdjacent(self, cell):
-        """Get the (up to four) adjacent cells."""
+        """Get the (up to four) cells adjacent to a cell."""
         adj = []
 
         # left neighbor
