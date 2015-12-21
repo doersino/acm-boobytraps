@@ -239,7 +239,7 @@ def raidtomb(graph, start, end):
                         q.put(n)
                         visited[n['triggered']].add(neighbor)
 
-    return (-len(n['path']) + 1, c['path'])
+    return (-len(c['path']) + 1, c['path'])
 
 
 def main():
