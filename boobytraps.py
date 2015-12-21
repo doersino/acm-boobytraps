@@ -220,7 +220,7 @@ def raidtomb(graph, traps, start, end):
                     if traps.getIndex(v) > c['triggered']:
                         n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
                         if neighbor == end:
-                            return (len(n['path']) - 1, n['path'])
+                            return len(n['path']) - 1, n['path']
                         else:
                             q.put(n)
                             visited[n['triggered']].add(neighbor)
@@ -234,7 +234,7 @@ def raidtomb(graph, traps, start, end):
                         q.put(n)
                         visited[n['triggered']].add(neighbor)
 
-    return (-1, c['path'])
+    return -1, c['path']
 
 
 def main():
@@ -266,15 +266,15 @@ def main():
 
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
-    raided = raidtomb(graph, traps, start, end)
+    moves, path = raidtomb(graph, traps, start, end)
 
     # print result
     if verbose:
         print "Map:"
-        map.prettyprint(start, end, raided[1])
+        map.prettyprint(start, end, path)
         print "Minimum number of moves to reach the end position from the start position:"
-    if raided[0] >= 0:
-        print raided[0]
+    if moves >= 0:
+        print moves
     else:
         print "IMPOSSIBLE"
         sys.exit(1)
