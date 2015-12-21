@@ -94,10 +94,12 @@ class Map:
                 if field == 'o':
                     prefix = prefix + "\033[37m"  # light gray
 
-                # highlight path
+                # highlight path depending on completeness
                 if Cell(x, y, self.getAt(x, y)) in path:
-                    prefix = prefix + "\033[42m"  # green background
-                    #prefix = prefix + "\033[47m\033[90m"  # dark gray text on light gray background
+                    if end in path:
+                        prefix = prefix + "\033[42m"  # green background
+                    else:
+                        prefix = prefix + "\033[47m\033[90m"  # dark gray text on light gray background
 
                 # highlight traps
                 if self.traps.isTrap(field):
