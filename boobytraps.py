@@ -202,14 +202,12 @@ def raidtomb(graph, start, end):
 
     # add start to queue
     if traps.isTrap(start.value):
-        start = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
-        visited[start['triggered']].add(start['cell'])
+        c = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
+        visited[c['triggered']].add(c['cell'])
     else:
-        start = {'cell': start, 'path': [start], 'triggered': 0}
-        visited[0].add(start['cell'])
-    q.put(start)
-
-    c = start
+        c = {'cell': start, 'path': [start], 'triggered': 0}
+        visited[0].add(c['cell'])
+    q.put(c)
 
     while not q.empty():
         # get new cell
