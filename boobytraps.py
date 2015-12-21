@@ -72,7 +72,9 @@ class Map:
         return 'map: ' + str(self.map) + ', traps: ' + str(self.traps)
 
     def prettyprint(self, start, end, path=[]):
-        """Print the map with coordinate axes and different colors for different cell types."""
+        """Print the map with coordinate axes and different colors for different
+        cell types.
+        """
         xLabel = "  0123->x"
         yLabel = "0123|vy"
 
@@ -186,8 +188,9 @@ class Graph:
 
 
 def raidtomb(graph, traps, start, end):
-    """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
-
+    """Find the shortest path between start and end cells ("raid the tomb")
+    using breadth-first search, returning the number of moves and the path.
+    """
     graph = graph.graph
     q = Queue.Queue()
 
@@ -225,7 +228,7 @@ def raidtomb(graph, traps, start, end):
                             q.put(n)
                             visited[n['triggered']].add(neighbor)
 
-                # neigbour is empty cell
+                # neigbor is empty cell
                 else:
                     n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
                     if neighbor == end:
@@ -264,11 +267,10 @@ def main():
     endValue = map.getAt(endX, endY)
     end = Cell(endX, endY, endValue)
 
-    # compute and output minimum number of moves needed to reach the end
-    # position from the start position ("raid the tomb")
+    # raid the tomb
     moves, path = raidtomb(graph, traps, start, end)
 
-    # print result
+    # output result
     if verbose:
         print "Map:"
         map.prettyprint(start, end, path)
