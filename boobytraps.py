@@ -162,14 +162,9 @@ class Graph:
         self.graph = {}
         for y, row in enumerate(map.map):
             for x, field in enumerate(row):
-                # ignore wall cells: irrelevant for path finding
-                if field != 'x':
+                if field != 'x':  # ignore wall cells: irrelevant for path finding
                     cell = Cell(x, y, field)
-                    adj = map.getAdjacent(cell)
-                    adjDict = {}
-                    for i in adj:
-                        adjDict[i] = 1
-                    self.graph[cell] = adjDict
+                    self.graph[cell] = map.getAdjacent(cell)
 
     def __str__(self):
         return 'graph: ' + str(self.graph)
@@ -177,11 +172,17 @@ class Graph:
     def prettyprint(self):
         """Print the graph in a readable way."""
         for field in self.graph:
-            sys.stdout.write("'" + str(field) + "': {")
+            print str(field)
             for adj in self.graph[field]:
-                sys.stdout.write("'" + str(adj) + "': " + str(self.graph[field][adj]) + ",")
-            sys.stdout.write("}")
-            print
+                if adj.x < field.x:
+                    arrow = u'\u25c0'  # right
+                elif adj.x > field.x:
+                    arrow = u'\u25b6'  # left
+                elif adj.y < field.y:
+                    arrow = u'\u25b2'  # up
+                else:
+                    arrow = u'\u25bc'  # down
+                print "\t" + arrow + " " + str(adj)
 
 
 def raidtomb(graph, traps, start, end):
@@ -210,7 +211,7 @@ def raidtomb(graph, traps, start, end):
         c = q.get()
 
         # add all neighbors of c to queue
-        for neighbor in graph[c['cell']].keys():
+        for neighbor in graph[c['cell']]:
             if neighbor not in c['path'] and neighbor not in visited[c['triggered']]:
 
                 # neigbor is trap cell
