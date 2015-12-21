@@ -238,8 +238,8 @@ def raidtomb(graph, traps, start, end):
 
 def main():
     # process verbose option
-    if len(sys.argv) > 1 and sys.argv[1] == "-v":
-        verbose = True
+    verbose = len(sys.argv) > 1 and sys.argv[1] == "-v"
+    if verbose:
         del sys.argv[1]
 
     # get input without line breaks
