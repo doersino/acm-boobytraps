@@ -188,14 +188,13 @@ class Graph:
 def raidtomb(graph, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
 
-    sstart = start
-    map = graph.map
-
     traps = graph.map.traps
     graph = graph.graph
     q = Queue.Queue()
 
-    visited = {False: set()}
+    # initialize visited structure
+    visited = {}
+    visited[0] = set()
     for i in traps.trapDominationLookup.values():
         visited[i] = set()
 
@@ -207,6 +206,8 @@ def raidtomb(graph, start, end):
         start = {'cell': start, 'path': [start], 'triggered': 0}
         visited[0].add(start['cell'])
     q.put(start)
+
+    c = start
 
     while not q.empty():
         # get new cell
@@ -236,7 +237,7 @@ def raidtomb(graph, start, end):
                         q.put(n)
                         visited[n['triggered']].add(neighbor)
 
-    return "IMPOSSIBLE"
+    return (-len(n['path']) + 1, c['path'])
 
 
 def main():
@@ -271,25 +272,14 @@ def main():
 
     # print result
     if verbose:
-        if raided == "IMPOSSIBLE":
-            print "Map:"
-            map.prettyprint(start, end)
-            print raided
-            sys.exit(1)
-        else:
-            #print "Path:"
-            #for i in raided[1]:
-            #    print i
-            print "Map:"
-            map.prettyprint(start, end, raided[1])
-            print "Minimum number of moves to reach the end position from the start position:"
-            print raided[0]
+        print "Map:"
+        map.prettyprint(start, end, raided[1])
+        print "Minimum number of moves to reach the end position from the start position:"
+    if raided[0] >= 0:
+        print raided[0]
     else:
-        if raided == "IMPOSSIBLE":
-            print raided
-            sys.exit(1)
-        else:
-            print raided[0]
+        print "IMPOSSIBLE"
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
