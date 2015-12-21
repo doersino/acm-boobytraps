@@ -156,12 +156,9 @@ class Map:
 class Graph:
     """Graph represented as an adjacency list."""
 
-    map = None
     graph = None
 
     def __init__(self, map):
-        self.map = map
-
         self.graph = {}
         for y, row in enumerate(map.map):
             for x, field in enumerate(row):
@@ -175,7 +172,7 @@ class Graph:
                     self.graph[cell] = adjDict
 
     def __str__(self):
-        return 'map: ' + str(self.map) + ', graph: ' + str(self.graph)
+        return 'graph: ' + str(self.graph)
 
     def prettyprint(self):
         """Print the graph in a readable way."""
@@ -187,10 +184,9 @@ class Graph:
             print
 
 
-def raidtomb(graph, start, end):
+def raidtomb(graph, traps, start, end):
     """Find the shortest path between start and end cells ("raid the tomb") using backtracking"""
 
-    traps = graph.map.traps
     graph = graph.graph
     q = Queue.Queue()
 
@@ -242,19 +238,22 @@ def raidtomb(graph, start, end):
 
 def main():
     # process verbose option
-    verbose = len(sys.argv) > 1 and sys.argv[1] == "-v"
-    if verbose:
+    if len(sys.argv) > 1 and sys.argv[1] == "-v":
+        verbose = True
         del sys.argv[1]
 
-    # get input without line terminators
+    # get input without line breaks
     input = []
     for line in fileinput.input():
         input.append(line.strip())
 
     # parse input
     traps = Traps(input[0])
+
     mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
     map = Map(mapWidth, mapHeight, input[2:mapHeight+2], traps)
+
+    graph = Graph(map)
 
     startX, startY = [int(i) for i in input[mapHeight+2].split(" ")]
     startValue = map.getAt(startX, startY)
@@ -264,11 +263,9 @@ def main():
     endValue = map.getAt(endX, endY)
     end = Cell(endX, endY, endValue)
 
-    graph = Graph(map)
-
     # compute and output minimum number of moves needed to reach the end
     # position from the start position ("raid the tomb")
-    raided = raidtomb(graph, start, end)
+    raided = raidtomb(graph, traps, start, end)
 
     # print result
     if verbose:
