@@ -223,7 +223,7 @@ def raidtomb(graph, traps, start, end):
 
         # add all neighbors of c to queue, or terminate if the end is found
         for neighbor in graph[c['cell']]:
-            if neighbor not in c['path'] and neighbor not in visited[c['triggered']]:
+            if neighbor not in visited[c['triggered']]:
 
                 # check if the neigbor can be visited
                 n = None
