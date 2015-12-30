@@ -221,25 +221,27 @@ def raidtomb(graph, traps, start, end):
         # get new cell
         c = q.get()
 
-        # add all neighbors of c to queue, or terminate if the end is found
+        # add eligible neighbors to queue and check if one of them is the end
         for neighbor in graph[c['cell']]:
             if neighbor not in visited[c['triggered']]:
 
-                # check if the neigbor can be visited
-                n = None
+                # make sure the neigbor can be visited and update maximum triggered trap
+                triggered = c['triggered']
                 if traps.isTrap(neighbor.value):
                     v = neighbor.value
-                    if traps.getIndex(v) > c['triggered']:  # new trap encountered
-                        n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
-                else:
-                    n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
+                    if traps.getIndex(v) <= c['triggered']:  # trap already in path
+                        continue
+                    triggered = traps.getIndex(v)
 
-                if n is not None:
-                    if neighbor == end:
-                        return (len(n['path']) - 1, n['path'])
-                    else:
-                        q.put(n)
-                        visited[n['triggered']].add(neighbor)
+                # create new queue frame
+                n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': triggered}
+
+                # check if the end has been reached
+                if neighbor == end:
+                    return (len(n['path']) - 1, n['path'])
+                else:
+                    q.put(n)
+                    visited[n['triggered']].add(neighbor)
 
     return -1, c['path']
 
