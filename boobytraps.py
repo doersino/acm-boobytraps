@@ -77,7 +77,7 @@ class Map:
     def __str__(self):
         return 'map: ' + str(self.map) + ', traps: ' + str(self.traps)
 
-    def prettyprint(self, start, end, path=[]):
+    def prettyprint(self, start, end, path=[], visited=[]):
         """Print the map with coordinate axes and different colors for different
         cell types.
         """
@@ -104,12 +104,16 @@ class Map:
                 if field == 'o':
                     prefix = prefix + "\033[37m"  # light gray
 
+                # highlight visited fields
+                if Cell(x, y, self.getAt(x, y)) in visited:
+                    prefix = prefix + "\033[48;5;255m"  # very light gray background
+
                 # highlight path depending on completeness
                 if Cell(x, y, self.getAt(x, y)) in path:
                     if end in path:
                         prefix = prefix + "\033[42m"  # green background
                     else:
-                        prefix = prefix + "\033[47m\033[90m"  # dark gray text on light gray background
+                        prefix = prefix + "\033[90m\033[47m"  # dark gray text on light gray background
 
                 # highlight traps
                 if self.traps.isTrap(field):
@@ -123,7 +127,7 @@ class Map:
 
                 # highlight end differently if it is a trap to maintain readability
                 if Cell(x, y, self.getAt(x, y)) == end and self.traps.isTrap(field):
-                    prefix = prefix + "\033[1m\033[4m\033[45m"  # pink background
+                    prefix = prefix + "\033[45m"  # pink background
 
                 sys.stdout.write(prefix + field + suffix)
             print
@@ -238,17 +242,19 @@ def raidtomb(graph, traps, start, end):
 
                 # check if the end has been reached
                 if neighbor == end:
-                    return (len(n['path']) - 1, n['path'])
+                    return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
                     q.put(n)
                     visited[n['triggered']].add(neighbor)
 
-    return -1, c['path']
+    # return longest/"best effort" path
+    return -1, c['path'], set().union(*visited.values())
 
 
 def main():
-    # process verbose option
-    verbose = len(sys.argv) > 1 and sys.argv[1] == "-v"
+    # process verbose options
+    verbose = len(sys.argv) > 1 and sys.argv[1] in ["-v", "-v1", "-v2"]
+    verbose2 = verbose and sys.argv[1] == "-v2"
     if verbose:
         del sys.argv[1]
 
@@ -274,12 +280,18 @@ def main():
     end = Cell(endX, endY, endValue)
 
     # raid the tomb
-    moves, path = raidtomb(graph, traps, start, end)
+    moves, path, visited = raidtomb(graph, traps, start, end)
+
+    # discard visited and "best effort" path if the verbose2 option is disabled
+    if not verbose2:
+        if moves < 0:  # no path found
+            path = []
+        visited = []
 
     # output result
     if verbose:
         print "Map:"
-        map.prettyprint(start, end, path)
+        map.prettyprint(start, end, path, visited)
         print "Minimum number of moves to reach the end position from the start position:"
     if moves >= 0:
         print moves
