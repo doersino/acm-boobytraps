@@ -82,7 +82,7 @@ false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complex
 
 ![screenshot2](https://github.com/doersino/acm-boobytraps/raw/master/screenshot2.png)
 
-As above, but with even larger 200x200 maps and additional highlighting of visited fields as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
+As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited fields as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 200 200 --printseed --complexity 15 --mode dungeon --start 0,0 --end 199,199 | ./boobytraps.py -v2; done
 ```
