@@ -18,6 +18,8 @@ Books have one, so why shouldn't software?
 
 ## Example Usage
 
+### `tombraider.sh`
+
 Test the shortest path finder on the sample input and output given with the problem statement:
 ```
 ./tombraider.sh -i sampleinput.txt -o sampleoutput.txt
@@ -32,6 +34,26 @@ Test the shortest path finder on a third, more complex sample input:
 ```
 ./tombraider.sh -i sampleinput4.txt
 ```
+
+
+### `boobytraps.py`
+Run the shortest path finder on the sample input given with the problem statement (any of the four lines of code below will do this):
+```
+cat sampleinput.txt | python boobytraps.py
+cat sampleinput.txt | ./boobytraps.py
+python boobytraps.py sampleinput.txt
+./boobytraps.py sampleinput.txt
+```
+
+For verbose output (this will highlight the path in the map), use the `-v` flag:
+```
+cat sampleinput.txt | python boobytraps.py -v
+cat sampleinput.txt | ./boobytraps.py -v
+python boobytraps.py -v sampleinput.txt
+./boobytraps.py -v sampleinput.txt
+```
+
+### `gravedigger.py`
 
 Randomly generate a 15x15 map and find the shortest path from start to end:
 ```

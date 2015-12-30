@@ -1,7 +1,10 @@
+#!/usr/bin/python2.7
+
 # Generate (large!) maps for testing boobytraps.py and write the result to
 # stdout.
 #
-# Usage: gravedigger.py WIDTH HEIGHT
+# Usage: gravedigger.py WIDTH HEIGHT [OPTIONS]
+#        (see gravedigger-py -h)
 
 import argparse
 import sys
