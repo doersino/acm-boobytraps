@@ -57,27 +57,27 @@ python boobytraps.py -v sampleinput.txt
 
 Randomly generate a 15x15 map and find the shortest path from start to end:
 ```
-python gravedigger.py 15 15 | python boobytraps.py
+./gravedigger.py 15 15 | ./boobytraps.py
 ```
 
 Randomly generate a 15x10 map (with a fixed seed, using the "dungeon" mode and with start and end in the top left and bottom right corners), find the shortest path from start to end and highlight the path in the map:
 ```
-python gravedigger.py 15 10 --seed donghwa --mode dungeon --start 0,0 --end 14,9 | python boobytraps.py -v
+./gravedigger.py 15 10 --seed donghwa --mode dungeon --start 0,0 --end 14,9 | ./boobytraps.py -v
 ```
 
 Randomly generate a large map (with a fixed seed, using the "dungeon" mode and a high map complexity), find the shortest path from start to end and highlight the path in the map:
 ```
-python gravedigger.py 78 40 --seed donghwa --complexity 15 --mode dungeon | python boobytraps.py -v
+./gravedigger.py 78 40 --seed donghwa --complexity 15 --mode dungeon | ./boobytraps.py -v
 ```
 
 Randomly generate 40x20 maps (using the "dungeon" mode) until one with a shortest path from start to end is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
 ```
-false; while [ $? -ne 0 ]; do time python gravedigger.py 40 20 --mode dungeon | python boobytraps.py -v; done
+false; while [ $? -ne 0 ]; do time ./gravedigger.py 40 20 --mode dungeon | ./boobytraps.py -v; done
 ```
 
 Randomly generate giant 202x51 maps (using the "dungeon" mode and higher-than normal map complexity) and print the random seed used for map generation until one with a shortest path from the upper left cell to the lower right cell is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
 ```
-false; while [ $? -ne 0 ]; do time python gravedigger.py 202 51 --printseed --complexity 15 --mode dungeon --start 0,0 --end 201,50 | python boobytraps.py -v; done
+false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complexity 15 --mode dungeon --start 0,0 --end 201,50 | ./boobytraps.py -v; done
 ```
 
 ![screenshot2](https://github.com/doersino/acm-boobytraps/raw/master/screenshot2.png)
