@@ -38,13 +38,13 @@ class Traps:
         self.trapDominationOrder = list(trapDominationOrder)
         self.trapDominationLookup = {}
         for i in enumerate(self.trapDominationOrder):
-            self.trapDominationLookup[i[1]] = i[0] + 1  # 0 is reserved for empty cells in the path finder
+            self.trapDominationLookup[i[1]] = i[0] + 1  # in the path finder, 0 is reserved for empty cells
 
     def __str__(self):
         return 'trapDominationOrder: ' + str(self.trapDominationOrder) + ', trapDominationLookup: ' + str(self.trapDominationLookup)
 
     def getIndex(self, char):
-        """Get the index of a trap."""
+        """Get the index (starting with 1) of a trap."""
         return self.trapDominationLookup[char]
 
     def isTrap(self, char):
@@ -53,21 +53,25 @@ class Traps:
 
 
 class Map:
-    """Map 2D array, along with width, height and the trap domination order."""
+    """Map as a 2D char array, along with width, height and the trap domination
+    order.
+    """
 
     map = None
     traps = None
     width = 0
     height = 0
 
-    # map must be given as string array (rows) of string arrays (fields)
     def __init__(self, width, height, map, traps):
         self.width = width
         self.height = height
 
+        # the map should be given as an array (rows) of strings (fields) so we
+        # can convert it to a 2D char array here
         self.map = copy.deepcopy(map)
         for i, row in enumerate(self.map):
             self.map[i] = list(row)
+
         self.traps = traps
 
     def __str__(self):
@@ -83,6 +87,7 @@ class Map:
         # print x-axis label
         print xLabel
 
+        # print row
         for y, row in enumerate(self.map):
             # print y-axis label
             if y < len(yLabel):
@@ -90,6 +95,7 @@ class Map:
             else:
                 sys.stdout.write("  ")
 
+            # print all fields in the current row
             for x, field in enumerate(row):
                 prefix = ""
                 suffix = "\033[0m"
@@ -123,7 +129,7 @@ class Map:
             print
 
     def getAdjacent(self, cell):
-        """Get the (up to four) cells adjacent to a cell."""
+        """Get the (up to four) cells adjacent to a given cell."""
         adj = []
 
         # left neighbor
@@ -215,24 +221,20 @@ def raidtomb(graph, traps, start, end):
         # get new cell
         c = q.get()
 
-        # add all neighbors of c to queue
+        # add all neighbors of c to queue, or terminate if the end is found
         for neighbor in graph[c['cell']]:
             if neighbor not in c['path'] and neighbor not in visited[c['triggered']]:
 
-                # neigbor is trap cell
+                # check if the neigbor can be visited
+                n = None
                 if traps.isTrap(neighbor.value):
                     v = neighbor.value
-                    if traps.getIndex(v) > c['triggered']:
+                    if traps.getIndex(v) > c['triggered']:  # new trap encountered
                         n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': traps.getIndex(v)}
-                        if neighbor == end:
-                            return len(n['path']) - 1, n['path']
-                        else:
-                            q.put(n)
-                            visited[n['triggered']].add(neighbor)
-
-                # neigbor is empty cell
                 else:
                     n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': c['triggered']}
+
+                if n is not None:
                     if neighbor == end:
                         return (len(n['path']) - 1, n['path'])
                     else:
