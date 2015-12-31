@@ -7,6 +7,7 @@ My Python 2.7 solution of the ACM Programming Contest problem ["Booby Traps"](ht
 ## Table of Contents
 Books have one, so why shouldn't software?
 
+* `boobytraps.pdf` is the problem statement.
 * `boobytraps.py` contains the code solving the problem.
 * `gravedigger.py` is a simple map generator I wrote for testing the performance of `boobytraps.py` on large maps. Run it with the `-h` flag to find out how to use it.
 * `sampleinput.txt` contains the sample input with which to test the solution.
