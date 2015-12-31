@@ -9,33 +9,15 @@ Books have one, so why shouldn't software?
 
 * `boobytraps.pdf` is the problem statement.
 * `boobytraps.py` contains the code solving the problem.
-* `gravedigger.py` is a simple map generator I wrote for testing the performance of `boobytraps.py` on large maps. Run it with the `-h` flag to find out how to use it.
+* `gravedigger.py` is a simple map generator I've written for testing the performance of `boobytraps.py` on large maps. Run it with the `-h` flag to find out how to use it.
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleinput[0-9]+.txt` contain other interesting sample inputs.
 * `sampleoutput.txt` contains the sample output with which to test the solution.
 * `screenshot.png` shows my shortest path finder in action on the sample input.
 * `screenshot2.png` shows my map generator and shortest path finder in action.
-* `tombraider.sh` is a short shell script for efficiently testing the solution.
+* `tombraider.sh` is a short shell script for semi-automated testing of my solution.
 
 ## Example Usage
-
-### `tombraider.sh`
-
-Test the shortest path finder on the sample input and output given with the problem statement:
-```
-./tombraider.sh -i sampleinput.txt -o sampleoutput.txt
-```
-
-Test the shortest path finder on another sample input, specifying the expected output directly:
-```
-./tombraider.sh -i sampleinput2.txt -o 2
-```
-
-Test the shortest path finder on a third, more complex sample input:
-```
-./tombraider.sh -i sampleinput4.txt
-```
-
 
 ### `boobytraps.py`
 Run the shortest path finder on the sample input given with the problem statement (any of the four lines of code below will do this):
@@ -86,4 +68,21 @@ false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complex
 As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited fields as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 200 200 --printseed --complexity 15 --mode dungeon --start 0,0 --end 199,199 | ./boobytraps.py -v2; done
+```
+
+### `tombraider.sh`
+
+Test the shortest path finder on the sample input and output given with the problem statement:
+```
+./tombraider.sh -i sampleinput.txt -o sampleoutput.txt
+```
+
+Test the shortest path finder on another sample input, specifying the expected output directly:
+```
+./tombraider.sh -i sampleinput2.txt -o 2
+```
+
+Test the shortest path finder on a third, more complex sample input:
+```
+./tombraider.sh -i sampleinput4.txt
 ```
