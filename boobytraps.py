@@ -1,5 +1,20 @@
 #!/usr/bin/python2.7
 
+# Finds the shortest path in a map instance adhering to the rules defined in
+# boobytraps.pdf. Outputs the length of the path, as well as (optionally) a
+# visualization of the path in the map.
+#
+# Usage: Either of the following three options will work:
+#
+#        ./boobytraps.py [-v | -v1 | -v2] INPUT_FILE
+#        cat INPUT_FILE | ./boobytraps.py [-v | -v1 | -v2]
+#        ./gravedivver.py WIDTH HEIGHT | ./boobytraps.py [-v | -v1 | -v2]
+#
+#        -v  enables output of the map and highlighted path.
+#        -v1 is equivalent to -v.
+#        -v2 additionally highlights visited fields and, if no path from start
+#            to end is found, the "best effort" path.
+
 import fileinput
 import copy
 import sys
@@ -79,7 +94,8 @@ class Map:
 
     def prettyprint(self, start, end, path=[], visited=[]):
         """Print the map with coordinate axes and different colors for different
-        cell types.
+        cell types. Highlight start, end, a path in the map as well as visited
+        cells.
         """
         xLabel = "  0123->x"
         yLabel = "0123|vy"

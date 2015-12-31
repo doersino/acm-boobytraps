@@ -1,10 +1,12 @@
 #!/usr/bin/python2.7
 
-# Generate (large!) maps for testing boobytraps.py and write the result to
-# stdout.
+# Randomly generates different kinds of (large!) maps for testing boobytraps.py
+# and writes the result to stdout. Optionally, outputs the random seed used
+# during map generation to stderr.
 #
-# Usage: gravedigger.py WIDTH HEIGHT [OPTIONS]
-#        (see gravedigger-py -h)
+# Usage: See gravedigger.py -h, or get started quickly with:
+#
+#        ./gravedigger.py WIDTH HEIGHT [OPTIONS]
 
 import argparse
 import sys
