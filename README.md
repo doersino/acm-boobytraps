@@ -35,6 +35,7 @@ cat sampleinput.txt | ./boobytraps.py -v
 python boobytraps.py -v sampleinput.txt
 ./boobytraps.py -v sampleinput.txt
 ```
+Using the `-v2` flag instead will, in addition, highlight visited cells and the "best effort" path (if none from start to end is found) in the map.
 
 ### `gravedigger.py`
 
