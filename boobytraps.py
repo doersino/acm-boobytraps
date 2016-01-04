@@ -381,7 +381,6 @@ def main():
     # raid the tomb
     moves, path, visited = raidtomb(graph, traps, start, end)
 
-    # print LaTex draw commands for the map
     #map.printLatexDrawCommands(start, end, 1, path)
     #sys.exit()
 
