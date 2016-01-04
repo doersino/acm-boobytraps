@@ -148,6 +148,90 @@ class Map:
                 sys.stdout.write(prefix + field + suffix)
             print
 
+    def printLatexDrawCommands(self, start, end, path=[]):
+        """Quick-and-dirty way of printing the draw commands for a LaTex
+        representation of the map (using tikz).
+        In the output of this function, adjust the scale factor by modifying the
+        argument of \BTmap if necessary, or change \BTpath to \BTpathX if you
+        want to highlight an incorrect path.
+        The following macros need to be defined in the preamble:
+
+        \def\BTwallcolor{gray}
+        \def\BTtrapcolor{red}
+        \def\BTpathXcolor{red!60!black}
+        \def\BTpathcolor{green!60!black}
+        \def\BTstartcolor{blue!85!black}
+        \def\BTendcolor{red!75!black}
+
+        \newcommand{\BTmap}[2]{ % scale factor & draw commands
+            \begin{center}
+                \begin{tikzpicture}[scale=#1,every node/.style={transform shape}]
+                    #2
+                \end{tikzpicture}
+            \end{center}
+        }
+        \newcommand{\BTwall}[2]{ % bottom left corner & top right corner
+            \fill[\BTwallcolor] (#1) rectangle (#2);
+        }
+        \newcommand{\BTtrap}[2]{ % position & letter
+            \node at (#1) {\LARGE\bfseries\color{\BTtrapcolor} #2};
+        }
+        \newcommand{\BTpathX}[1]{ % path
+            \draw[\BTpathXcolor, dotted, thick] #1;
+        }
+        \newcommand{\BTpath}[1]{ % path
+            \draw[\BTpathcolor, solid, very thick] #1;
+        }
+        \newcommand{\BTstart}[1]{ % position
+            \path[fill=\BTstartcolor] (#1) circle (0.25);
+        }
+        \newcommand{\BTend}[1]{ % position
+            \path[fill=\BTendcolor] (#1) circle (0.25);
+        }
+        \newcommand{\BTgrid}[1]{ % height,width
+            \draw[step=1,black,thick] (0,0) grid (#1);
+        }
+        """
+
+        print '\BTmap{1}{'
+
+        # draw walls
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                if field == 'x':
+                    print '\BTwall{' + str(x) + ',' + str(self.height-y) + '}{' + str(x+1) + ',' + str(self.height-(y+1)) + '}'
+
+        # draw traps
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                if self.traps.isTrap(field):
+                    print '\BTtrap{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}{' + field + '}'
+
+        # draw path
+        sys.stdout.write('\BTpath{')
+        for i, cell in enumerate(path):
+            if i != 0:
+                sys.stdout.write(' -- ')
+            sys.stdout.write('(' + str(cell.x) + '.5,' + str(self.height-(cell.y+1)) + '.5)')
+        print '}'
+
+        # draw start
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                if Cell(x, y, self.getAt(x, y)) == start:
+                    print '\BTstart{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}'
+
+        # draw end
+        for y, row in enumerate(self.map):
+            for x, field in enumerate(row):
+                if Cell(x, y, self.getAt(x, y)) == end:
+                    print '\BTend{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}'
+
+        # draw grid
+        print '\BTgrid{' + str(self.width) + ',' + str(self.height) + '}'
+
+        print '}'
+
     def getAdjacent(self, cell):
         """Get the (up to four) cells adjacent to a given cell."""
         adj = []
@@ -297,6 +381,10 @@ def main():
 
     # raid the tomb
     moves, path, visited = raidtomb(graph, traps, start, end)
+
+    # print LaTex draw commands for the map
+    #map.printLatexDrawCommands(start, end, path)
+    #sys.exit()
 
     # discard visited and "best effort" path if the verbose2 option is disabled
     if not verbose2:
