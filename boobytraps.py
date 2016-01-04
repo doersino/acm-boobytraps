@@ -152,9 +152,11 @@ class Map:
         """Quick-and-dirty way of printing the draw commands for a LaTex
         representation of the map (using tikz).
         If you want to highlight an incorrect path, change \BTpath to \BTpathX
-        in the output of this function.
+        in the output of this function, and if you want to highlight a cell, use
+        the \BThighlight macro.
         The following macros need to be defined in the preamble:
 
+        \def\BThighlightcolor{yellow}
         \def\BTwallcolor{gray}
         \def\BTtrapcolor{red}
         \def\BTpathXcolor{red!60!black}
@@ -168,6 +170,9 @@ class Map:
                     #2
                 \end{tikzpicture}
             \end{center}
+        }
+        \newcommand{\BThighlight}[2]{ % bottom left corner & top right corner
+            \fill[\BThighlightcolor] (#1) rectangle (#2);
         }
         \newcommand{\BTwall}[2]{ % bottom left corner & top right corner
             \fill[\BTwallcolor] (#1) rectangle (#2);
