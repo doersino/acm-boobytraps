@@ -148,12 +148,11 @@ class Map:
                 sys.stdout.write(prefix + field + suffix)
             print
 
-    def printLatexDrawCommands(self, start, end, path=[]):
+    def printLatexDrawCommands(self, start, end, scale=1, path=[]):
         """Quick-and-dirty way of printing the draw commands for a LaTex
         representation of the map (using tikz).
-        In the output of this function, adjust the scale factor by modifying the
-        argument of \BTmap if necessary, or change \BTpath to \BTpathX if you
-        want to highlight an incorrect path.
+        If you want to highlight an incorrect path, change \BTpath to \BTpathX
+        in the output of this function.
         The following macros need to be defined in the preamble:
 
         \def\BTwallcolor{gray}
@@ -193,7 +192,7 @@ class Map:
         }
         """
 
-        print '\BTmap{1}{'
+        print '\BTmap{' + str(scale) + '}{'
 
         # draw walls
         for y, row in enumerate(self.map):
@@ -383,7 +382,7 @@ def main():
     moves, path, visited = raidtomb(graph, traps, start, end)
 
     # print LaTex draw commands for the map
-    #map.printLatexDrawCommands(start, end, path)
+    #map.printLatexDrawCommands(start, end, 1, path)
     #sys.exit()
 
     # discard visited and "best effort" path if the verbose2 option is disabled
