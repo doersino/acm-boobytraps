@@ -305,7 +305,9 @@ class Graph:
 
 def raidtomb(graph, traps, start, end):
     """Find the shortest path between start and end cells ("raid the tomb")
-    using breadth-first search, returning the number of moves and the path.
+    using modified breadth-first search, returning the number of moves, the path
+    (or, if no path from start to end is found, the "best effort" path) and a
+    set of all visited cells.
     """
     graph = graph.graph
     q = Queue.Queue()
@@ -385,6 +387,8 @@ def main():
 
     # raid the tomb
     moves, path, visited = raidtomb(graph, traps, start, end)
+
+    #graph.prettyprint()
 
     #map.printLatexDrawCommands(start, end, 1, path)
     #sys.exit()
