@@ -227,4 +227,4 @@ print str(endX) + " " + str(endY)
 
 # print seed
 if args.printseed:
-    sys.stderr.write("Seed: " + str(seed) + "\n")
+    sys.stderr.write("Seed:\n" + str(seed) + "\n")
