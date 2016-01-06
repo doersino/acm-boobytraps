@@ -198,7 +198,7 @@ class Map:
         \newcommand{\BTcoords}[2]{ % width & height
             \foreach \nx in {0,...,\numexpr#1-1\relax}
                 \foreach \my in {0,...,\numexpr#2-1\relax}
-                    \node[anchor=west,inner sep=0] at (\nx+0.05,#1-\my-0.18) {\tiny(\nx,\my)};
+                    \node[anchor=west,inner sep=0] at (\nx+0.05,#2-\my-0.18) {\tiny(\nx,\my)};
         }
         """
 
