@@ -340,9 +340,26 @@ def raidtomb(graph, traps, start, end):
         # get new cell
         c = q.get()
 
+        #print
+        #print "<- {'cell': " + str(c['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in c['path']]) + "], 'triggered': " + str(c['triggered']) + "}"
+        #print "0: " + ", ".join(["(" + str(d) + ")" for d in visited[0]])
+        #print "A: " + ", ".join(["(" + str(d) + ")" for d in visited[26]])
+        #print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
+
         # add eligible neighbors to queue and check if one of them is the end
         for neighbor in graph[c['cell']]:
-            if neighbor not in visited[c['triggered']]:
+
+            # make sure neighbor has not been visited yet
+            neighborVisited = False
+            if c['path'][0].value == 'o':
+                neighborVisited = neighbor in visited[0]
+            for d in c['path']:
+                if neighborVisited:
+                    break
+                if d.value != 'o':
+                    neighborVisited = neighborVisited or neighbor in visited[traps.getIndex(d.value)]
+
+            if not neighborVisited:
 
                 # make sure the neigbor can be visited and update maximum triggered trap
                 triggered = c['triggered']
@@ -361,6 +378,9 @@ def raidtomb(graph, traps, start, end):
                 else:
                     q.put(n)
                     visited[n['triggered']].add(neighbor)
+
+                    #print "-> {'cell': " + str(n['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in n['path']]) + "], 'triggered': " + str(n['triggered']) + "}"
+                    #print "v[" + str(n['triggered']) + "] <- " + str(neighbor)
 
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
