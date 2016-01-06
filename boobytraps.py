@@ -148,7 +148,7 @@ class Map:
                 sys.stdout.write(prefix + field + suffix)
             print
 
-    def printLatexDrawCommands(self, start, end, scale=1, path=[]):
+    def printLatexDrawCommands(self, start, end, path=[], scale=1, showCoords=False):
         """Quick-and-dirty way of printing the draw commands for a LaTex
         representation of the map (using tikz).
         If you want to highlight an incorrect path, change \BTpath to \BTpathX
@@ -192,8 +192,13 @@ class Map:
         \newcommand{\BTend}[1]{ % position
             \path[fill=\BTendcolor] (#1) circle (0.25);
         }
-        \newcommand{\BTgrid}[1]{ % height,width
+        \newcommand{\BTgrid}[1]{ % width,height
             \draw[step=1,black,thick] (0,0) grid (#1);
+        }
+        \newcommand{\BTcoords}[2]{ % width & height
+            \foreach \nx in {0,...,\numexpr#1-1\relax}
+                \foreach \my in {0,...,\numexpr#2-1\relax}
+                    \node[anchor=west,inner sep=0] at (\nx+0.05,#1-\my-0.18) {\tiny(\nx,\my)};
         }
         """
 
@@ -233,6 +238,10 @@ class Map:
 
         # draw grid
         print '\BTgrid{' + str(self.width) + ',' + str(self.height) + '}'
+
+        # draw coords
+        if showCoords:
+            print '\BTcoords{' + str(self.width) + '}{' + str(self.height) + '}'
 
         print '}'
 
@@ -390,7 +399,7 @@ def main():
 
     #graph.prettyprint()
 
-    #map.printLatexDrawCommands(start, end, 1, path)
+    #map.printLatexDrawCommands(start, end, path, 1, True)
     #sys.exit()
 
     # discard visited and "best effort" path if the verbose2 option is disabled
