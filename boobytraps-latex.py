@@ -148,7 +148,7 @@ def raidTombAndGenerateBeamerSlides(map, graph, traps, start, end):
     visited = {}
     visited[0] = set()
     for i in traps.trapDominationLookup.values():
-        visited[i] = set()  # TODO maybe lists for output
+        visited[i] = set()  # TODO maybe lists for output to preserve order
 
     # add start to queue
     if traps.isTrap(start.value):
@@ -200,7 +200,8 @@ def raidTombAndGenerateBeamerSlides(map, graph, traps, start, end):
         print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
 
         # add eligible neighbors to queue and check if one of them is the end
-        for neighbor in graph[c['cell']]:
+        for neighbor in graph[c['cell']]: # TODO highlight each neighbor
+                                          # TODO highlight c too (differenct color, orange/yellow?)
 
             # make sure neighbor has not been visited yet
             neighborVisited = False
