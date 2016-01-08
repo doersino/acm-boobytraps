@@ -314,7 +314,36 @@ class Graph:
                 print "\t" + arrow + " " + str(adj)
 
 
-def raidtomb(graph, traps, start, end):
+def parseInput(rawInput):
+    """From the raw input read using fileinput.input() or similar, extract the
+    traps, map (and compute the corresponding graph), start and end.
+    """
+
+    # discard line breaks
+    input = []
+    for line in rawInput:
+        input.append(line.strip())
+
+    # parse input
+    traps = Traps(input[0])
+
+    mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
+    map = Map(mapWidth, mapHeight, input[2:mapHeight+2], traps)
+
+    graph = Graph(map)
+
+    startX, startY = [int(i) for i in input[mapHeight+2].split(" ")]
+    startValue = map.getAt(startX, startY)
+    start = Cell(startX, startY, startValue)
+
+    endX, endY = [int(i) for i in input[mapHeight+3].split(" ")]
+    endValue = map.getAt(endX, endY)
+    end = Cell(endX, endY, endValue)
+
+    return traps, map, graph, start, end
+
+
+def raidTomb(graph, traps, start, end):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search, returning the number of moves, the path
     (or, if no path from start to end is found, the "best effort" path) and a
@@ -396,29 +425,11 @@ def main():
     if verbose:
         del sys.argv[1]
 
-    # get input without line breaks
-    input = []
-    for line in fileinput.input():
-        input.append(line.strip())
-
     # parse input
-    traps = Traps(input[0])
-
-    mapWidth, mapHeight = [int(i) for i in input[1].split(" ")]
-    map = Map(mapWidth, mapHeight, input[2:mapHeight+2], traps)
-
-    graph = Graph(map)
-
-    startX, startY = [int(i) for i in input[mapHeight+2].split(" ")]
-    startValue = map.getAt(startX, startY)
-    start = Cell(startX, startY, startValue)
-
-    endX, endY = [int(i) for i in input[mapHeight+3].split(" ")]
-    endValue = map.getAt(endX, endY)
-    end = Cell(endX, endY, endValue)
+    traps, map, graph, start, end = parseInput(fileinput.input())
 
     # raid the tomb
-    moves, path, visited = raidtomb(graph, traps, start, end)
+    moves, path, visited = raidTomb(graph, traps, start, end)
 
     #graph.prettyprint()
 
