@@ -8,7 +8,7 @@
 #
 #        ./boobytraps.py [-v | -v1 | -v2] INPUT_FILE
 #        cat INPUT_FILE | ./boobytraps.py [-v | -v1 | -v2]
-#        ./gravedivver.py WIDTH HEIGHT | ./boobytraps.py [-v | -v1 | -v2]
+#        ./gravedigger.py WIDTH HEIGHT | ./boobytraps.py [-v | -v1 | -v2]
 #
 #        -v  enables output of the map and highlighted path.
 #        -v1 is equivalent to -v.
@@ -148,103 +148,6 @@ class Map:
                 sys.stdout.write(prefix + field + suffix)
             print
 
-    def printLatexDrawCommands(self, start, end, path=[], scale=1, showCoords=False):
-        """Quick-and-dirty way of printing the draw commands for a LaTex
-        representation of the map (using tikz).
-        If you want to highlight an incorrect path, change \BTpath to \BTpathX
-        in the output of this function, and if you want to highlight a cell, use
-        the \BThighlight macro.
-        The following macros need to be defined in the preamble:
-
-        \def\BThighlightcolor{yellow}
-        \def\BTwallcolor{gray}
-        \def\BTtrapcolor{red}
-        \def\BTpathXcolor{red!60!black}
-        \def\BTpathcolor{green!60!black}
-        \def\BTstartcolor{blue!85!black}
-        \def\BTendcolor{red!75!black}
-
-        \newcommand{\BTmap}[2]{ % scale factor & draw commands
-            \begin{center}
-                \begin{tikzpicture}[scale=#1,every node/.style={transform shape}]
-                    #2
-                \end{tikzpicture}
-            \end{center}
-        }
-        \newcommand{\BThighlight}[2]{ % bottom left corner & top right corner
-            \fill[\BThighlightcolor] (#1) rectangle (#2);
-        }
-        \newcommand{\BTwall}[2]{ % bottom left corner & top right corner
-            \fill[\BTwallcolor] (#1) rectangle (#2);
-        }
-        \newcommand{\BTtrap}[2]{ % position & letter
-            \node at (#1) {\LARGE\bfseries\color{\BTtrapcolor} #2};
-        }
-        \newcommand{\BTpathX}[1]{ % path
-            \draw[\BTpathXcolor, dotted, thick] #1;
-        }
-        \newcommand{\BTpath}[1]{ % path
-            \draw[\BTpathcolor, solid, very thick] #1;
-        }
-        \newcommand{\BTstart}[1]{ % position
-            \path[fill=\BTstartcolor] (#1) circle (0.25);
-        }
-        \newcommand{\BTend}[1]{ % position
-            \path[fill=\BTendcolor] (#1) circle (0.25);
-        }
-        \newcommand{\BTgrid}[1]{ % width,height
-            \draw[step=1,black,thick] (0,0) grid (#1);
-        }
-        \newcommand{\BTcoords}[2]{ % width & height
-            \foreach \nx in {0,...,\numexpr#1-1\relax}
-                \foreach \my in {0,...,\numexpr#2-1\relax}
-                    \node[anchor=west,inner sep=0] at (\nx+0.05,#2-\my-0.18) {\tiny(\nx,\my)};
-        }
-        """
-
-        print '\BTmap{' + str(scale) + '}{'
-
-        # draw walls
-        for y, row in enumerate(self.map):
-            for x, field in enumerate(row):
-                if field == 'x':
-                    print '\BTwall{' + str(x) + ',' + str(self.height-y) + '}{' + str(x+1) + ',' + str(self.height-(y+1)) + '}'
-
-        # draw traps
-        for y, row in enumerate(self.map):
-            for x, field in enumerate(row):
-                if self.traps.isTrap(field):
-                    print '\BTtrap{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}{' + field + '}'
-
-        # draw path
-        sys.stdout.write('\BTpath{')
-        for i, cell in enumerate(path):
-            if i != 0:
-                sys.stdout.write(' -- ')
-            sys.stdout.write('(' + str(cell.x) + '.5,' + str(self.height-(cell.y+1)) + '.5)')
-        print '}'
-
-        # draw start
-        for y, row in enumerate(self.map):
-            for x, field in enumerate(row):
-                if Cell(x, y, self.getAt(x, y)) == start:
-                    print '\BTstart{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}'
-
-        # draw end
-        for y, row in enumerate(self.map):
-            for x, field in enumerate(row):
-                if Cell(x, y, self.getAt(x, y)) == end:
-                    print '\BTend{' + str(x) + '.5,' + str(self.height-(y+1)) + '.5}'
-
-        # draw grid
-        print '\BTgrid{' + str(self.width) + ',' + str(self.height) + '}'
-
-        # draw coords
-        if showCoords:
-            print '\BTcoords{' + str(self.width) + '}{' + str(self.height) + '}'
-
-        print '}'
-
     def getAdjacent(self, cell):
         """Get the (up to four) cells adjacent to a given cell. Note that the
         order in which the path finder visits available cells corresponds to the
@@ -372,12 +275,6 @@ def raidTomb(graph, traps, start, end):
         # get new cell
         c = q.get()
 
-        #print
-        #print "<- {'cell': " + str(c['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in c['path']]) + "], 'triggered': " + str(c['triggered']) + "}"
-        #print "0: " + ", ".join(["(" + str(d) + ")" for d in visited[0]])
-        #print "A: " + ", ".join(["(" + str(d) + ")" for d in visited[26]])
-        #print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
-
         # add eligible neighbors to queue and check if one of them is the end
         for neighbor in graph[c['cell']]:
 
@@ -411,9 +308,6 @@ def raidTomb(graph, traps, start, end):
                     q.put(n)
                     visited[n['triggered']].add(neighbor)
 
-                    #print "-> {'cell': " + str(n['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in n['path']]) + "], 'triggered': " + str(n['triggered']) + "}"
-                    #print "v[" + str(n['triggered']) + "] <- " + str(neighbor)
-
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
 
@@ -430,11 +324,6 @@ def main():
 
     # raid the tomb
     moves, path, visited = raidTomb(graph, traps, start, end)
-
-    #graph.prettyprint()
-
-    #map.printLatexDrawCommands(start, end, path, 1, True)
-    #sys.exit()
 
     # discard visited and "best effort" path if the verbose2 option is disabled
     if not verbose2:

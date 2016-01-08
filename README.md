@@ -9,6 +9,7 @@ Books have one, so why shouldn't software?
 
 * `boobytraps.pdf` is the problem statement.
 * `boobytraps.py` contains the code solving the problem.
+* `boobytraps-latex.py` generates LaTeX snippets related to `boobytraps.py`.
 * `gravedigger.py` is a simple map generator I've written for testing the performance of `boobytraps.py` on large maps. Run it with the `-h` flag to find out how to use it.
 * `sampleinput.txt` contains the sample input with which to test the solution.
 * `sampleinput[0-9]+.txt` contain other interesting sample inputs.

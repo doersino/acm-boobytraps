@@ -6,7 +6,7 @@
 #
 # Usage: See gravedigger.py -h, or get started quickly with:
 #
-#        ./gravedigger.py WIDTH HEIGHT [OPTIONS]
+#        ./gravedigger.py [OPTIONS] WIDTH HEIGHT
 
 import argparse
 import sys
