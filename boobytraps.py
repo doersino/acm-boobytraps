@@ -118,32 +118,32 @@ class Map:
 
                 # highlight empty fields
                 if field == 'o':
-                    prefix = prefix + "\033[37m"  # light gray
+                    prefix += "\033[37m"  # light gray
 
                 # highlight visited fields
                 if Cell(x, y, self.getAt(x, y)) in visited:
-                    prefix = prefix + "\033[48;5;255m"  # very light gray background
+                    prefix += "\033[48;5;255m"  # very light gray background
 
                 # highlight path depending on completeness
                 if Cell(x, y, self.getAt(x, y)) in path:
                     if end in path:
-                        prefix = prefix + "\033[42m"  # green background
+                        prefix += "\033[42m"  # green background
                     else:
-                        prefix = prefix + "\033[90m\033[47m"  # dark gray text on light gray background
+                        prefix += "\033[90m\033[47m"  # dark gray text on light gray background
 
                 # highlight traps
                 if self.traps.isTrap(field):
-                    prefix = prefix + "\033[31m"  # red
+                    prefix += "\033[31m"  # red
 
                 # highlight start and end
                 if Cell(x, y, self.getAt(x, y)) == start:
-                    prefix = prefix + "\033[1m\033[44m"  # bold on blue background
+                    prefix += "\033[1m\033[44m"  # bold on blue background
                 if Cell(x, y, self.getAt(x, y)) == end:
-                    prefix = prefix + "\033[1m\033[4m\033[41m"  # bold underlined on red background
+                    prefix += "\033[1m\033[4m\033[41m"  # bold underlined on red background
 
                 # highlight end differently if it is a trap to maintain readability
                 if Cell(x, y, self.getAt(x, y)) == end and self.traps.isTrap(field):
-                    prefix = prefix + "\033[45m"  # pink background
+                    prefix += "\033[45m"  # pink background
 
                 sys.stdout.write(prefix + field + suffix)
             print
