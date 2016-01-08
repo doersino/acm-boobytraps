@@ -246,14 +246,10 @@ class Map:
         print '}'
 
     def getAdjacent(self, cell):
-        """Get the (up to four) cells adjacent to a given cell."""
+        """Get the (up to four) cells adjacent to a given cell. Note that the
+        order in which the path finder visits available cells corresponds to the
+        ordering of the list returned by this function."""
         adj = []
-
-        # left neighbor
-        if cell.x > 0:
-            candidate = Cell(cell.x - 1, cell.y, self.map[cell.y][cell.x - 1])
-            if candidate.value != 'x':
-                adj.append(candidate)
 
         # right neighbor
         if cell.x < self.width - 1:
@@ -261,15 +257,21 @@ class Map:
             if candidate.value != 'x':
                 adj.append(candidate)
 
-        # top neighbor
-        if cell.y > 0:
-            candidate = Cell(cell.x, cell.y - 1, self.map[cell.y - 1][cell.x])
-            if candidate.value != 'x':
-                adj.append(candidate)
-
         # bottom neighbor
         if cell.y < self.height - 1:
             candidate = Cell(cell.x, cell.y + 1, self.map[cell.y + 1][cell.x])
+            if candidate.value != 'x':
+                adj.append(candidate)
+
+        # left neighbor
+        if cell.x > 0:
+            candidate = Cell(cell.x - 1, cell.y, self.map[cell.y][cell.x - 1])
+            if candidate.value != 'x':
+                adj.append(candidate)
+
+        # top neighbor
+        if cell.y > 0:
+            candidate = Cell(cell.x, cell.y - 1, self.map[cell.y - 1][cell.x])
             if candidate.value != 'x':
                 adj.append(candidate)
 
@@ -337,6 +339,7 @@ def raidtomb(graph, traps, start, end):
     q.put(c)
 
     while not q.empty():
+
         # get new cell
         c = q.get()
 
@@ -365,7 +368,7 @@ def raidtomb(graph, traps, start, end):
                 triggered = c['triggered']
                 if traps.isTrap(neighbor.value):
                     v = neighbor.value
-                    if traps.getIndex(v) <= c['triggered']:  # trap already in path
+                    if traps.getIndex(v) <= triggered:  # trap already in path
                         continue
                     triggered = traps.getIndex(v)
 
