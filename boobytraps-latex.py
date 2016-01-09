@@ -182,8 +182,19 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
         queueContents.append(q.get())
     for qf in queueContents:
         q.put(qf)
-    # TODO truncate queue path contents like 1, ..., n-1, n for output
-    print 'q &= (' + ",\\\\&".join(["(({},{}), [".format(qf['cell'].x, qf['cell'].y) + ",".join(["({},{})".format(a4.x, a4.y) for a4 in qf['path']]) + "], " + trapValue(traps, qf['triggered']) for qf in queueContents]) + ')'  # TODO proper output
+    queueContentsFormatted = []
+    for qf in queueContents:
+        qfCell = "({},{})".format(qf['cell'].x, qf['cell'].y)
+        qfPath = "({},{})".format(qf['path'][0].x, qf['path'][0].y)
+        if (len(qf['path']) > 3):
+            qfPath += ",\dots"
+        if (len(qf['path']) > 2):
+            qfPath += ",({},{})".format(qf['path'][-2].x, qf['path'][-2].y)
+        if (len(qf['path']) > 1):
+            qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
+        qfTrap = trapValue(traps, qf['triggered'])
+        queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap)
+    print 'q &= (' + ",\\\\&".join(queueContentsFormatted) + ')'
     print '\end{align*}'
     print '\end{column}'
     print '\end{columns}'
@@ -299,7 +310,7 @@ def main():
     traps, map, graph, start, end = parseInput(fileinput.input())
 
     # map scale factor (default fills half a beamer slide)
-    scale = min(3.2 / map.width, 4.0 / map.height)
+    scale = min(4.0 / map.width, 4.0 / map.height)
 
     # raid the tomb and generate slides
     if generateSlides:
