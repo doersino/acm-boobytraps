@@ -194,9 +194,9 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output a LaTeX beamer slide
     detailing each step.
+    Note that this is really only tested with sampleinput9.txt.
     Copy the macros from the printLatexMapDrawCommands() docstring into your
-    LaTeX preamble, which should contain the following commands (along with
-    title slide etc.):
+    LaTeX preamble, which should also contain at least the following commands:
 
     \documentclass{beamer}
     \usepackage{multicol}
