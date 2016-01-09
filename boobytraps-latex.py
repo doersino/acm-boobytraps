@@ -15,7 +15,7 @@
 from boobytraps import *
 
 
-def printLatexMapDrawCommands(map, start, end, path=[], highlight=[], highlightalt=[], scale=1, showCoords=False):
+def printLatexMapDrawCommands(map, start, end, path=[], pathMs=[], pathXs=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
     If you want to highlight an incorrect path, change \BTpath to \BTpathX
@@ -25,11 +25,11 @@ def printLatexMapDrawCommands(map, start, end, path=[], highlight=[], highlighta
     document:
 
     \def\BThighlightcolor{yellow}
-    \def\BThighlightaltcolor{green!60!white}
     \def\BTwallcolor{gray}
     \def\BTtrapcolor{red}
-    \def\BTpathXcolor{red!60!black}
     \def\BTpathcolor{green!60!black}
+    \def\BTpathMcolor{green!60!black}
+    \def\BTpathXcolor{red!60!black}
     \def\BTstartcolor{blue!85!black}
     \def\BTendcolor{red!75!black}
 
@@ -43,20 +43,20 @@ def printLatexMapDrawCommands(map, start, end, path=[], highlight=[], highlighta
     \newcommand{\BThighlight}[2]{ % bottom left corner & top right corner
         \fill[\BThighlightcolor] (#1) rectangle (#2);
     }
-    \newcommand{\BThighlightalt}[2]{ % bottom left corner & top right corner
-        \fill[\BThighlightaltcolor] (#1) rectangle (#2);
-    }
     \newcommand{\BTwall}[2]{ % bottom left corner & top right corner
         \fill[\BTwallcolor] (#1) rectangle (#2);
     }
     \newcommand{\BTtrap}[2]{ % position & letter
         \node at (#1) {\LARGE\bfseries\color{\BTtrapcolor} #2};
     }
-    \newcommand{\BTpathX}[1]{ % path
-        \draw[\BTpathXcolor, dotted, thick] #1;
-    }
     \newcommand{\BTpath}[1]{ % path
         \draw[\BTpathcolor, solid, very thick] #1;
+    }
+    \newcommand{\BTpathM}[1]{ % path
+        \draw[\BTpathMcolor, dotted, thick] #1;
+    }
+    \newcommand{\BTpathX}[1]{ % path
+        \draw[\BTpathXcolor, dotted, thick] #1;
     }
     \newcommand{\BTstart}[1]{ % position
         \path[fill=\BTstartcolor] (#1) circle (0.25);
@@ -81,10 +81,6 @@ def printLatexMapDrawCommands(map, start, end, path=[], highlight=[], highlighta
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) in highlight:
                 print '\BThighlight{' + str(x) + ',' + str(map.height-y) + '}{' + str(x+1) + ',' + str(map.height-(y+1)) + '}'
-    for y, row in enumerate(map.map):
-        for x, field in enumerate(row):
-            if Cell(x, y, map.getAt(x, y)) in highlightalt:
-                print '\BThighlightalt{' + str(x) + ',' + str(map.height-y) + '}{' + str(x+1) + ',' + str(map.height-(y+1)) + '}'
 
     # draw walls
     for y, row in enumerate(map.map):
@@ -97,6 +93,24 @@ def printLatexMapDrawCommands(map, start, end, path=[], highlight=[], highlighta
         for x, field in enumerate(row):
             if map.traps.isTrap(field):
                 print '\BTtrap{' + str(x) + '.5,' + str(map.height-(y+1)) + '.5}{' + field + '}'
+
+    # draw "maybe" paths
+    for pathM in pathMs:
+        sys.stdout.write('\BTpathM{')
+        for i, cell in enumerate(pathM):
+            if i != 0:
+                sys.stdout.write(' -- ')
+            sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
+        print '}'
+
+    # draw "x" paths
+    for pathX in pathXs:
+        sys.stdout.write('\BTpathX{')
+        for i, cell in enumerate(pathX):
+            if i != 0:
+                sys.stdout.write(' -- ')
+            sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
+        print '}'
 
     # draw path
     sys.stdout.write('\BTpath{')
@@ -150,7 +164,6 @@ def trapValue(traps, trap):
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=1):
     # TODO highlight c and neighbors in sets, queue
-    # TODO maybe draw green path + c
 
     print
     print '\\begin{frame}'
@@ -164,7 +177,11 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
     print '\\begin{column}{.4\\textwidth}'
 
     # print map
-    printLatexMapDrawCommands(map, start, end, c['path'], neighbors, [c['cell']], scale, True)  # TODO print red dotted path to non-accessible cells (visited, tdo, etc.), green dotted path to possible cells, maybe just highlight current cell then
+    pathMs = []
+    for neighbor in neighbors:
+        pathMs.append([c['cell'], neighbor])
+    # TODO generate paths from c['cell'] to non-accessible neigbors
+    printLatexMapDrawCommands(map, start, end, c['path'], pathMs, [], [c['cell']], scale, True)
 
     print '\end{column}'
     print '\\begin{column}{.5\\textwidth}'
@@ -329,7 +346,7 @@ def main():
     # raid the tomb and print the map
     if printMap:
         moves, path, visited = raidTomb(graph, traps, start, end)
-        printLatexMapDrawCommands(map, start, end, path, [], [], scale, True)
+        printLatexMapDrawCommands(map, start, end, path, [], [], [], scale, True)
 
 if __name__ == "__main__":
     main()
