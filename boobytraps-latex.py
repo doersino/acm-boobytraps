@@ -116,17 +116,61 @@ def printLatexMapDrawCommands(map, start, end, path=[], scale=1, showCoords=Fals
 
 def uniqueTraps(map):
     """Return a sorted list of unique traps in the map."""
-    uniqueTraps = []
+    traps = []
 
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if map.traps.isTrap(field):
-                uniqueTraps.append(field)
+                traps.append(field)
+
+    uniqueTraps = list(set(traps))
 
     return sorted(uniqueTraps)
 
 
-def raidTombAndGenerateBeamerSlides(map, graph, traps, start, end):
+def trapValue(traps, trap):
+    if trap > 0:
+        return traps.trapDominationOrder[trap-1]
+    return str(0)
+
+
+def generateSlide(map, traps, start, end, q, visited, c, step, scale=1):
+    print
+    print '\\begin{frame}'
+    #print '\frametitle{Implementation}'
+    #print '\framesubtitle{Beispiel}'
+    print '\\begin{enumerate}'
+    print '\setcounter{enumi}{' + str(step-1) + '}'
+    print '\item TODO'
+    print '\end{enumerate}'
+    print '\\begin{columns}[c]'
+    print '\\begin{column}{.4\\textwidth}'
+    printLatexMapDrawCommands(map, start, end, c['path'], scale, True)
+    print '\end{column}'
+    print '\\begin{column}{.5\\textwidth}'
+    print '\\begin{align*}'
+    a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[0]]
+    if not a3:
+        a3 = ['\emptyset']
+    print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
+    for a2 in uniqueTraps(map):
+        a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[traps.trapDominationLookup[a2]]]
+        if not a3:
+            a3 = ['\emptyset']
+        print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
+    queueContents = []
+    while not q.empty():
+        queueContents.append(q.get())
+    for qf in queueContents:
+        q.put(qf)
+    print 'q &= (' + ",\\\\&".join(["(({},{}), [".format(qf['cell'].x, qf['cell'].y) + ",".join(["({},{})".format(a4.x, a4.y) for a4 in qf['path']]) + "], " + trapValue(traps, qf['triggered']) for qf in queueContents]) + ')'  # TODO proper output
+    print '\end{align*}'
+    print '\end{column}'
+    print '\end{columns}'
+    print '\end{frame}'
+
+
+def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output a LaTeX beamer slide
     detailing each step.
@@ -159,49 +203,24 @@ def raidTombAndGenerateBeamerSlides(map, graph, traps, start, end):
         visited[0].add(c['cell'])
     q.put(c)
 
+    step = 1
+    generateSlide(map, traps, start, end, q, visited, c, step, scale)
+
     while not q.empty():
 
         # get new cell
         c = q.get()
 
-        print
-        print '\\begin{frame}'
-        #print '\frametitle{Implementation}'
-        #print '\framesubtitle{Beispiel}'
-        print '\\begin{itemize}'
-        print '\item TODO'
-        print '\end{itemize}'
-        print '\\begin{columns}[c]'
-        print '\\begin{column}{.4\textwidth}'
-        printLatexMapDrawCommands(map, start, end, c['path'], 1, True)
-        print '\end{column}'
-        print '\\begin{column}{.5\textwidth}'
-        print '\\begin{align*}'
-        a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[0]]
-        if not a3:
-            a3 = ['\emptyset']
-        print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
-        for a2 in uniqueTraps(map):
-            a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[traps.trapDominationLookup[a2]]]
-            if not a3:
-                a3 = ['\emptyset']
-            print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
-        print 'q &= ()'  # TODO get size n of queue, pop & print & insert n times
-        print '\end{align*}'
-        print '\end{column}'
-        print '\end{columns}'
-        print '\end{frame}'
-
         # TOOD rm
-        print
-        print "<- {'cell': " + str(c['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in c['path']]) + "], 'triggered': " + str(c['triggered']) + "}"
-        print "0: " + ", ".join(["(" + str(d) + ")" for d in visited[0]])
-        print "A: " + ", ".join(["(" + str(d) + ")" for d in visited[26]])
-        print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
+        #print
+        #print "<- {'cell': " + str(c['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in c['path']]) + "], 'triggered': " + str(c['triggered']) + "}"
+        #print "0: " + ", ".join(["(" + str(d) + ")" for d in visited[0]])
+        #print "A: " + ", ".join(["(" + str(d) + ")" for d in visited[26]])
+        #print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
 
         # add eligible neighbors to queue and check if one of them is the end
-        for neighbor in graph[c['cell']]: # TODO highlight each neighbor
-                                          # TODO highlight c too (differenct color, orange/yellow?)
+        for neighbor in graph[c['cell']]: # TODO highlight each neighbor, also dotted paths?
+                                          # TODO highlight c too (differenct color, orange/yellow or light red/green/yellow?)
 
             # make sure neighbor has not been visited yet
             neighborVisited = False
@@ -228,17 +247,22 @@ def raidTombAndGenerateBeamerSlides(map, graph, traps, start, end):
 
                 # check if the end has been reached
                 if neighbor == end:
-                    # TODO end
+                    # TODO print with c
+                    step += 1
+                    generateSlide(map, traps, start, end, q, visited, c, step, scale)
+                    # TODO print with n
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
                     q.put(n)
                     visited[n['triggered']].add(neighbor)
 
                     # TOOD rm
-                    print "-> {'cell': " + str(n['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in n['path']]) + "], 'triggered': " + str(n['triggered']) + "}"
-                    print "v[" + str(n['triggered']) + "] <- " + str(neighbor)
+                    #print "-> {'cell': " + str(n['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in n['path']]) + "], 'triggered': " + str(n['triggered']) + "}"
+                    #print "v[" + str(n['triggered']) + "] <- " + str(neighbor)
 
-        # TODO end
+        # TODO print
+        step += 1
+        generateSlide(map, traps, start, end, q, visited, c, step, scale)
 
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
@@ -262,14 +286,17 @@ def main():
     # parse input
     traps, map, graph, start, end = parseInput(fileinput.input())
 
+    # map scale factor (default fills half a beamer slide)
+    scale = min(3.2 / map.width, 4.0 / map.height)
+
     # raid the tomb and generate slides
     if generateSlides:
-        raidTombAndGenerateBeamerSlides(map, graph, traps, start, end)
+        raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale)
 
     # raid the tomb and print the map
     if printMap:
         moves, path, visited = raidTomb(graph, traps, start, end)
-        printLatexMapDrawCommands(map, start, end, path, 1, True)
+        printLatexMapDrawCommands(map, start, end, path, scale, True)
 
 if __name__ == "__main__":
     main()
