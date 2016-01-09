@@ -15,7 +15,7 @@
 from boobytraps import *
 
 
-def printLatexMapDrawCommands(map, start, end, path=[], pathMs=[], pathXs=[], highlight=[], scale=1, showCoords=False):
+def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
     If you want to highlight an incorrect path, change \BTpath to \BTpathX
@@ -28,8 +28,8 @@ def printLatexMapDrawCommands(map, start, end, path=[], pathMs=[], pathXs=[], hi
     \def\BTwallcolor{gray}
     \def\BTtrapcolor{red}
     \def\BTpathcolor{green!60!black}
-    \def\BTpathMcolor{green!60!black}
-    \def\BTpathXcolor{red!60!black}
+    \let\BTmaybepathcolor\BTpathcolor
+    \def\BTnopathcolor{red!60!black}
     \def\BTstartcolor{blue!85!black}
     \def\BTendcolor{red!75!black}
 
@@ -52,11 +52,11 @@ def printLatexMapDrawCommands(map, start, end, path=[], pathMs=[], pathXs=[], hi
     \newcommand{\BTpath}[1]{ % path
         \draw[\BTpathcolor, solid, very thick] #1;
     }
-    \newcommand{\BTpathM}[1]{ % path
-        \draw[\BTpathMcolor, dotted, thick] #1;
+    \newcommand{\BTmaybepath}[1]{ % path
+        \draw[\BTmaybepathcolor, dotted, very thick] #1;
     }
-    \newcommand{\BTpathX}[1]{ % path
-        \draw[\BTpathXcolor, dotted, thick] #1;
+    \newcommand{\BTnopath}[1]{ % path
+        \draw[\BTnopathcolor, dotted, very thick] #1;
     }
     \newcommand{\BTstart}[1]{ % position
         \path[fill=\BTstartcolor] (#1) circle (0.25);
@@ -95,18 +95,18 @@ def printLatexMapDrawCommands(map, start, end, path=[], pathMs=[], pathXs=[], hi
                 print '\BTtrap{' + str(x) + '.5,' + str(map.height-(y+1)) + '.5}{' + field + '}'
 
     # draw "maybe" paths
-    for pathM in pathMs:
-        sys.stdout.write('\BTpathM{')
-        for i, cell in enumerate(pathM):
+    for maybepath in maybepaths:
+        sys.stdout.write('\BTmaybepath{')
+        for i, cell in enumerate(maybepath):
             if i != 0:
                 sys.stdout.write(' -- ')
             sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
         print '}'
 
-    # draw "x" paths
-    for pathX in pathXs:
-        sys.stdout.write('\BTpathX{')
-        for i, cell in enumerate(pathX):
+    # draw "no" paths
+    for nopath in nopaths:
+        sys.stdout.write('\BTnopath{')
+        for i, cell in enumerate(nopath):
             if i != 0:
                 sys.stdout.write(' -- ')
             sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
@@ -177,11 +177,11 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
     print '\\begin{column}{.4\\textwidth}'
 
     # print map
-    pathMs = []
+    maybepaths = []
     for neighbor in neighbors:
-        pathMs.append([c['cell'], neighbor])
+        maybepaths.append([c['cell'], neighbor])
     # TODO generate paths from c['cell'] to non-accessible neigbors
-    printLatexMapDrawCommands(map, start, end, c['path'], pathMs, [], [c['cell']], scale, True)
+    printLatexMapDrawCommands(map, start, end, c['path'], maybepaths, [], [c['cell']], scale, True)
 
     print '\end{column}'
     print '\\begin{column}{.5\\textwidth}'
