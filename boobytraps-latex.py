@@ -151,13 +151,15 @@ def generateSlide(map, traps, start, end, q, visited, c, step, scale=1):
     print '\\begin{align*}'
     a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[0]]
     if not a3:
-        a3 = ['\emptyset']
-    print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
+        print 'v_0 &= \\varnothing\\\\'
+    else:
+        print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
     for a2 in uniqueTraps(map):
         a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[traps.trapDominationLookup[a2]]]
         if not a3:
-            a3 = ['\emptyset']
-        print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
+            print 'v_' + str(a2) + ' &= \\varnothing\\\\'
+        else:
+            print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
     queueContents = []
     while not q.empty():
         queueContents.append(q.get())
@@ -182,7 +184,6 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     \usepackage{multicol}
     \usepackage{tikz}
     [macros]
-    \let\emptyset\varnothing
 
     """
     graph = graph.graph
