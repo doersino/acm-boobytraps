@@ -149,6 +149,9 @@ def trapValue(traps, trap):
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=1):
+    # TODO highlight c and neighbors in sets, queue
+    # TODO maybe draw green path + c
+
     print
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -159,7 +162,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
     print '\end{enumerate}'
     print '\\begin{columns}[c]'
     print '\\begin{column}{.4\\textwidth}'
-    printLatexMapDrawCommands(map, start, end, c['path'], neighbors, [c['cell']], scale, True)  # TODO print red dotted path to non-accessible cells (visited, tdo, etc.), green dotted path to possible cells
+    printLatexMapDrawCommands(map, start, end, c['path'], neighbors, [c['cell']], scale, True)  # TODO print red dotted path to non-accessible cells (visited, tdo, etc.), green dotted path to possible cells, maybe just highlight current cell then
     print '\end{column}'
     print '\\begin{column}{.5\\textwidth}'
     print '\\begin{align*}'
@@ -228,13 +231,6 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
         # get new cell
         c = q.get()
 
-        # TOOD rm
-        #print
-        #print "<- {'cell': " + str(c['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in c['path']]) + "], 'triggered': " + str(c['triggered']) + "}"
-        #print "0: " + ", ".join(["(" + str(d) + ")" for d in visited[0]])
-        #print "A: " + ", ".join(["(" + str(d) + ")" for d in visited[26]])
-        #print "B: " + ", ".join(["(" + str(d) + ")" for d in visited[25]])
-
         for neighbor in graph[c['cell']]:
             if neighbor not in c['path']:
                 neighbors.append(neighbor)
@@ -267,20 +263,16 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
                 # check if the end has been reached
                 if neighbor == end:
-                    # TODO print with c
                     step += 1
                     generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale)
-                    # TODO print with n
+                    step += 1
+                    generateSlide(map, traps, start, end, q, visited, n, [], step, scale)
+
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
                     q.put(n)
                     visited[n['triggered']].append(neighbor)
 
-                    # TOOD rm
-                    #print "-> {'cell': " + str(n['cell']) + ", 'path': [" + ", ".join(["(" + str(d) + ")" for d in n['path']]) + "], 'triggered': " + str(n['triggered']) + "}"
-                    #print "v[" + str(n['triggered']) + "] <- " + str(neighbor)
-
-        # TODO print
         step += 1
         generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale)
 
