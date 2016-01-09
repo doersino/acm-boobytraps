@@ -162,7 +162,7 @@ def trapValue(traps, trap):
     return str(0)
 
 
-def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=1):
+def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
     # TODO highlight c and neighbors in sets, queue
 
     print
@@ -180,8 +180,10 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
     maybepaths = []
     for neighbor in neighbors:
         maybepaths.append([c['cell'], neighbor])
-    # TODO generate paths from c['cell'] to non-accessible neigbors
-    printLatexMapDrawCommands(map, start, end, c['path'], maybepaths, [], [c['cell']], scale, True)
+    nopaths = []
+    for neighbor in inaccessibleNeighbors:
+        nopaths.append([c['cell'], neighbor])
+    printLatexMapDrawCommands(map, start, end, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
     print '\end{column}'
     print '\\begin{column}{.5\\textwidth}'
@@ -261,17 +263,19 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     q.put(c)
 
     step = 1
-    generateSlide(map, traps, start, end, q, visited, c, [], step, scale)
+    generateSlide(map, traps, start, end, q, visited, c, [], [], step, scale)
 
     while not q.empty():
-        neighbors = []
 
         # get new cell
         c = q.get()
 
+        neighbors = []
+        inaccessibleNeighbors = []
         for neighbor in graph[c['cell']]:
-            if neighbor not in c['path']:
-                neighbors.append(neighbor)
+            #if neighbor not in c['path']:
+            inaccessibleNeighbors.append(neighbor)
+
 
         # add eligible neighbors to queue and check if one of them is the end
         for neighbor in graph[c['cell']]:
@@ -299,12 +303,15 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                 # create new queue frame
                 n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': triggered}
 
+                inaccessibleNeighbors.remove(neighbor)
+                neighbors.append(neighbor)
+
                 # check if the end has been reached
                 if neighbor == end:
                     step += 1
-                    generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale)
+                    generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
                     step += 1
-                    generateSlide(map, traps, start, end, q, visited, n, [], step, scale)
+                    generateSlide(map, traps, start, end, q, visited, n, [], [], step, scale)
 
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
@@ -312,7 +319,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                     visited[n['triggered']].append(neighbor)
 
         step += 1
-        generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale)
+        generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
 
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
