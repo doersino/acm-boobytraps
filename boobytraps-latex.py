@@ -162,28 +162,37 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
     print '\end{enumerate}'
     print '\\begin{columns}[c]'
     print '\\begin{column}{.4\\textwidth}'
+
+    # print map
     printLatexMapDrawCommands(map, start, end, c['path'], neighbors, [c['cell']], scale, True)  # TODO print red dotted path to non-accessible cells (visited, tdo, etc.), green dotted path to possible cells, maybe just highlight current cell then
+
     print '\end{column}'
     print '\\begin{column}{.5\\textwidth}'
     print '\\begin{align*}'
+
+    # print visited set for empty fields
     a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[0]]
     if not a3:
         print 'v_0 &= \\varnothing\\\\'
     else:
         print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
+
+    # print visited sets for traps
     for a2 in uniqueTraps(map):
         a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[traps.trapDominationLookup[a2]]]
         if not a3:
             print 'v_' + str(a2) + ' &= \\varnothing\\\\'
         else:
             print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
+
+    # print queue
     queueContents = []
     while not q.empty():
         queueContents.append(q.get())
     for qf in queueContents:
         q.put(qf)
     queueContentsFormatted = []
-    for qf in queueContents:
+    for qf in queueContents:  # truncate long paths in queue frames
         qfCell = "({},{})".format(qf['cell'].x, qf['cell'].y)
         qfPath = "({},{})".format(qf['path'][0].x, qf['path'][0].y)
         if (len(qf['path']) > 3):
@@ -195,6 +204,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, step, scale=
         qfTrap = trapValue(traps, qf['triggered'])
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap)
     print 'q &= (' + ",\\\\&".join(queueContentsFormatted) + ')'
+
     print '\end{align*}'
     print '\end{column}'
     print '\end{columns}'
