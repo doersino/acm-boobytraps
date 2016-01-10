@@ -2,7 +2,7 @@
 
 # Using boobytraps.py, generates LaTeX snippets related to boobytraps.py:
 # If the --map option is given, this script prints the draw commands for a LaTeX
-# representation of the map (using tikz).
+# representation of the map and path (using tikz).
 # If the --slides option is given, this script prints the source code of beamer
 # slides detailing all steps of the path finding algorithm.
 #
@@ -16,6 +16,7 @@ from boobytraps import *
 
 
 # TODO change macros to have fewer args
+# TODO change BTmap from command to environment
 def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
@@ -158,9 +159,9 @@ def uniqueTraps(map):
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO highlight c (yellow background) and neighbors (dotted underline) in sets, queue
-    # TODO highlight start, end
-    # TODO highlight traps
+    # TODO highlight current cell (yellow background) and neighbors (dotted underline) in sets, queue (highlights like in map)
+    # TODO highlight start, end cells (x, y) w/ prev defined colors
+    # TODO highlight traps and trap cells (x, y) w prev def colors
     # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
 
     print
