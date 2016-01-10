@@ -270,7 +270,6 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
             #if neighbor not in c['path']:
             inaccessibleNeighbors.append(neighbor)
 
-
         # add eligible neighbors to queue and check if one of them is the end
         for neighbor in graph[c['cell']]:
 
@@ -338,7 +337,7 @@ def main():
     # parse input
     traps, map, graph, start, end = parseInput(fileinput.input())
 
-    # map scale factor (default fills half a beamer slide)
+    # compute map scale factor appropriate for filling the left half of a beamer slide
     scale = min(4.0 / map.width, 4.0 / map.height)
 
     # raid the tomb and generate slides
