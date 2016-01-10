@@ -173,8 +173,6 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\end{enumerate}'
     print '\\begin{columns}[c,onlytextwidth]'
     print '\\begin{column}{.4\\textwidth}'
-    #print '\\begin{minipage}{.4\\textwidth}'
-    #print '\\rule{\\textwidth}{10pt}'
 
     # print map
     maybepaths = []
@@ -188,10 +186,6 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\end{column}'
     print '\hspace{1em}'
     print '\\begin{column}{.5\\textwidth}'
-    #print '\end{minipage}'
-    #print '\hfill'
-    #print '\\begin{minipage}{.5\\textwidth}'
-    #print '\\rule{\\textwidth}{10pt}'
     print '\\begin{align*}'
 
     # print visited set for empty fields
@@ -232,7 +226,6 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\end{align*}'
     print '\end{column}'
     print '\end{columns}'
-    #print '\end{minipage}'
     print '\end{frame}'
 
 
