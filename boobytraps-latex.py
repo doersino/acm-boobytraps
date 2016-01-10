@@ -164,6 +164,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     # TODO highlight traps and trap cells (x, y) w prev def colors
     # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
     # TODO truncate long (> 4) visited sets
+    # TODO truncate long (> 3) queues
 
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -302,11 +303,16 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
                 # check if the end has been reached
                 if neighbor == end:
-                    # TODO on second-to-last slide show queue entry
+
+                    # show queue entry for end on second-to-last slide
+                    q.put(n)
+                    visited[n['triggered']].append(neighbor)
                     step += 1
                     generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
+
+                    # show empty queue on last slide
                     step += 1
-                    generateSlide(map, traps, start, end, q, visited, n, [], [], step, scale)
+                    generateSlide(map, traps, start, end, Queue.Queue(), visited, n, [], [], step, scale)
 
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
