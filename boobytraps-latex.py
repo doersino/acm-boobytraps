@@ -163,6 +163,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     # TODO highlight start, end cells (x, y) w/ prev defined colors
     # TODO highlight traps and trap cells (x, y) w prev def colors
     # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
+    # TODO truncate long (> 4) visited sets
 
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -221,7 +222,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
         qfTrap = traps.getValue(qf['triggered'])
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
-    print 'q &= \left[' + ",\\\\&".join(queueContentsFormatted) + '\\right]'
+    print 'q &= [' + ",\\\\&\phantom{{}=[}".join(queueContentsFormatted) + ']'
 
     print '\end{align*}'
     print '\end{column}'
