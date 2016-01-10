@@ -145,14 +145,27 @@ def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[
 
 
 def uniqueTraps(map):
-    """Return a sorted list of unique traps in the map."""
+    """Return a sorted list of unique traps in the map, with '0' at the start to
+    mark empty cells (if the map contains any).
+    """
     traps = []
 
+    # add '0' to the start of the traps list of the map contains any empty cells
+    for y, row in enumerate(map.map):
+        if traps:
+            break  # sadly, breaking out of both loops at once seems impossible
+        for x, field in enumerate(row):
+            if not map.traps.isTrap(field) and not traps:
+                traps = ['0']
+                break
+
+    # add traps
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if map.traps.isTrap(field):
                 traps.append(field)
 
+    # get rid of duplicates
     uniqueTraps = list(set(traps))
 
     return sorted(uniqueTraps)
@@ -190,20 +203,13 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\\begin{column}{.5\\textwidth}'
     print '\\begin{align*}'
 
-    # print visited set for empty fields
-    a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[0]]
-    if not a3:
-        print 'v_0 &= \\varnothing\\\\'
-    else:
-        print 'v_0 &= \{' + ",".join(a3) + '\}\\\\'
-
-    # print visited sets for traps
-    for a2 in uniqueTraps(map):
-        a3 = ["({},{})".format(a1.x, a1.y) for a1 in visited[traps.trapDominationLookup[a2]]]
-        if not a3:
-            print 'v_' + str(a2) + ' &= \\varnothing\\\\'
+    # print visited sets
+    for trap in uniqueTraps(map):
+        formattedCells = ["({},{})".format(visitedCell.x, visitedCell.y) for visitedCell in visited[traps.getIndex(trap)]]
+        if not formattedCells:
+            print 'v_' + str(trap) + ' &= \\varnothing\\\\'
         else:
-            print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
+            print 'v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
 
     # print queue, truncating long paths in queue frames
     queueContents = []
