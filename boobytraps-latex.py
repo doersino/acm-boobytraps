@@ -172,7 +172,7 @@ def uniqueTraps(map):
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO highlight current cell (yellow background) and neighbors (dotted underline) in sets, queue (highlights like in map)
+    # TODO highlight current cell (yellow background) and neighbors (dotted underline \vphantom{\BTmaybedotted{(0,1)}}) in sets, queue (highlights like in map)
     # TODO highlight start, end cells (x, y) w/ prev defined colors
     # TODO highlight traps and trap cells (x, y) w prev def colors
     # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
@@ -246,8 +246,31 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     LaTeX preamble, which should also contain at least the following commands:
 
     \documentclass{beamer}
+
     \usepackage{multicol}
     \usepackage{tikz}
+
+    \newcommand{\BTmaybeunderline}[1]{
+        \tikz[baseline=(underlined.base)]{
+            \node[inner sep=1pt,outer sep=0pt] (underlined) {#1};
+            \draw[\BTmaybepathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
+        }
+    }
+
+    \newcommand{\BTnounderline}[1]{
+        \tikz[baseline=(underlined.base)]{
+            \node[inner sep=1pt,outer sep=0pt] (underlined) {#1};
+            \draw[\BTnopathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
+        }
+    }
+
+    \newif\ifstartedinmathmode
+    \newcommand*{\BThighlighttext}[1]{
+        \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+        \tikz[baseline=(highlighted.base)]{
+            \node[rectangle, fill=\BThighlightcolor, inner sep=0.3mm] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
+        }
+    }
 
     """
     graph = graph.graph
