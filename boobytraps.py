@@ -58,13 +58,25 @@ class Traps:
     def __str__(self):
         return 'trapDominationOrder: ' + str(self.trapDominationOrder) + ', trapDominationLookup: ' + str(self.trapDominationLookup)
 
-    def getIndex(self, char):
-        """Get the index (starting with 1) of a trap."""
-        return self.trapDominationLookup[char]
+    def getIndex(self, value):
+        """Get the index (starting with 1) of a trap, or 0 if the given value is
+        not a trap.
+        """
+        if self.isTrap(value):
+            return self.trapDominationLookup[value]
+        return 0
 
-    def isTrap(self, char):
+    def getValue(self, index):
+        """Get the value of a trap represented by an index, or '0' if the index
+        is 0.
+        """
+        if index > 0:
+            return self.trapDominationOrder[index-1]
+        return '0'
+
+    def isTrap(self, value):
         """Check if a cell value is a trap."""
-        return char in self.trapDominationOrder
+        return value in self.trapDominationOrder
 
 
 class Map:
@@ -262,12 +274,8 @@ def raidTomb(graph, traps, start, end):
         visited[i] = set()
 
     # add start to queue
-    if traps.isTrap(start.value):
-        c = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
-        visited[c['triggered']].add(c['cell'])
-    else:
-        c = {'cell': start, 'path': [start], 'triggered': 0}
-        visited[0].add(c['cell'])
+    c = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
+    visited[c['triggered']].add(c['cell'])
     q.put(c)
 
     while not q.empty():

@@ -15,6 +15,7 @@
 from boobytraps import *
 
 
+# TODO change macros to have fewer args
 def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
@@ -156,14 +157,11 @@ def uniqueTraps(map):
     return sorted(uniqueTraps)
 
 
-def trapValue(traps, trap):
-    if trap > 0:
-        return traps.trapDominationOrder[trap-1]
-    return str(0)
-
-
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO highlight c and neighbors in sets, queue
+    # TODO highlight c (yellow background) and neighbors (dotted underline) in sets, queue
+    # TODO highlight start, end
+    # TODO highlight traps
+    # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
 
     print
     print '\\begin{frame}'
@@ -204,14 +202,14 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         else:
             print 'v_' + str(a2) + ' &= \{' + ",".join(a3) + '\}\\\\'
 
-    # print queue
+    # print queue, truncating long paths in queue frames
     queueContents = []
     while not q.empty():
         queueContents.append(q.get())
     for qf in queueContents:
         q.put(qf)
     queueContentsFormatted = []
-    for qf in queueContents:  # truncate long paths in queue frames
+    for qf in queueContents:
         qfCell = "({},{})".format(qf['cell'].x, qf['cell'].y)
         qfPath = "({},{})".format(qf['path'][0].x, qf['path'][0].y)
         if (len(qf['path']) > 3):
@@ -220,7 +218,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             qfPath += ",({},{})".format(qf['path'][-2].x, qf['path'][-2].y)
         if (len(qf['path']) > 1):
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
-        qfTrap = trapValue(traps, qf['triggered'])
+        qfTrap = traps.getValue(qf['triggered'])
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap)
     print 'q &= (' + ",\\\\&".join(queueContentsFormatted) + ')'
 
@@ -241,7 +239,6 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     \documentclass{beamer}
     \usepackage{multicol}
     \usepackage{tikz}
-    [macros]
 
     """
     graph = graph.graph
@@ -251,15 +248,11 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     visited = {}
     visited[0] = []
     for i in traps.trapDominationLookup.values():
-        visited[i] = []  # TODO benchmark if lists are faster in normal version as well
+        visited[i] = []
 
     # add start to queue
-    if traps.isTrap(start.value):
-        c = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
-        visited[c['triggered']].append(c['cell'])
-    else:
-        c = {'cell': start, 'path': [start], 'triggered': 0}
-        visited[0].append(c['cell'])
+    c = {'cell': start, 'path': [start], 'triggered': traps.getIndex(start.value)}
+    visited[c['triggered']].append(c['cell'])
     q.put(c)
 
     step = 1
@@ -308,6 +301,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
                 # check if the end has been reached
                 if neighbor == end:
+                    # TODO on second-to-last slide show queue entry
                     step += 1
                     generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
                     step += 1
