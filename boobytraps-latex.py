@@ -164,7 +164,6 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     # TODO highlight traps and trap cells (x, y) w prev def colors
     # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
 
-    print
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
     #print '\framesubtitle{Beispiel}'
@@ -172,8 +171,10 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\setcounter{enumi}{' + str(step-1) + '}'
     print '\item TODO'
     print '\end{enumerate}'
-    print '\\begin{columns}[c]'
+    print '\\begin{columns}[c,onlytextwidth]'
     print '\\begin{column}{.4\\textwidth}'
+    #print '\\begin{minipage}{.4\\textwidth}'
+    #print '\\rule{\\textwidth}{10pt}'
 
     # print map
     maybepaths = []
@@ -185,7 +186,12 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     printLatexMapDrawCommands(map, start, end, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
     print '\end{column}'
+    print '\hspace{1em}'
     print '\\begin{column}{.5\\textwidth}'
+    #print '\end{minipage}'
+    #print '\hfill'
+    #print '\\begin{minipage}{.5\\textwidth}'
+    #print '\\rule{\\textwidth}{10pt}'
     print '\\begin{align*}'
 
     # print visited set for empty fields
@@ -220,12 +226,13 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         if (len(qf['path']) > 1):
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
         qfTrap = traps.getValue(qf['triggered'])
-        queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap)
-    print 'q &= (' + ",\\\\&".join(queueContentsFormatted) + ')'
+        queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
+    print 'q &= \left[' + ",\\\\&".join(queueContentsFormatted) + '\\right]'
 
     print '\end{align*}'
     print '\end{column}'
     print '\end{columns}'
+    #print '\end{minipage}'
     print '\end{frame}'
 
 
