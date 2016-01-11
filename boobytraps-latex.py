@@ -17,10 +17,11 @@ from boobytraps import *
 
 # TODO change macros to have fewer args
 # TODO change BTmap from command to environment
-def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
+# TODO update docstring with options, graph drawing
+def printLatexMapDrawCommands(map, start, end, graph={}, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
-    If you want to highlight an incorrect path, change \BTpath to \BTpathX
+    If you want to highlight an incorrect path, change \BTpath to \BTnopath
     in the output of this function, and if you want to highlight a cell, use
     the \BThighlight macro.
     The following macros need to be defined in the preamble of your LaTeX
@@ -34,6 +35,8 @@ def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[
     \def\BTnopathcolor{red!60!black}
     \def\BTstartcolor{blue!85!black}
     \def\BTendcolor{red!75!black}
+    \def\BTnodecolor{black}
+    \def\BTedgecolor{black}
 
     \newcommand{\BTmap}[2]{ % scale factor & draw commands
         \begin{center}
@@ -73,6 +76,12 @@ def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[
         \foreach \nx in {0,...,\numexpr#1-1\relax}
             \foreach \my in {0,...,\numexpr#2-1\relax}
                 \node[anchor=west,inner sep=0] at (\nx+0.05,#2-\my-0.18) {\tiny(\nx,\my)};
+    }
+    \newcommand{\BTnode}[1]{ % position
+        \path[fill=\BTnodecolor] (#1) circle (0.125);
+    }
+    \newcommand{\BTedge}[2]{ % first node position & second node position
+        \draw[\BTedgecolor, solid, very thick] (#1) -- (#2);
     }
     """
 
@@ -141,6 +150,12 @@ def printLatexMapDrawCommands(map, start, end, path=[], maybepaths=[], nopaths=[
     if showCoords:
         print '\BTcoords{' + str(map.width) + '}{' + str(map.height) + '}'
 
+    # draw graph
+    for field in graph.graph:
+        print '\BTnode{' + str(field.x) + '.5,' + str(map.height-(field.y+1)) + '.5}'
+        for adj in graph.graph[field]:
+            print '\BTedge{' + str(field.x) + '.5,' + str(map.height-(field.y+1)) + '.5}{' + str(adj.x) + '.5,' + str(map.height-(adj.y+1)) + '.5}'
+
     print '}'
 
 
@@ -196,7 +211,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     nopaths = []
     for neighbor in inaccessibleNeighbors:
         nopaths.append([c['cell'], neighbor])
-    printLatexMapDrawCommands(map, start, end, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
+    printLatexMapDrawCommands(map, start, end, {}, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
     print '\end{column}'
     print '\hspace{1em}'
@@ -268,7 +283,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     \newcommand*{\BThighlighttext}[1]{
         \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(highlighted.base)]{
-            \node[rectangle, fill=\BThighlightcolor, inner sep=0.3mm] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
+            \node[rectangle, fill=\BThighlightcolor, inner sep=0.5mm] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
         }
     }
 
@@ -383,7 +398,7 @@ def main():
     # raid the tomb and print the map
     if printMap:
         moves, path, visited = raidTomb(graph, traps, start, end)
-        printLatexMapDrawCommands(map, start, end, path, [], [], [], scale, True)
+        printLatexMapDrawCommands(map, start, end, {}, path, [], [], [], scale, True)
 
 if __name__ == "__main__":
     main()
