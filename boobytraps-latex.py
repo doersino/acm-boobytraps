@@ -304,6 +304,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     visited[c['triggered']].append(c['cell'])
     q.put(c)
 
+    # generate slide for initial state
     step = 1
     generateSlide(map, traps, start, end, q, visited, c, [], [], step, scale)
 
@@ -315,7 +316,6 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
         neighbors = []
         inaccessibleNeighbors = []
         for neighbor in graph[c['cell']]:
-            #if neighbor not in c['path']:
             inaccessibleNeighbors.append(neighbor)
 
         # add eligible neighbors to queue and check if one of them is the end
@@ -344,19 +344,20 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                 # create new queue frame
                 n = {'cell': neighbor, 'path': c['path'] + [neighbor], 'triggered': triggered}
 
+                # move neighbor to list of accessible neighbors
                 inaccessibleNeighbors.remove(neighbor)
                 neighbors.append(neighbor)
 
                 # check if the end has been reached
                 if neighbor == end:
 
-                    # show queue entry for end on second-to-last slide
+                    # generate second-to-last slide and show queue entry for end
                     q.put(n)
                     visited[n['triggered']].append(neighbor)
                     step += 1
                     generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
 
-                    # show empty queue on last slide
+                    # generate last slide with empty queue
                     step += 1
                     generateSlide(map, traps, start, end, Queue.Queue(), visited, n, [], [], step, scale)
 
@@ -365,6 +366,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                     q.put(n)
                     visited[n['triggered']].append(neighbor)
 
+        # generate slide
         step += 1
         generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
 
