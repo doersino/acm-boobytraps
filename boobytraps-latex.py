@@ -265,21 +265,23 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     \usepackage{multicol}
     \usepackage{tikz}
 
-    \newcommand{\BTmaybeunderline}[1]{
+    \newif\ifstartedinmathmode
+    \newcommand*{\BTmaybeunderline}[1]{
+        \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(underlined.base)]{
-            \node[inner sep=1pt,outer sep=0pt] (underlined) {#1};
+            \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
             \draw[\BTmaybepathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
         }
     }
 
-    \newcommand{\BTnounderline}[1]{
+    \newcommand*{\BTnounderline}[1]{
+        \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(underlined.base)]{
-            \node[inner sep=1pt,outer sep=0pt] (underlined) {#1};
+            \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
             \draw[\BTnopathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
         }
     }
 
-    \newif\ifstartedinmathmode
     \newcommand*{\BThighlighttext}[1]{
         \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(highlighted.base)]{
