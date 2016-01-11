@@ -18,7 +18,7 @@ from boobytraps import *
 # TODO change macros to have fewer args
 # TODO change BTmap from command to environment
 # TODO update docstring with options, graph drawing
-def printLatexMapDrawCommands(map, start, end, graph={}, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
+def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
     If you want to highlight an incorrect path, change \BTpath to \BTnopath
@@ -151,10 +151,11 @@ def printLatexMapDrawCommands(map, start, end, graph={}, path=[], maybepaths=[],
         print '\BTcoords{' + str(map.width) + '}{' + str(map.height) + '}'
 
     # draw graph
-    for field in graph.graph:
-        print '\BTnode{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}'
-        for adj in graph.graph[field]:
-            print '\BTedge{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}{' + str(adj.x) + '.8,' + str(map.height-(adj.y+1)) + '.2}'
+    if graph:
+        for field in graph.graph:
+            print '\BTnode{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}'
+            for adj in graph.graph[field]:
+                print '\BTedge{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}{' + str(adj.x) + '.8,' + str(map.height-(adj.y+1)) + '.2}'
 
     print '}'
 
@@ -211,7 +212,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     nopaths = []
     for neighbor in inaccessibleNeighbors:
         nopaths.append([c['cell'], neighbor])
-    printLatexMapDrawCommands(map, start, end, {}, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
+    printLatexMapDrawCommands(map, start, end, False, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
     print '\end{column}'
     print '\hspace{1em}'
@@ -402,7 +403,7 @@ def main():
     # raid the tomb and print the map
     if printMap:
         moves, path, visited = raidTomb(graph, traps, start, end)
-        printLatexMapDrawCommands(map, start, end, {}, path, [], [], [], scale, True)
+        printLatexMapDrawCommands(map, start, end, False, path, [], [], [], scale, True)
 
 if __name__ == "__main__":
     main()
