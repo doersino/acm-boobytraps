@@ -152,9 +152,9 @@ def printLatexMapDrawCommands(map, start, end, graph={}, path=[], maybepaths=[],
 
     # draw graph
     for field in graph.graph:
-        print '\BTnode{' + str(field.x) + '.5,' + str(map.height-(field.y+1)) + '.5}'
+        print '\BTnode{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}'
         for adj in graph.graph[field]:
-            print '\BTedge{' + str(field.x) + '.5,' + str(map.height-(field.y+1)) + '.5}{' + str(adj.x) + '.5,' + str(map.height-(adj.y+1)) + '.5}'
+            print '\BTedge{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}{' + str(adj.x) + '.8,' + str(map.height-(adj.y+1)) + '.2}'
 
     print '}'
 
