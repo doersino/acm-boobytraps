@@ -271,7 +271,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
         \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(underlined.base)]{
             \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
-            \draw[\BTmaybepathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
+            \draw[\BTmaybepathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
         }
     }
 
@@ -279,15 +279,19 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
         \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(underlined.base)]{
             \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
-            \draw[\BTnopathcolor, dotted, very thick] (underlined.south west) -- (underlined.south east);
+            \draw[\BTnopathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
         }
     }
 
     \newcommand*{\BThighlighttext}[1]{
         \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
         \tikz[baseline=(highlighted.base)]{
-            \node[rectangle, fill=\BThighlightcolor, inner sep=0.5mm] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
+            \node[rectangle,fill=\BThighlightcolor,inner sep=1.16pt] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
         }
+    }
+
+    \newcommand*{\BTvphantomfix}{
+        \vphantom{\BTmaybeunderline{(0,0)}\BTnounderline{(0,0)}\BThighlighttext{(0,0)}[],()}
     }
 
     """
