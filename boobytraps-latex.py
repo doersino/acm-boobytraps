@@ -15,6 +15,7 @@
 from boobytraps import *
 
 
+# TODO dd more options, use subparsers http://stackoverflow.com/questions/21287828/python-argparse-add-mutually-exclusive-group-need-ether-2-args-or-just-1-args
 # TODO move macros etc. to preamble.tex file
 # TODO improve path macro
 # TODO update docstring with options, graph drawing
@@ -416,7 +417,8 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
                     # generate second-to-last slide and show queue entry for end
                     q.put(n)
-                    visited[n['triggered']].append(neighbor)
+                    if neighbor not in visited[n['triggered']]:
+                        visited[n['triggered']].append(neighbor)
                     step += 1
                     generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
 
@@ -427,7 +429,8 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
                     q.put(n)
-                    visited[n['triggered']].append(neighbor)
+                    if neighbor not in visited[n['triggered']]:
+                        visited[n['triggered']].append(neighbor)
 
         # generate slide
         step += 1
