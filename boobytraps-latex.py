@@ -15,6 +15,8 @@
 from boobytraps import *
 
 
+# TODO move macros etc. to preamble.tex file
+# TODO improve path macro
 # TODO update docstring with options, graph drawing
 def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
