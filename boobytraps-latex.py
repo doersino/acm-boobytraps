@@ -105,6 +105,14 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
             if map.traps.isTrap(field):
                 print '\BTtrap{' + str(x) + '}{' + str(y) + '}{' + field + '}'
 
+    # draw path
+    sys.stdout.write('\BTpath{')
+    for i, cell in enumerate(path):
+        if i != 0:
+            sys.stdout.write(' -- ')
+        sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
+    print '}'
+
     # draw "maybe" paths
     for maybepath in maybepaths:
         sys.stdout.write('\BTmaybepath{')
@@ -122,14 +130,6 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
                 sys.stdout.write(' -- ')
             sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
         print '}'
-
-    # draw path
-    sys.stdout.write('\BTpath{')
-    for i, cell in enumerate(path):
-        if i != 0:
-            sys.stdout.write(' -- ')
-        sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
-    print '}'
 
     # draw start
     for y, row in enumerate(map.map):
@@ -191,7 +191,6 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     # TODO highlight current cell (yellow background) and neighbors (dotted underline \vphantom{\BTmaybedotted{(0,1)}}) in sets, queue (highlights like in map)
     # TODO highlight start, end cells (x, y) w/ prev defined colors
     # TODO highlight traps and trap cells (x, y) w prev def colors
-    # TODO blue or grey paths (on top of other paths) to visited but otherwise accessible cells (visitedNeighbors)?
     # TODO truncate long (> 4) visited sets
     # TODO truncate long (> 3) queues
 
@@ -221,11 +220,22 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
     # print visited sets
     for trap in uniqueTraps(map):
-        formattedCells = ["({},{})".format(visitedCell.x, visitedCell.y) for visitedCell in visited[traps.getIndex(trap)]]
+        formattedCells = []
+        for visitedCell in visited[traps.getIndex(trap)]:
+            if visitedCell in neighbors:
+                formatString = "\BTmaybeunderline{{({},{})}}"
+            elif visitedCell in inaccessibleNeighbors:
+                formatString = "\BTnounderline{{({},{})}}"
+            elif visitedCell == c['cell']:
+                formatString = "\BThighlighttext{{({},{})}}"
+            else:
+                formatString = "({},{})"
+            formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
+        #formattedCells = ["({},{})".format(visitedCell.x, visitedCell.y) for visitedCell in visited[traps.getIndex(trap)]]
         if not formattedCells:
-            print 'v_' + str(trap) + ' &= \\varnothing\\\\'
+            print '\BTvphantomfix v_' + str(trap) + ' &= \\varnothing\\\\'
         else:
-            print 'v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
+            print '\BTvphantomfix v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
 
     # print queue, truncating long paths in queue frames
     queueContents = []
@@ -235,17 +245,53 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         q.put(qf)
     queueContentsFormatted = []
     for qf in queueContents:
-        qfCell = "({},{})".format(qf['cell'].x, qf['cell'].y)
-        qfPath = "({},{})".format(qf['path'][0].x, qf['path'][0].y)
+
+        # cell
+        if qf['cell'] in neighbors:
+            formatString = "\BTmaybeunderline{{({},{})}}"
+        elif qf['cell'] in inaccessibleNeighbors:
+            formatString = "\BTnounderline{{({},{})}}"
+        elif qf['cell'] == c['cell']:
+            formatString = "\BThighlighttext{{({},{})}}"
+        else:
+            formatString = "({},{})"
+        qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
+
+        # path
+        if qf['path'][0] in neighbors:
+            formatString = "\BTmaybeunderline{{({},{})}}"
+        elif qf['path'][0] in inaccessibleNeighbors:
+            formatString = "\BTnounderline{{({},{})}}"
+        elif qf['path'][0] == c['cell']:
+            formatString = "\BThighlighttext{{({},{})}}"
+        else:
+            formatString = "({},{})"
+        qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
         if (len(qf['path']) > 3):
             qfPath += ",\dots"
         if (len(qf['path']) > 2):
-            qfPath += ",({},{})".format(qf['path'][-2].x, qf['path'][-2].y)
+            if qf['path'][-2] in neighbors:
+                formatString = ",\BTmaybeunderline{{({},{})}}"
+            elif qf['path'][-2] in inaccessibleNeighbors:
+                formatString = ",\BTnounderline{{({},{})}}"
+            elif qf['path'][-2] == c['cell']:
+                formatString = ",\BThighlighttext{{({},{})}}"
+            else:
+                formatString = ",({},{})"
+            qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
         if (len(qf['path']) > 1):
+            if qf['path'][-1] in neighbors:
+                formatString = ",\BTmaybeunderline{{({},{})}}"
+            elif qf['path'][-1] in inaccessibleNeighbors:
+                formatString = ",\BTnounderline{{({},{})}}"
+            elif qf['path'][-1] == c['cell']:
+                formatString = ",\BThighlighttext{{({},{})}}"
+            else:
+                formatString = ",({},{})"
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
         qfTrap = traps.getValue(qf['triggered'])
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
-    print 'q &= [' + ",\\\\&\phantom{{}=[}".join(queueContentsFormatted) + ']'
+    print 'q &= [' + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + ']'
 
     print '\end{align*}'
     print '\end{column}'
