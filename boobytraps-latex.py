@@ -15,7 +15,7 @@
 from boobytraps import *
 
 
-# TODO dd more options, use subparsers http://stackoverflow.com/questions/21287828/python-argparse-add-mutually-exclusive-group-need-ether-2-args-or-just-1-args
+# TODO add more options, use subparsers http://stackoverflow.com/questions/21287828/python-argparse-add-mutually-exclusive-group-need-ether-2-args-or-just-1-args
 # TODO move macros etc. to preamble.tex file
 # TODO improve path macro
 # TODO update docstring with options, graph drawing
