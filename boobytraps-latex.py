@@ -188,11 +188,8 @@ def uniqueTraps(map):
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO highlight current cell (yellow background) and neighbors (dotted underline \vphantom{\BTmaybedotted{(0,1)}}) in sets, queue (highlights like in map)
     # TODO highlight start, end cells (x, y) w/ prev defined colors
     # TODO highlight traps and trap cells (x, y) w prev def colors
-    # TODO truncate long (> 4) visited sets
-    # TODO truncate long (> 3) queues
 
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -235,6 +232,9 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         if not formattedCells:
             print '\BTvphantomfix v_' + str(trap) + ' &= \\varnothing\\\\'
         else:
+            if len(formattedCells) > 4:
+                del formattedCells[:-5]
+                formattedCells[0] = "\dots"
             print '\BTvphantomfix v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
 
     # print first three elements of queue, truncating long paths in queue frames
