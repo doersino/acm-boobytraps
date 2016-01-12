@@ -237,7 +237,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         else:
             print '\BTvphantomfix v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
 
-    # print queue, truncating long paths in queue frames
+    # print first three elements of queue, truncating long paths in queue frames
     queueContents = []
     while not q.empty():
         queueContents.append(q.get())
@@ -300,6 +300,9 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         qfTrap = traps.getValue(qf['triggered'])
 
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
+    if len(queueContentsFormatted) > 3:
+        del queueContentsFormatted[3:]
+        queueContentsFormatted.append("\dots")
     print 'q &= [' + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + ']'
 
     print '\end{align*}'
