@@ -231,7 +231,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             else:
                 formatString = "({},{})"
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
-        #formattedCells = ["({},{})".format(visitedCell.x, visitedCell.y) for visitedCell in visited[traps.getIndex(trap)]]
+
         if not formattedCells:
             print '\BTvphantomfix v_' + str(trap) + ' &= \\varnothing\\\\'
         else:
@@ -257,7 +257,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             formatString = "({},{})"
         qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
 
-        # path
+        # first element of path
         if qf['path'][0] in neighbors:
             formatString = "\BTmaybeunderline{{({},{})}}"
         elif qf['path'][0] in inaccessibleNeighbors:
@@ -267,8 +267,12 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         else:
             formatString = "({},{})"
         qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
+
+        # dots indicating path longer than 3
         if (len(qf['path']) > 3):
             qfPath += ",\dots"
+
+        # second-to-last element of path
         if (len(qf['path']) > 2):
             if qf['path'][-2] in neighbors:
                 formatString = ",\BTmaybeunderline{{({},{})}}"
@@ -279,6 +283,8 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             else:
                 formatString = ",({},{})"
             qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
+
+        # last element of path
         if (len(qf['path']) > 1):
             if qf['path'][-1] in neighbors:
                 formatString = ",\BTmaybeunderline{{({},{})}}"
@@ -289,7 +295,10 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
             else:
                 formatString = ",({},{})"
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
+
+        # maximum triggered trap
         qfTrap = traps.getValue(qf['triggered'])
+
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
     print 'q &= [' + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + ']'
 
