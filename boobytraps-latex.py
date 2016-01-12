@@ -15,8 +15,6 @@
 from boobytraps import *
 
 
-# TODO change macros to have fewer args
-# TODO change BTmap from command to environment
 # TODO update docstring with options, graph drawing
 def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
@@ -38,50 +36,50 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
     \def\BTnodecolor{black}
     \def\BTedgecolor{black}
 
-    \newcommand{\BTmap}[2]{ % scale factor & draw commands
+    \newcommand{\BTmap}[2]{ % scale factor, draw commands
         \begin{center}
-            \begin{tikzpicture}[scale=#1,every node/.style={transform shape}]
+            \begin{tikzpicture}[y=-1cm,scale=#1,every node/.style={transform shape}]
                 #2
             \end{tikzpicture}
         \end{center}
     }
-    \newcommand{\BThighlight}[2]{ % bottom left corner & top right corner
-        \fill[\BThighlightcolor] (#1) rectangle (#2);
+    \newcommand{\BThighlight}[2]{ % x, y
+        \fill[\BThighlightcolor] (#1,#2) rectangle (#1+1,#2+1);
     }
-    \newcommand{\BTwall}[2]{ % bottom left corner & top right corner
-        \fill[\BTwallcolor] (#1) rectangle (#2);
+    \newcommand{\BTwall}[2]{ % x, y
+        \fill[\BTwallcolor] (#1,#2) rectangle (#1+1,#2+1);
     }
-    \newcommand{\BTtrap}[2]{ % position & letter
-        \node at (#1) {\LARGE\bfseries\color{\BTtrapcolor} #2};
+    \newcommand{\BTtrap}[3]{ % x, y, char
+        \node at (#1+0.5,#2+0.5) {\LARGE\bfseries\color{\BTtrapcolor} #3};
     }
-    \newcommand{\BTpath}[1]{ % path
+    \newcommand{\BTpath}[1]{ % (x1,y1) -- ... -- (xn,yn)
         \draw[\BTpathcolor, solid, very thick] #1;
     }
-    \newcommand{\BTmaybepath}[1]{ % path
+    \newcommand{\BTmaybepath}[1]{ % (x1,y1) -- ... -- (xn,yn)
         \draw[\BTmaybepathcolor, dotted, very thick] #1;
     }
-    \newcommand{\BTnopath}[1]{ % path
+    \newcommand{\BTnopath}[1]{ % (x1,y1) -- ... -- (xn,yn)
         \draw[\BTnopathcolor, dotted, very thick] #1;
     }
-    \newcommand{\BTstart}[1]{ % position
-        \path[fill=\BTstartcolor] (#1) circle (0.25);
+    \newcommand{\BTstart}[2]{ % x, y
+        \path[fill=\BTstartcolor] (#1+0.5,#2+0.5) circle (0.25);
     }
-    \newcommand{\BTend}[1]{ % position
-        \path[fill=\BTendcolor] (#1) circle (0.25);
+    \newcommand{\BTend}[2]{ % x, y
+        \path[fill=\BTendcolor] (#1+0.5,#2+0.5) circle (0.25);
     }
-    \newcommand{\BTgrid}[1]{ % width,height
-        \draw[step=1,black,thick] (0,0) grid (#1);
+    \newcommand{\BTgrid}[2]{ % width, height
+        \draw[xstep=1,ystep=-1,black,thick] (0,0) grid (#1,#2);
     }
-    \newcommand{\BTcoords}[2]{ % width & height
+    \newcommand{\BTcoords}[2]{ % width, height
         \foreach \nx in {0,...,\numexpr#1-1\relax}
             \foreach \my in {0,...,\numexpr#2-1\relax}
-                \node[anchor=west,inner sep=0] at (\nx+0.05,#2-\my-0.18) {\tiny(\nx,\my)};
+                \node[anchor=west,inner sep=0] at (\nx+0.05,\my+0.18) {\tiny(\nx,\my)};
     }
-    \newcommand{\BTnode}[1]{ % position
-        \path[fill=\BTnodecolor] (#1) circle (0.125);
+    \newcommand{\BTnode}[2]{ % x, y
+        \path[fill=\BTnodecolor] (#1+0.8,#2+0.8) circle (0.125);
     }
-    \newcommand{\BTedge}[2]{ % first node position & second node position
-        \draw[\BTedgecolor, solid, very thick] (#1) -- (#2);
+    \newcommand{\BTedge}[4]{ % first node position & second node position
+        \draw[\BTedgecolor, solid, very thick] (#1+0.8,#2+0.8) -- (#3+0.8,#4+0.8);
     }
     """
 
@@ -91,19 +89,19 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) in highlight:
-                print '\BThighlight{' + str(x) + ',' + str(map.height-y) + '}{' + str(x+1) + ',' + str(map.height-(y+1)) + '}'
+                print '\BThighlight{' + str(x) + '}{' + str(y) + '}'
 
     # draw walls
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if field == 'x':
-                print '\BTwall{' + str(x) + ',' + str(map.height-y) + '}{' + str(x+1) + ',' + str(map.height-(y+1)) + '}'
+                print '\BTwall{' + str(x) + '}{' + str(y) + '}'
 
     # draw traps
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if map.traps.isTrap(field):
-                print '\BTtrap{' + str(x) + '.5,' + str(map.height-(y+1)) + '.5}{' + field + '}'
+                print '\BTtrap{' + str(x) + '}{' + str(y) + '}{' + field + '}'
 
     # draw "maybe" paths
     for maybepath in maybepaths:
@@ -111,7 +109,7 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
         for i, cell in enumerate(maybepath):
             if i != 0:
                 sys.stdout.write(' -- ')
-            sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
+            sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
         print '}'
 
     # draw "no" paths
@@ -120,7 +118,7 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
         for i, cell in enumerate(nopath):
             if i != 0:
                 sys.stdout.write(' -- ')
-            sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
+            sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
         print '}'
 
     # draw path
@@ -128,23 +126,23 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
     for i, cell in enumerate(path):
         if i != 0:
             sys.stdout.write(' -- ')
-        sys.stdout.write('(' + str(cell.x) + '.5,' + str(map.height-(cell.y+1)) + '.5)')
+        sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
     print '}'
 
     # draw start
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) == start:
-                print '\BTstart{' + str(x) + '.5,' + str(map.height-(y+1)) + '.5}'
+                print '\BTstart{' + str(x) + '}{' + str(y) + '}'
 
     # draw end
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) == end:
-                print '\BTend{' + str(x) + '.5,' + str(map.height-(y+1)) + '.5}'
+                print '\BTend{' + str(x) + '}{' + str(y) + '}'
 
     # draw grid
-    print '\BTgrid{' + str(map.width) + ',' + str(map.height) + '}'
+    print '\BTgrid{' + str(map.width) + '}{' + str(map.height) + '}'
 
     # draw coords
     if showCoords:
@@ -153,9 +151,9 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
     # draw graph
     if graph:
         for field in graph.graph:
-            print '\BTnode{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}'
+            print '\BTnode{' + str(field.x) + '}{' + str(field.y) + '}'
             for adj in graph.graph[field]:
-                print '\BTedge{' + str(field.x) + '.8,' + str(map.height-(field.y+1)) + '.2}{' + str(adj.x) + '.8,' + str(map.height-(adj.y+1)) + '.2}'
+                print '\BTedge{' + str(field.x) + '}{' + str(field.y) + '}{' + str(adj.x) + '}{' + str(adj.y) + '}'
 
     print '}'
 
