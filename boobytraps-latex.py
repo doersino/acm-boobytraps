@@ -299,7 +299,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
         # maximum triggered trap
         qfTrap = traps.getValue(qf['triggered'])
-        if qfTrap != '0':
+        if traps.isTrap(qfTrap):
             qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
 
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
