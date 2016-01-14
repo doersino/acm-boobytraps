@@ -190,7 +190,7 @@ def uniqueTraps(map):
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
     # TODO highlight start, end cells (x, y) w/ prev defined colors
-    # TODO highlight traps and trap cells (x, y) w prev def colors
+    # TODO highlight trap cells (x, y) w prev def colors
 
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -299,6 +299,8 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
         # maximum triggered trap
         qfTrap = traps.getValue(qf['triggered'])
+        if qfTrap != '0':
+            qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
 
         queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
     if len(queueContentsFormatted) > 3:
