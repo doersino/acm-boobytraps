@@ -247,6 +247,9 @@ def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
+    # TODO improve alignment
+    # TODO improve separator
+
     print '\\begin{frame}'
     #print '\frametitle{Beispiel}'
     #print '\framesubtitle{Schritt ' + str(step-1) + ': TODO}'
@@ -325,6 +328,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
     \usepackage{multicol}
     \usepackage{tikz}
+    \usepackage{booktabs}
 
     \newif\ifstartedinmathmode
     \newcommand*{\BTmaybeunderline}[1]{
