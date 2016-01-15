@@ -188,9 +188,24 @@ def uniqueTraps(map):
     return sorted(uniqueTraps)
 
 
+def cellFormatString(cell, start, end, traps, neighbors, inaccessibleNeighbors, c):
+    formatString = "({},{})"
+    if cell == start:
+        formatString = "\\textcolor{{\BTstartcolor}}{{" + formatString + "}}"
+    elif cell == end:
+        formatString = "\\textcolor{{\BTendcolor}}{{" + formatString + "}}"
+    elif traps.isTrap(cell.value):
+        formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
+    if cell in neighbors:
+        formatString = "\BTmaybeunderline{{" + formatString + "}}"
+    elif cell in inaccessibleNeighbors:
+        formatString = "\BTnounderline{{" + formatString + "}}"
+    elif cell == c['cell']:
+        formatString = "\BThighlighttext{{" + formatString + "}}"
+    return formatString
+
+
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO subfunctions
-    # TODO highlight start, end cells (x, y) w/ prev defined colors, put highlight around underline but inside other highlight
     # TODO print (and highlight) c somewhere
 
     print '\\begin{frame}'
@@ -221,15 +236,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     for trap in uniqueTraps(map):
         formattedCells = []
         for visitedCell in visited[traps.getIndex(trap)]:
-            formatString = "({},{})"
-            if traps.isTrap(visitedCell.value):
-                formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
-            if visitedCell in neighbors:
-                formatString = "\BTmaybeunderline{{" + formatString + "}}"
-            elif visitedCell in inaccessibleNeighbors:
-                formatString = "\BTnounderline{{" + formatString + "}}"
-            elif visitedCell == c['cell']:
-                formatString = "\BThighlighttext{{" + formatString + "}}"
+            formatString = cellFormatString(visitedCell, start, end, traps, neighbors, inaccessibleNeighbors, c)
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
 
         if not formattedCells:
@@ -250,27 +257,11 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     for qf in queueContents:
 
         # cell
-        formatString = "({},{})"
-        if traps.isTrap(qf['cell'].value):
-            formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
-        if qf['cell'] in neighbors:
-            formatString = "\BTmaybeunderline{{" + formatString + "}}"
-        elif qf['cell'] in inaccessibleNeighbors:
-            formatString = "\BTnounderline{{" + formatString + "}}"
-        elif qf['cell'] == c['cell']:
-            formatString = "\BThighlighttext{{" + formatString + "}}"
+        formatString = cellFormatString(qf['cell'], start, end, traps, neighbors, inaccessibleNeighbors, c)
         qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
 
         # first element of path
-        formatString = "({},{})"
-        if traps.isTrap(qf['path'][0].value):
-            formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
-        if qf['path'][0] in neighbors:
-            formatString = "\BTmaybeunderline{{" + formatString + "}}"
-        elif qf['path'][0] in inaccessibleNeighbors:
-            formatString = "\BTnounderline{{" + formatString + "}}"
-        elif qf['path'][0] == c['cell']:
-            formatString = "\BThighlighttext{{" + formatString + "}}"
+        formatString = cellFormatString(qf['path'][0], start, end, traps, neighbors, inaccessibleNeighbors, c)
         qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
 
         # dots indicating path longer than 3
@@ -279,29 +270,13 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
         # second-to-last element of path
         if (len(qf['path']) > 2):
-            formatString = "({},{})"
-            if traps.isTrap(qf['path'][-2].value):
-                formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
-            if qf['path'][-2] in neighbors:
-                formatString = "\BTmaybeunderline{{" + formatString + "}}"
-            elif qf['path'][-2] in inaccessibleNeighbors:
-                formatString = "\BTnounderline{{" + formatString + "}}"
-            elif qf['path'][-2] == c['cell']:
-                formatString = "\BThighlighttext{{" + formatString + "}}"
+            formatString = cellFormatString(qf['path'][-2], start, end, traps, neighbors, inaccessibleNeighbors, c)
             formatString = "," + formatString
             qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
 
         # last element of path
         if (len(qf['path']) > 1):
-            formatString = "({},{})"
-            if traps.isTrap(qf['path'][-1].value):
-                formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
-            if qf['path'][-1] in neighbors:
-                formatString = "\BTmaybeunderline{{" + formatString + "}}"
-            elif qf['path'][-1] in inaccessibleNeighbors:
-                formatString = "\BTnounderline{{" + formatString + "}}"
-            elif qf['path'][-1] == c['cell']:
-                formatString = "\BThighlighttext{{" + formatString + "}}"
+            formatString = cellFormatString(qf['path'][-1], start, end, traps, neighbors, inaccessibleNeighbors, c)
             formatString = "," + formatString
             qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
 
