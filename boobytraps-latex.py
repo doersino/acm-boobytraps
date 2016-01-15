@@ -189,20 +189,61 @@ def uniqueTraps(map):
 
 
 def cellFormatString(cell, start, end, traps, neighbors, inaccessibleNeighbors, c):
+    """Generate the format string for a cell (x, y)."""
     formatString = "({},{})"
+
     if cell == start:
         formatString = "\\textcolor{{\BTstartcolor}}{{" + formatString + "}}"
     elif cell == end:
         formatString = "\\textcolor{{\BTendcolor}}{{" + formatString + "}}"
     elif traps.isTrap(cell.value):
         formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
+
     if cell in neighbors:
         formatString = "\BTmaybeunderline{{" + formatString + "}}"
     elif cell in inaccessibleNeighbors:
         formatString = "\BTnounderline{{" + formatString + "}}"
     elif cell == c['cell']:
         formatString = "\BThighlighttext{{" + formatString + "}}"
+
     return formatString
+
+
+def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c):
+    """Format a queue frame consisting of cell, path and maximum triggered trap:
+    ((x1, y1), [(x2, y2), ..., (x3, y3), (x4, y4)], t).
+    """
+
+    # cell
+    formatString = cellFormatString(qf['cell'], start, end, traps, neighbors, inaccessibleNeighbors, c)
+    qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
+
+    # first element of path
+    formatString = cellFormatString(qf['path'][0], start, end, traps, neighbors, inaccessibleNeighbors, c)
+    qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
+
+    # dots indicating path longer than 3
+    if (len(qf['path']) > 3):
+        qfPath += ",\dots"
+
+    # second-to-last element of path
+    if (len(qf['path']) > 2):
+        formatString = cellFormatString(qf['path'][-2], start, end, traps, neighbors, inaccessibleNeighbors, c)
+        formatString = "," + formatString
+        qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
+
+    # last element of path
+    if (len(qf['path']) > 1):
+        formatString = cellFormatString(qf['path'][-1], start, end, traps, neighbors, inaccessibleNeighbors, c)
+        formatString = "," + formatString
+        qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
+
+    # maximum triggered trap
+    qfTrap = traps.getValue(qf['triggered'])
+    if traps.isTrap(qfTrap):
+        qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
+
+    return "(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")"
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
@@ -255,37 +296,8 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         q.put(qf)
     queueContentsFormatted = []
     for qf in queueContents:
-
-        # cell
-        formatString = cellFormatString(qf['cell'], start, end, traps, neighbors, inaccessibleNeighbors, c)
-        qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
-
-        # first element of path
-        formatString = cellFormatString(qf['path'][0], start, end, traps, neighbors, inaccessibleNeighbors, c)
-        qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
-
-        # dots indicating path longer than 3
-        if (len(qf['path']) > 3):
-            qfPath += ",\dots"
-
-        # second-to-last element of path
-        if (len(qf['path']) > 2):
-            formatString = cellFormatString(qf['path'][-2], start, end, traps, neighbors, inaccessibleNeighbors, c)
-            formatString = "," + formatString
-            qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
-
-        # last element of path
-        if (len(qf['path']) > 1):
-            formatString = cellFormatString(qf['path'][-1], start, end, traps, neighbors, inaccessibleNeighbors, c)
-            formatString = "," + formatString
-            qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
-
-        # maximum triggered trap
-        qfTrap = traps.getValue(qf['triggered'])
-        if traps.isTrap(qfTrap):
-            qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
-
-        queueContentsFormatted.append("(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")")
+        qfFormatted = formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
+        queueContentsFormatted.append(qfFormatted)
     if len(queueContentsFormatted) > 3:
         del queueContentsFormatted[3:]
         queueContentsFormatted.append("\dots")
