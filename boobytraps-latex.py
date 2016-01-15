@@ -189,8 +189,9 @@ def uniqueTraps(map):
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO highlight start, end cells (x, y) w/ prev defined colors
-    # TODO print and highlight c somewhere
+    # TODO subfunctions
+    # TODO highlight start, end cells (x, y) w/ prev defined colors, put highlight around underline but inside other highlight
+    # TODO print (and highlight) c somewhere
 
     print '\\begin{frame}'
     #print '\frametitle{Implementation}'
@@ -321,6 +322,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\end{frame}'
 
 
+# TODO \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi really necessary?
 def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output a LaTeX beamer slide
