@@ -247,15 +247,13 @@ def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
 
 
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO print (and highlight) c somewhere
-
     print '\\begin{frame}'
-    #print '\frametitle{Implementation}'
-    #print '\framesubtitle{Beispiel}'
-    print '\\begin{enumerate}'
-    print '\setcounter{enumi}{' + str(step-1) + '}'
-    print '\item TODO'
-    print '\end{enumerate}'
+    #print '\frametitle{Beispiel}'
+    #print '\framesubtitle{Schritt ' + str(step-1) + ': TODO}'
+    #print '\\begin{enumerate}'
+    #print '\setcounter{enumi}{' + str(step-1) + '}'
+    #print '\item TODO'
+    #print '\end{enumerate}'
     print '\\begin{columns}[c,onlytextwidth]'
     print '\\begin{column}{.4\\textwidth}'
 
@@ -272,6 +270,11 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\hspace{1em}'
     print '\\begin{column}{.5\\textwidth}'
     print '\\begin{align*}'
+
+    # print current queue frame
+    if step > 1:
+        print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, neighbors, inaccessibleNeighbors, c) + "\\\\"
+        print "\midrule"
 
     # print visited sets
     for trap in uniqueTraps(map):
