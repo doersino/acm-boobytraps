@@ -132,7 +132,7 @@ def uniqueTraps(map):
     return sorted(uniqueTraps)
 
 
-def cellFormatString(cell, start, end, traps, neighbors, inaccessibleNeighbors, c):
+def cellFormatString(cell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c):
     """Generate the format string for a cell (x, y)."""
     formatString = "({},{})"
 
@@ -143,7 +143,7 @@ def cellFormatString(cell, start, end, traps, neighbors, inaccessibleNeighbors, 
     elif traps.isTrap(cell.value):
         formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
 
-    if cell in neighbors:
+    if cell in accessibleNeighbors:
         formatString = "\BTmaybeunderline{{" + formatString + "}}"
     elif cell in inaccessibleNeighbors:
         formatString = "\BTnounderline{{" + formatString + "}}"
@@ -153,17 +153,17 @@ def cellFormatString(cell, start, end, traps, neighbors, inaccessibleNeighbors, 
     return formatString
 
 
-def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c):
+def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c):
     """Format a queue frame consisting of cell, path and maximum triggered trap:
     ((x1, y1), [(x2, y2), ..., (x3, y3), (x4, y4)], t).
     """
 
     # cell
-    formatString = cellFormatString(qf['cell'], start, end, traps, neighbors, inaccessibleNeighbors, c)
+    formatString = cellFormatString(qf['cell'], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
     qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
 
     # first element of path
-    formatString = cellFormatString(qf['path'][0], start, end, traps, neighbors, inaccessibleNeighbors, c)
+    formatString = cellFormatString(qf['path'][0], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
     qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
 
     # dots indicating path longer than 3
@@ -172,13 +172,13 @@ def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
 
     # second-to-last element of path
     if (len(qf['path']) > 2):
-        formatString = cellFormatString(qf['path'][-2], start, end, traps, neighbors, inaccessibleNeighbors, c)
+        formatString = cellFormatString(qf['path'][-2], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
         formatString = "," + formatString
         qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
 
     # last element of path
     if (len(qf['path']) > 1):
-        formatString = cellFormatString(qf['path'][-1], start, end, traps, neighbors, inaccessibleNeighbors, c)
+        formatString = cellFormatString(qf['path'][-1], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
         formatString = "," + formatString
         qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
 
@@ -192,7 +192,7 @@ def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
 
 # TODO improve alignment
 # TODO improve separator
-def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
+def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale=1):
     """Ouput the source code of a single LaTeX Beamer slide."""
 
     print '\\begin{frame}'
@@ -207,7 +207,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
     # print map
     maybepaths = []
-    for neighbor in neighbors:
+    for neighbor in accessibleNeighbors:
         maybepaths.append([c['cell'], neighbor])
     nopaths = []
     for neighbor in inaccessibleNeighbors:
@@ -221,14 +221,14 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 
     # print current queue frame
     if step > 1:
-        print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, neighbors, inaccessibleNeighbors, c) + "\\\\"
+        print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c) + "\\\\"
         print "\midrule"
 
     # print visited sets
     for trap in uniqueTraps(map):
         formattedCells = []
         for visitedCell in visited[traps.getIndex(trap)]:
-            formatString = cellFormatString(visitedCell, start, end, traps, neighbors, inaccessibleNeighbors, c)
+            formatString = cellFormatString(visitedCell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
 
         if not formattedCells:
@@ -247,7 +247,7 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
         q.put(qf)
     queueContentsFormatted = []
     for qf in queueContents:
-        qfFormatted = formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
+        qfFormatted = formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
         queueContentsFormatted.append(qfFormatted)
     if len(queueContentsFormatted) > 3:
         del queueContentsFormatted[3:]
@@ -291,7 +291,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
         # get new cell
         c = q.get()
 
-        neighbors = []
+        accessibleNeighbors = []
         inaccessibleNeighbors = []
         for neighbor in graph[c['cell']]:
             inaccessibleNeighbors.append(neighbor)
@@ -324,7 +324,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
                 # move neighbor to list of accessible neighbors
                 inaccessibleNeighbors.remove(neighbor)
-                neighbors.append(neighbor)
+                accessibleNeighbors.append(neighbor)
 
                 # check if the end has been reached
                 if neighbor == end:
@@ -334,7 +334,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                     if neighbor not in visited[n['triggered']]:
                         visited[n['triggered']].append(neighbor)
                     step += 1
-                    generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
+                    generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale)
 
                     # generate last slide with empty queue
                     step += 1
@@ -348,7 +348,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
         # generate slide
         step += 1
-        generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale)
+        generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale)
 
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
@@ -376,6 +376,7 @@ def main():
     # TODO highlightcurrent
     # TODO highlightaccessibleneighbors
     # TODO highlightinaccessibleneighbors
+    # TODO drawgraph
     # TODO slidetitle
     # TODO slidesubtitle
     parser_slides.add_argument("--scale", type=float, help="scale factor for the map, should be < 1 for large maps as the unit is 1cm2 per cell (default: 1)")
