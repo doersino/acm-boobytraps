@@ -174,7 +174,7 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
     # dots indicating path longer than 3
     if (len(qf['path']) > 3):
-        qfPath += ",\dots"
+        qfPath += ",..."
 
     # second-to-last element of path
     if (len(qf['path']) > 2):
@@ -243,7 +243,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         else:
             if len(formattedCells) > 4:
                 del formattedCells[:-5]
-                formattedCells[0] = "\dots"
+                formattedCells[0] = "..."
             print "\BTvphantomfix v_" + str(trap) + " &= \{" + ",".join(formattedCells) + "\}\\\\"
 
     # print first few elements of queue, truncating long paths in queue frames
@@ -258,7 +258,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         queueContentsFormatted.append(qfFormatted)
     if len(queueContentsFormatted) > args.maxqueuelength:
         del queueContentsFormatted[args.maxqueuelength:]
-        queueContentsFormatted.append("\dots")
+        queueContentsFormatted.append("...")
     print "q &= [" + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + "]"
 
     print "\end{align*}"
