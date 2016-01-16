@@ -1,0 +1,365 @@
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{1}{0}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix v_0 &= \{\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}\}\\
+\BTvphantomfix v_A &= \varnothing\\
+\BTvphantomfix v_B &= \varnothing\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}, [\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}], 0)]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{1}{0}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5)}
+\BTmaybepath{(1.5,0.5) -- (1.5,1.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{1} &= (\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}, [\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}], 0)\\
+\midrule
+\BTvphantomfix v_0 &= \{\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}}\}\\
+\BTvphantomfix v_A &= \varnothing\\
+\BTvphantomfix v_B &= \{\BTmaybeunderline{\textcolor{\BTtrapcolor}{(1,1)}}\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{\textcolor{\BTtrapcolor}{(1,1)}}, [\BThighlighttext{\textcolor{\BTstartcolor}{(1,0)}},(1,1)], \textcolor{\BTtrapcolor}{B})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{1}{1}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5)}
+\BTmaybepath{(1.5,1.5) -- (2.5,1.5)}
+\BTnopath{(1.5,1.5) -- (1.5,2.5)}
+\BTnopath{(1.5,1.5) -- (1.5,0.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{2} &= (\BThighlighttext{\textcolor{\BTtrapcolor}{(1,1)}}, [\BTnounderline{\textcolor{\BTstartcolor}{(1,0)}},(1,1)], \textcolor{\BTtrapcolor}{B})\\
+\midrule
+\BTvphantomfix v_0 &= \{\BTnounderline{\textcolor{\BTstartcolor}{(1,0)}}\}\\
+\BTvphantomfix v_A &= \varnothing\\
+\BTvphantomfix v_B &= \{\BThighlighttext{\textcolor{\BTtrapcolor}{(1,1)}},\BTmaybeunderline{(2,1)}\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{(2,1)}, [\BTnounderline{\textcolor{\BTstartcolor}{(1,0)}},\BThighlighttext{\textcolor{\BTtrapcolor}{(1,1)}},(2,1)], \textcolor{\BTtrapcolor}{B})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{2}{1}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5)}
+\BTmaybepath{(2.5,1.5) -- (3.5,1.5)}
+\BTnopath{(2.5,1.5) -- (1.5,1.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{3} &= (\BThighlighttext{(2,1)}, [\textcolor{\BTstartcolor}{(1,0)},\BTnounderline{\textcolor{\BTtrapcolor}{(1,1)}},(2,1)], \textcolor{\BTtrapcolor}{B})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \varnothing\\
+\BTvphantomfix v_B &= \{\BTnounderline{\textcolor{\BTtrapcolor}{(1,1)}},\BThighlighttext{(2,1)},\BTmaybeunderline{(3,1)}\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{(3,1)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{(2,1)},(3,1)], \textcolor{\BTtrapcolor}{B})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{3}{1}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5)}
+\BTmaybepath{(3.5,1.5) -- (3.5,2.5)}
+\BTnopath{(3.5,1.5) -- (2.5,1.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{4} &= (\BThighlighttext{(3,1)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BTnounderline{(2,1)},(3,1)], \textcolor{\BTtrapcolor}{B})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\BTmaybeunderline{\textcolor{\BTtrapcolor}{(3,2)}}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},\BTnounderline{(2,1)},\BThighlighttext{(3,1)}\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{\textcolor{\BTtrapcolor}{(3,2)}}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{(3,1)},(3,2)], \textcolor{\BTtrapcolor}{A})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{3}{2}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,2.5)}
+\BTmaybepath{(3.5,2.5) -- (3.5,3.5)}
+\BTnopath{(3.5,2.5) -- (3.5,1.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{5} &= (\BThighlighttext{\textcolor{\BTtrapcolor}{(3,2)}}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BTnounderline{(3,1)},(3,2)], \textcolor{\BTtrapcolor}{A})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\BThighlighttext{\textcolor{\BTtrapcolor}{(3,2)}},\BTmaybeunderline{(3,3)}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},(2,1),\BTnounderline{(3,1)}\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{(3,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{\textcolor{\BTtrapcolor}{(3,2)}},(3,3)], \textcolor{\BTtrapcolor}{A})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{3}{3}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,2.5) -- (3.5,3.5)}
+\BTmaybepath{(3.5,3.5) -- (2.5,3.5)}
+\BTnopath{(3.5,3.5) -- (3.5,2.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{6} &= (\BThighlighttext{(3,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BTnounderline{\textcolor{\BTtrapcolor}{(3,2)}},(3,3)], \textcolor{\BTtrapcolor}{A})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\BTnounderline{\textcolor{\BTtrapcolor}{(3,2)}},\BThighlighttext{(3,3)},\BTmaybeunderline{(2,3)}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},(2,1),(3,1)\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{(2,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{(3,3)},(2,3)], \textcolor{\BTtrapcolor}{A})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{2}{3}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,2.5) -- (3.5,3.5) -- (2.5,3.5)}
+\BTmaybepath{(2.5,3.5) -- (1.5,3.5)}
+\BTnopath{(2.5,3.5) -- (3.5,3.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{7} &= (\BThighlighttext{(2,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BTnounderline{(3,3)},(2,3)], \textcolor{\BTtrapcolor}{A})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\textcolor{\BTtrapcolor}{(3,2)},\BTnounderline{(3,3)},\BThighlighttext{(2,3)},\BTmaybeunderline{(1,3)}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},(2,1),(3,1)\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{(1,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{(2,3)},(1,3)], \textcolor{\BTtrapcolor}{A})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{1}{3}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,2.5) -- (3.5,3.5) -- (2.5,3.5) -- (1.5,3.5)}
+\BTmaybepath{(1.5,3.5) -- (0.5,3.5)}
+\BTnopath{(1.5,3.5) -- (2.5,3.5)}
+\BTnopath{(1.5,3.5) -- (1.5,2.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{8} &= (\BThighlighttext{(1,3)}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BTnounderline{(2,3)},(1,3)], \textcolor{\BTtrapcolor}{A})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\dots,(3,3),\BTnounderline{(2,3)},\BThighlighttext{(1,3)},\BTmaybeunderline{\textcolor{\BTendcolor}{(0,3)}}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},(2,1),(3,1)\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= [(\BTmaybeunderline{\textcolor{\BTendcolor}{(0,3)}}, [\textcolor{\BTstartcolor}{(1,0)},\dots,\BThighlighttext{(1,3)},(0,3)], \textcolor{\BTtrapcolor}{A})]
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.4\textwidth}
+\BTmap{1.0}{
+\BThighlight{0}{3}
+\BTwall{0}{0}
+\BTwall{2}{0}
+\BTwall{3}{0}
+\BTwall{0}{1}
+\BTwall{0}{2}
+\BTwall{2}{2}
+\BTtrap{1}{1}{B}
+\BTtrap{1}{2}{C}
+\BTtrap{3}{2}{A}
+\BTpath{(1.5,0.5) -- (1.5,1.5) -- (2.5,1.5) -- (3.5,1.5) -- (3.5,2.5) -- (3.5,3.5) -- (2.5,3.5) -- (1.5,3.5) -- (0.5,3.5)}
+\BTstart{1}{0}
+\BTend{0}{3}
+\BTgrid{4}{4}
+\BTcoords{4}{4}
+}
+\end{column}
+\hspace{1em}
+\begin{column}{.5\textwidth}
+\begin{align*}
+\BTvphantomfix c_{9} &= (\BThighlighttext{\textcolor{\BTendcolor}{(0,3)}}, [\textcolor{\BTstartcolor}{(1,0)},\dots,(1,3),(0,3)], \textcolor{\BTtrapcolor}{A})\\
+\midrule
+\BTvphantomfix v_0 &= \{\textcolor{\BTstartcolor}{(1,0)}\}\\
+\BTvphantomfix v_A &= \{\dots,(3,3),(2,3),(1,3),\BThighlighttext{\textcolor{\BTendcolor}{(0,3)}}\}\\
+\BTvphantomfix v_B &= \{\textcolor{\BTtrapcolor}{(1,1)},(2,1),(3,1)\}\\
+\BTvphantomfix v_C &= \varnothing\\
+q &= []
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}

@@ -1,0 +1,90 @@
+\documentclass{beamer}
+
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{booktabs}
+
+\def\BThighlightcolor{yellow}
+\def\BTwallcolor{gray}
+\def\BTtrapcolor{red}
+\def\BTpathcolor{green!60!black}
+\let\BTmaybepathcolor\BTpathcolor
+\def\BTnopathcolor{red!60!black}
+\def\BTstartcolor{blue!85!black}
+\def\BTendcolor{red!75!black}
+\def\BTnodecolor{black}
+\def\BTedgecolor{black}
+
+\newif\ifstartedinmathmode
+\newcommand*{\BTmaybeunderline}[1]{
+    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+    \tikz[baseline=(underlined.base)]{
+        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+        \draw[\BTmaybepathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+    }
+}
+
+\newcommand*{\BTnounderline}[1]{
+    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+    \tikz[baseline=(underlined.base)]{
+        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+        \draw[\BTnopathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+    }
+}
+
+\newcommand*{\BThighlighttext}[1]{
+    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+    \tikz[baseline=(highlighted.base)]{
+        \node[rectangle,fill=\BThighlightcolor,inner sep=1.16pt] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
+    }
+}
+
+\newcommand*{\BTvphantomfix}{
+    \vphantom{\BTmaybeunderline{(0,0)}\BTnounderline{(0,0)}\BThighlighttext{(0,0)}[],()}
+}
+
+\newcommand{\BTmap}[2]{ % scale factor, draw commands
+	\begin{center}
+		\begin{tikzpicture}[y=-1cm,scale=#1,every node/.style={transform shape}]
+			#2
+		\end{tikzpicture}
+	\end{center}
+}
+\newcommand{\BThighlight}[2]{ % x, y
+	\fill[\BThighlightcolor] (#1,#2) rectangle (#1+1,#2+1);
+}
+\newcommand{\BTwall}[2]{ % x, y
+	\fill[\BTwallcolor] (#1,#2) rectangle (#1+1,#2+1);
+}
+\newcommand{\BTtrap}[3]{ % x, y, char
+	\node at (#1+0.5,#2+0.5) {\LARGE\bfseries\color{\BTtrapcolor} #3};
+}
+\newcommand{\BTpath}[1]{ % (x1,y1) -- ... -- (xn,yn)
+	\draw[\BTpathcolor, solid, very thick] #1;
+}
+\newcommand{\BTmaybepath}[1]{ % (x1,y1) -- ... -- (xn,yn)
+	\draw[\BTmaybepathcolor, dotted, very thick] #1;
+}
+\newcommand{\BTnopath}[1]{ % (x1,y1) -- ... -- (xn,yn)
+	\draw[\BTnopathcolor, dotted, very thick] #1;
+}
+\newcommand{\BTstart}[2]{ % x, y
+	\path[fill=\BTstartcolor] (#1+0.5,#2+0.5) circle (0.25);
+}
+\newcommand{\BTend}[2]{ % x, y
+	\path[fill=\BTendcolor] (#1+0.5,#2+0.5) circle (0.25);
+}
+\newcommand{\BTgrid}[2]{ % width, height
+	\draw[xstep=1,ystep=-1,black,thick] (0,0) grid (#1,#2);
+}
+\newcommand{\BTcoords}[2]{ % width, height
+	\foreach \nx in {0,...,\numexpr#1-1\relax}
+		\foreach \my in {0,...,\numexpr#2-1\relax}
+			\node[anchor=west,inner sep=0] at (\nx+0.05,\my+0.18) {\tiny(\nx,\my)};
+}
+\newcommand{\BTnode}[2]{ % x, y
+	\path[fill=\BTnodecolor] (#1+0.8,#2+0.8) circle (0.125);
+}
+\newcommand{\BTedge}[4]{ % first node position & second node position
+	\draw[\BTedgecolor, solid, very thick] (#1+0.8,#2+0.8) -- (#3+0.8,#4+0.8);
+}
