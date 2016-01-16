@@ -201,21 +201,16 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args):
     """Output the source code of a single LaTeX Beamer slide."""
 
-    print '\\begin{frame}'
+    print "\\begin{frame}"
 
     # print slide title and subtitle
     if args.title:
-        print '\\frametitle{' + args.title.format(step) + '}'
+        print "\\frametitle{" + args.title.format(step) + "}"
     if args.subtitle:
-        print '\\framesubtitle{' + args.subtitle.format(step) + '}'
-    #print '\framesubtitle{Schritt ' + str(step-1) + ': TODO}'
+        print "\\framesubtitle{" + args.subtitle.format(step) + "}"
 
-    #print '\\begin{enumerate}'
-    #print '\setcounter{enumi}{' + str(step-1) + '}'
-    #print '\item TODO'
-    #print '\end{enumerate}'
-    print '\\begin{columns}[c,onlytextwidth]'
-    print '\\begin{column}{.4\\textwidth}'
+    print "\\begin{columns}[c,onlytextwidth]"
+    print "\\begin{column}{.4\\textwidth}"
 
     # print map
     maybepaths = []
@@ -226,10 +221,10 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         nopaths.append([c['cell'], neighbor])
     printLatexMapDrawCommands(map, start, end, graph if args.drawgraph else False, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
-    print '\end{column}'
-    print '\hspace{1em}'
-    print '\\begin{column}{.5\\textwidth}'
-    print '\\begin{align*}'
+    print "\end{column}"
+    print "\hspace{1em}"
+    print "\\begin{column}{.5\\textwidth}"
+    print "\\begin{align*}"
 
     # print current queue frame
     if step > 1:
@@ -244,12 +239,12 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
 
         if not formattedCells:
-            print '\BTvphantomfix v_' + str(trap) + ' &= \\varnothing\\\\'
+            print "\BTvphantomfix v_" + str(trap) + " &= \\varnothing\\\\"
         else:
             if len(formattedCells) > 4:
                 del formattedCells[:-5]
                 formattedCells[0] = "\dots"
-            print '\BTvphantomfix v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
+            print "\BTvphantomfix v_" + str(trap) + " &= \{" + ",".join(formattedCells) + "\}\\\\"
 
     # print first few elements of queue, truncating long paths in queue frames
     queueContents = []
@@ -264,12 +259,12 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
     if len(queueContentsFormatted) > args.maxqueuelength:
         del queueContentsFormatted[args.maxqueuelength:]
         queueContentsFormatted.append("\dots")
-    print 'q &= [' + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + ']'
+    print "q &= [" + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + "]"
 
-    print '\end{align*}'
-    print '\end{column}'
-    print '\end{columns}'
-    print '\end{frame}'
+    print "\end{align*}"
+    print "\end{column}"
+    print "\end{columns}"
+    print "\end{frame}"
 
 
 # TODO test on impossible input
@@ -371,9 +366,9 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale, args):
 def main():
     # process options
     parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest='subcommand', title='subcommands', help='choose from these subcommands')
+    subparsers = parser.add_subparsers(dest="subcommand", title="subcommands", help="choose from these subcommands")
 
-    parser_map = subparsers.add_parser('map', help='print the draw commands for a LaTeX representation of the map and path (using TikZ)')
+    parser_map = subparsers.add_parser("map", help="print the draw commands for a LaTeX representation of the map and path (using TikZ)")
     parser_map.add_argument("--drawpath", dest="drawpath", action="store_true", help="draw the shortest path (default)")
     parser_map.add_argument("--no-drawpath", dest="drawpath", action="store_false", help="dont't draw the shortest path")
     parser_map.set_defaults(drawpath=True)
@@ -383,7 +378,7 @@ def main():
     parser_map.add_argument("--scale", type=float, help="scale factor for the map, should be < 1 for large maps as the unit is 1cm2 per cell (default: 1)")
     parser_map.set_defaults(scale=1.0)
 
-    parser_slides = subparsers.add_parser('slides', help='print the source code of Beamer slides detailing all steps of the path finding algorithm')
+    parser_slides = subparsers.add_parser("slides", help="print the source code of Beamer slides detailing all steps of the path finding algorithm")
     parser_slides.add_argument("--title", type=str, help="title of each slide, use {} as a placeholder for the step number (default: empty)")
     parser_slides.set_defaults(title="")
     parser_slides.add_argument("--subtitle", type=str, help="subtitle of each slide, use {} as a placeholder for the step number (default: empty)")
