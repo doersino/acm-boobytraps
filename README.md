@@ -117,6 +117,11 @@ Generate code for LaTeX Beamer slides stepping through the shortest path finder 
 cat sampleinput9.txt | ./boobytraps-latex.py slides > boobytraps-latex-output-sampleinput9.tex
 ```
 
+In the previous example, set slide title and subtitle (with output of the step number instead of `{}`), also draw the graph and write to standard output:
+```
+cat sampleinput9.txt | ./boobytraps-latex.py slides --title "Beispiel" --subtitle "Schritt {}: TODO" --drawgraph
+```
+
 
 ### `tombraider.sh`
 
