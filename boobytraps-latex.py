@@ -174,7 +174,7 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
     # dots indicating path longer than 3
     if (len(qf['path']) > 3):
-        qfPath += ",..."
+        qfPath = "\dots"
 
     # second-to-last element of path
     if (len(qf['path']) > 2):
@@ -196,7 +196,6 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
     return "(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")"
 
 
-# TODO improve alignment
 # TODO improve separator
 def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args):
     """Output the source code of a single LaTeX Beamer slide."""
@@ -229,9 +228,9 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
     # print current queue frame
     if step > 1:
         print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args) + "\\\\"
-        print "\midrule"
+        print "&\hspace{0.25em}-\\\\"
 
-    # print visited sets
+    # print visited sets, truncating large sets
     for trap in uniqueTraps(map):
         formattedCells = []
         for visitedCell in visited[traps.getIndex(trap)]:
@@ -243,7 +242,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         else:
             if len(formattedCells) > 4:
                 del formattedCells[:-5]
-                formattedCells[0] = "..."
+                formattedCells[0] = "\dots"
             print "\BTvphantomfix v_" + str(trap) + " &= \{" + ",".join(formattedCells) + "\}\\\\"
 
     # print first few elements of queue, truncating long paths in queue frames
@@ -258,7 +257,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         queueContentsFormatted.append(qfFormatted)
     if len(queueContentsFormatted) > args.maxqueuelength:
         del queueContentsFormatted[args.maxqueuelength:]
-        queueContentsFormatted.append("...")
+        queueContentsFormatted.append("\dots")
     print "q &= [" + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + "]"
 
     print "\end{align*}"
