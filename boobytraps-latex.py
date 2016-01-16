@@ -30,79 +30,79 @@ def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=
     .tex file.
     """
 
-    print '\BTmap{' + str(scale) + '}{'
+    print "\BTmap{" + str(scale) + "}{"
 
     # draw highlights
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) in highlight:
-                print '\BThighlight{' + str(x) + '}{' + str(y) + '}'
+                print "\BThighlight{" + str(x) + "}{" + str(y) + "}"
 
     # draw walls
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if field == 'x':
-                print '\BTwall{' + str(x) + '}{' + str(y) + '}'
+                print "\BTwall{" + str(x) + "}{" + str(y) + "}"
 
     # draw traps
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if map.traps.isTrap(field):
-                print '\BTtrap{' + str(x) + '}{' + str(y) + '}{' + field + '}'
+                print "\BTtrap{" + str(x) + "}{" + str(y) + "}{" + field + "}"
 
     # draw path
-    sys.stdout.write('\BTpath{')
+    sys.stdout.write("\BTpath{")
     for i, cell in enumerate(path):
         if i != 0:
-            sys.stdout.write(' -- ')
-        sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
-    print '}'
+            sys.stdout.write(" -- ")
+        sys.stdout.write("(" + str(cell.x) + ".5," + str(cell.y) + ".5)")
+    print "}"
 
     # draw "maybe" paths
     for maybepath in maybepaths:
-        sys.stdout.write('\BTmaybepath{')
+        sys.stdout.write("\BTmaybepath{")
         for i, cell in enumerate(maybepath):
             if i != 0:
-                sys.stdout.write(' -- ')
-            sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
-        print '}'
+                sys.stdout.write(" -- ")
+            sys.stdout.write("(" + str(cell.x) + ".5," + str(cell.y) + ".5)")
+        print "}"
 
     # draw "no" paths
     for nopath in nopaths:
-        sys.stdout.write('\BTnopath{')
+        sys.stdout.write("\BTnopath{")
         for i, cell in enumerate(nopath):
             if i != 0:
-                sys.stdout.write(' -- ')
-            sys.stdout.write('(' + str(cell.x) + '.5,' + str(cell.y) + '.5)')
-        print '}'
+                sys.stdout.write(" -- ")
+            sys.stdout.write("(" + str(cell.x) + ".5," + str(cell.y) + ".5)")
+        print "}"
 
     # draw start
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) == start:
-                print '\BTstart{' + str(x) + '}{' + str(y) + '}'
+                print "\BTstart{" + str(x) + "}{" + str(y) + "}"
 
     # draw end
     for y, row in enumerate(map.map):
         for x, field in enumerate(row):
             if Cell(x, y, map.getAt(x, y)) == end:
-                print '\BTend{' + str(x) + '}{' + str(y) + '}'
+                print "\BTend{" + str(x) + "}{" + str(y) + "}"
 
     # draw grid
-    print '\BTgrid{' + str(map.width) + '}{' + str(map.height) + '}'
+    print "\BTgrid{" + str(map.width) + "}{" + str(map.height) + "}"
 
     # draw coords
     if showCoords:
-        print '\BTcoords{' + str(map.width) + '}{' + str(map.height) + '}'
+        print "\BTcoords{" + str(map.width) + "}{" + str(map.height) + "}"
 
     # draw graph
     if graph:
         for field in graph.graph:
-            print '\BTnode{' + str(field.x) + '}{' + str(field.y) + '}'
+            print "\BTnode{" + str(field.x) + "}{" + str(field.y) + "}"
             for adj in graph.graph[field]:
-                print '\BTedge{' + str(field.x) + '}{' + str(field.y) + '}{' + str(adj.x) + '}{' + str(adj.y) + '}'
+                print "\BTedge{" + str(field.x) + "}{" + str(field.y) + "}{" + str(adj.x) + "}{" + str(adj.y) + "}"
 
-    print '}'
+    print "}"
 
 
 def uniqueTraps(map):
