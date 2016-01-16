@@ -6,7 +6,9 @@ My Python 2.7 solution of the ACM Programming Contest problem ["Booby Traps"](ht
 
 
 ## Table of Contents
+
 Books tend to have one, so why shouldn't software?
+
 
 ### Problem Statement and Solution
 
@@ -91,6 +93,18 @@ false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complex
 As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited fields as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 200 200 --printseed --complexity 15 --mode dungeon --start 0,0 --end 199,199 | ./boobytraps.py -v2; done
+```
+
+
+### `boobytraps-latex.py`
+Generate code for LaTeX slides stepping through the shortest path finder running on `sampleinput9.txt` and write to `boobytraps-latex-output-sampleinput9.tex`:
+```
+./boobytraps-latex.py --slides sampleinput9.txt > boobytraps-latex-output-sampleinput9.tex
+```
+
+Generate code for a Ti*k*Z representation of the `sampleinput.txt`, including the shortest path:
+```
+./boobytraps-latex.py --map sampleinput.txt
 ```
 
 
