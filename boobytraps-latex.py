@@ -132,38 +132,44 @@ def uniqueTraps(map):
     return sorted(uniqueTraps)
 
 
-def cellFormatString(cell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c):
+def cellFormatString(cell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args):
     """Generate the format string for a cell (x, y)."""
     formatString = "({},{})"
 
     if cell == start:
-        formatString = "\\textcolor{{\BTstartcolor}}{{" + formatString + "}}"
+        if args.highlightstart:
+            formatString = "\\textcolor{{\BTstartcolor}}{{" + formatString + "}}"
     elif cell == end:
-        formatString = "\\textcolor{{\BTendcolor}}{{" + formatString + "}}"
+        if args.highlightend:
+            formatString = "\\textcolor{{\BTendcolor}}{{" + formatString + "}}"
     elif traps.isTrap(cell.value):
-        formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
+        if args.highlighttraps:
+            formatString = "\\textcolor{{\BTtrapcolor}}{{" + formatString + "}}"
 
     if cell in accessibleNeighbors:
-        formatString = "\BTmaybeunderline{{" + formatString + "}}"
+        if args.highlightaccessibleneighbors:
+            formatString = "\BTmaybeunderline{{" + formatString + "}}"
     elif cell in inaccessibleNeighbors:
-        formatString = "\BTnounderline{{" + formatString + "}}"
+        if args.highlightinaccessibleneighbors:
+            formatString = "\BTnounderline{{" + formatString + "}}"
     elif cell == c['cell']:
-        formatString = "\BThighlighttext{{" + formatString + "}}"
+        if args.highlightcurrentcell:
+            formatString = "\BThighlighttext{{" + formatString + "}}"
 
     return formatString
 
 
-def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c):
+def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args):
     """Format a queue frame consisting of cell, path and maximum triggered trap:
     ((x1, y1), [(x2, y2), ..., (x3, y3), (x4, y4)], t).
     """
 
     # cell
-    formatString = cellFormatString(qf['cell'], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+    formatString = cellFormatString(qf['cell'], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
     qfCell = formatString.format(qf['cell'].x, qf['cell'].y)
 
     # first element of path
-    formatString = cellFormatString(qf['path'][0], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+    formatString = cellFormatString(qf['path'][0], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
     qfPath = formatString.format(qf['path'][0].x, qf['path'][0].y)
 
     # dots indicating path longer than 3
@@ -172,13 +178,13 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
     # second-to-last element of path
     if (len(qf['path']) > 2):
-        formatString = cellFormatString(qf['path'][-2], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+        formatString = cellFormatString(qf['path'][-2], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
         formatString = "," + formatString
         qfPath += formatString.format(qf['path'][-2].x, qf['path'][-2].y)
 
     # last element of path
     if (len(qf['path']) > 1):
-        formatString = cellFormatString(qf['path'][-1], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+        formatString = cellFormatString(qf['path'][-1], start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
         formatString = "," + formatString
         qfPath += ",({},{})".format(qf['path'][-1].x, qf['path'][-1].y)
 
@@ -192,12 +198,18 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
 # TODO improve alignment
 # TODO improve separator
-def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale=1):
-    """Ouput the source code of a single LaTeX Beamer slide."""
+def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args):
+    """Output the source code of a single LaTeX Beamer slide."""
 
     print '\\begin{frame}'
-    #print '\frametitle{Beispiel}'
+
+    # print slide title and subtitle
+    if args.title:
+        print '\\frametitle{' + args.title.format(step) + '}'
+    if args.subtitle:
+        print '\\framesubtitle{' + args.subtitle.format(step) + '}'
     #print '\framesubtitle{Schritt ' + str(step-1) + ': TODO}'
+
     #print '\\begin{enumerate}'
     #print '\setcounter{enumi}{' + str(step-1) + '}'
     #print '\item TODO'
@@ -212,7 +224,7 @@ def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, in
     nopaths = []
     for neighbor in inaccessibleNeighbors:
         nopaths.append([c['cell'], neighbor])
-    printLatexMapDrawCommands(map, start, end, False, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
+    printLatexMapDrawCommands(map, start, end, graph if args.drawgraph else False, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
     print '\end{column}'
     print '\hspace{1em}'
@@ -221,14 +233,14 @@ def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, in
 
     # print current queue frame
     if step > 1:
-        print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c) + "\\\\"
+        print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args) + "\\\\"
         print "\midrule"
 
     # print visited sets
     for trap in uniqueTraps(map):
         formattedCells = []
         for visitedCell in visited[traps.getIndex(trap)]:
-            formatString = cellFormatString(visitedCell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+            formatString = cellFormatString(visitedCell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
 
         if not formattedCells:
@@ -239,7 +251,7 @@ def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, in
                 formattedCells[0] = "\dots"
             print '\BTvphantomfix v_' + str(trap) + ' &= \{' + ",".join(formattedCells) + '\}\\\\'
 
-    # print first three elements of queue, truncating long paths in queue frames
+    # print first few elements of queue, truncating long paths in queue frames
     queueContents = []
     while not q.empty():
         queueContents.append(q.get())
@@ -247,10 +259,10 @@ def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, in
         q.put(qf)
     queueContentsFormatted = []
     for qf in queueContents:
-        qfFormatted = formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c)
+        qfFormatted = formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
         queueContentsFormatted.append(qfFormatted)
-    if len(queueContentsFormatted) > 3:
-        del queueContentsFormatted[3:]
+    if len(queueContentsFormatted) > args.maxqueuelength:
+        del queueContentsFormatted[args.maxqueuelength:]
         queueContentsFormatted.append("\dots")
     print 'q &= [' + ",\\\\ \BTvphantomfix &\phantom{{}=[}".join(queueContentsFormatted) + ']'
 
@@ -260,7 +272,8 @@ def generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, in
     print '\end{frame}'
 
 
-def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
+# TODO test on impossible input
+def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale, args):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output the source code of a LaTeX
     Beamer slide detailing each step.
@@ -268,6 +281,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     Make sure to \input{boobytraps-latex-preample.tex} in the preamble of your
     .tex file.
     """
+    graph0 = graph
     graph = graph.graph
     q = Queue.Queue()
 
@@ -284,7 +298,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
     # generate slide for initial state
     step = 1
-    generateSlide(map, traps, start, end, q, visited, c, [], [], step, scale)
+    generateSlide(map, traps, start, end, graph0, q, visited, c, [], [], step, scale, args)
 
     while not q.empty():
 
@@ -334,11 +348,11 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
                     if neighbor not in visited[n['triggered']]:
                         visited[n['triggered']].append(neighbor)
                     step += 1
-                    generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale)
+                    generateSlide(map, traps, start, end, graph0, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args)
 
                     # generate last slide with empty queue
                     step += 1
-                    generateSlide(map, traps, start, end, Queue.Queue(), visited, n, [], [], step, scale)
+                    generateSlide(map, traps, start, end, graph0, Queue.Queue(), visited, n, [], [], step, scale, args)
 
                     return len(n['path']) - 1, n['path'], set().union(*visited.values())
                 else:
@@ -348,7 +362,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
         # generate slide
         step += 1
-        generateSlide(map, traps, start, end, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale)
+        generateSlide(map, traps, start, end, graph0, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args)
 
     # return longest/"best effort" path
     return -1, c['path'], set().union(*visited.values())
@@ -370,15 +384,33 @@ def main():
     parser_map.set_defaults(scale=1.0)
 
     parser_slides = subparsers.add_parser('slides', help='print the source code of Beamer slides detailing all steps of the path finding algorithm')
-    # TODO highlighttraps
-    # TODO highlightstart
-    # TODO highlightend
-    # TODO highlightcurrent
-    # TODO highlightaccessibleneighbors
-    # TODO highlightinaccessibleneighbors
-    # TODO drawgraph
-    # TODO slidetitle
-    # TODO slidesubtitle
+    parser_slides.add_argument("--title", type=str, help="title of each slide, use {} as a placeholder for the step number (default: empty)")
+    parser_slides.set_defaults(title="")
+    parser_slides.add_argument("--subtitle", type=str, help="subtitle of each slide, use {} as a placeholder for the step number (default: empty)")
+    parser_slides.set_defaults(subtitle="")
+    parser_slides.add_argument("--drawgraph", dest="drawgraph", action="store_true", help="draw the graph")
+    parser_slides.add_argument("--no-drawgraph", dest="drawgraph", action="store_false", help="don't draw the graph (default)")
+    parser_slides.set_defaults(drawgraph=False)
+    parser_slides.add_argument("--highlighttraps", dest="highlighttraps", action="store_true", help="highlight trap and trap cells (default)")
+    parser_slides.add_argument("--no-highlighttraps", dest="highlighttraps", action="store_false", help="don't highlight traps and trap cells")
+    parser_slides.set_defaults(highlighttraps=True)
+    parser_slides.add_argument("--highlightstart", dest="highlightstart", action="store_true", help="highlight the start cell (default)")
+    parser_slides.add_argument("--no-highlightstart", dest="highlightstart", action="store_false", help="don't highlight the start cell")
+    parser_slides.set_defaults(highlightstart=True)
+    parser_slides.add_argument("--highlightend", dest="highlightend", action="store_true", help="highlight the end cell (default)")
+    parser_slides.add_argument("--no-highlightend", dest="highlightend", action="store_false", help="don't highlight the end cell")
+    parser_slides.set_defaults(highlightend=True)
+    parser_slides.add_argument("--highlightcurrentcell", dest="highlightcurrentcell", action="store_true", help="highlight the current cell (default)")
+    parser_slides.add_argument("--no-highlightcurrentcell", dest="highlightcurrentcell", action="store_false", help="don't highlight the current cell")
+    parser_slides.set_defaults(highlightcurrentcell=True)
+    parser_slides.add_argument("--highlightaccessibleneighbors", dest="highlightaccessibleneighbors", action="store_true", help="highlight accessible adjacent cells (default)")
+    parser_slides.add_argument("--no-highlightaccessibleneighbors", dest="highlightaccessibleneighbors", action="store_false", help="don't highlight accessible adjacent cells")
+    parser_slides.set_defaults(highlightaccessibleneighbors=True)
+    parser_slides.add_argument("--highlightinaccessibleneighbors", dest="highlightinaccessibleneighbors", action="store_true", help="highlight inaccessible adjacent cells (default)")
+    parser_slides.add_argument("--no-highlightinaccessibleneighbors", dest="highlightinaccessibleneighbors", action="store_false", help="don't highlight inaccessible adjacent cells")
+    parser_slides.set_defaults(highlightinaccessibleneighbors=True)
+    parser_slides.add_argument("--maxqueuelength", type=int, help="maximum queue length before the rest is truncated in the output (default: 3)")
+    parser_slides.set_defaults(maxqueuelength=3)
     parser_slides.add_argument("--scale", type=float, help="scale factor for the map, should be < 1 for large maps as the unit is 1cm2 per cell (default: 1)")
     parser_slides.set_defaults(scale=1.0)
 
@@ -402,7 +434,7 @@ def main():
 
     # raid the tomb and generate slides
     if args.subcommand == "slides":
-        raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, args.scale)
+        raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, args.scale, args)
 
 if __name__ == "__main__":
     main()
