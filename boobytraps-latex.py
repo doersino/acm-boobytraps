@@ -1,31 +1,30 @@
 #!/usr/bin/python2.7
 
-# Using boobytraps.py, generates LaTeX snippets related to boobytraps.py:
-# If the --map option is given, this script prints the draw commands for a LaTeX
-# representation of the map and path (using tikz).
-# If the --slides option is given, this script prints the source code of beamer
-# slides detailing all steps of the path finding algorithm.
+# Using boobytraps.py, generates LaTeX code snippets related to boobytraps.py:
+# The map subcommand prints the draw commands for a LaTeX representation of the
+# map and path (using TikZ).
+# The slides subcommand prints the source code of Beamer slides detailing all
+# steps of the path finding algorithm.
 #
-# Usage: Either of the following three options will work:
+# Usage: Either of the following two options will work:
 #
-#        ./boobytraps-latex.py [--map] [--slides] INPUT_FILE
-#        cat INPUT_FILE | ./boobytraps-latex.py [--map] [--slides]
-#        ./gravedigger.py WIDTH HEIGHT | ./boobytraps-latex.py [--map] [--slides]
+#        cat INPUT_FILE | ./boobytraps-latex.py [map [OPTIONS]] [slides [OPTIONS]]
+#        ./gravedigger.py WIDTH HEIGHT | ./boobytraps-latex.py [map [OPTIONS]] [slides [OPTIONS]]
+#
+#        For OPTIONS, see boobytraps-latex.py -h.
 
 from boobytraps import *
 
 
-# TODO add more options, use subparsers http://stackoverflow.com/questions/21287828/python-argparse-add-mutually-exclusive-group-need-ether-2-args-or-just-1-args
-# TODO move macros etc. to preamble.tex file
 # TODO improve path macro
 # TODO update docstring with options, graph drawing
-# TODO reference to macros etc. in boobytraps-latex-preample.tex
 def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
     If you want to highlight an incorrect path, change \BTpath to \BTnopath
     in the output of this function, and if you want to highlight a cell, use
     the \BThighlight macro.
+    Make sure to \input{boobytraps-latex-preample.tex} in your .tex file.
     """
 
     print '\BTmap{' + str(scale) + '}{'
@@ -188,9 +187,10 @@ def formatQueueFrame(qf, start, end, traps, neighbors, inaccessibleNeighbors, c)
     return "(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")"
 
 
+# TODO improve alignment
+# TODO improve separator
 def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessibleNeighbors, step, scale=1):
-    # TODO improve alignment
-    # TODO improve separator
+    """Ouput the source code of a single LaTeX Beamer slide."""
 
     print '\\begin{frame}'
     #print '\frametitle{Beispiel}'
@@ -260,9 +260,10 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
 # TODO \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi really necessary?
 def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     """Find the shortest path between start and end cells ("raid the tomb")
-    using modified breadth-first search and output a LaTeX beamer slide
-    detailing each step.
-    Note that this is really only tested with sampleinput9.txt.
+    using modified breadth-first search and output the source code of a LaTeX
+    Beamer slide detailing each step.
+    Please note that this is really only tested with sampleinput9.txt.
+    Make sure to \input{boobytraps-latex-preample.tex} in your .tex file.
     """
     graph = graph.graph
     q = Queue.Queue()
