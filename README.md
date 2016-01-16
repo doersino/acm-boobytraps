@@ -97,14 +97,24 @@ false; while [ $? -ne 0 ]; do time ./gravedigger.py 200 200 --printseed --comple
 
 
 ### `boobytraps-latex.py`
-Generate code for LaTeX Beamer slides stepping through the shortest path finder running on `sampleinput9.txt` and write to `boobytraps-latex-output-sampleinput9.tex`:
-```
-./boobytraps-latex.py --slides sampleinput9.txt > boobytraps-latex-output-sampleinput9.tex
-```
-
 Generate code for a Ti*k*Z representation of the `sampleinput.txt`, including the shortest path:
 ```
-./boobytraps-latex.py --map sampleinput.txt
+cat sampleinput.txt | ./boobytraps-latex.py map
+```
+
+In the previous example, also draw the internal graph representation of the map:
+```
+cat sampleinput.txt | ./boobytraps-latex.py map --drawgraph
+```
+
+And draw everything at a third of the original size:
+```
+cat sampleinput.txt | ./boobytraps-latex.py map --drawgraph --scale 0.33
+```
+
+Generate code for LaTeX Beamer slides stepping through the shortest path finder running on `sampleinput9.txt` and write to `boobytraps-latex-output-sampleinput9.tex`:
+```
+cat sampleinput9.txt | ./boobytraps-latex.py slides > boobytraps-latex-output-sampleinput9.tex
 ```
 
 
