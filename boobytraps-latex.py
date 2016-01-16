@@ -19,15 +19,15 @@ import argparse
 from boobytraps import *
 
 
-# TODO improve path macro
-# TODO update docstring with options, graph drawing
 def printLatexMapDrawCommands(map, start, end, graph=False, path=[], maybepaths=[], nopaths=[], highlight=[], scale=1, showCoords=False):
     """Quick-and-dirty way of printing the draw commands for a LaTeX
     representation of the map (using tikz).
-    If you want to highlight an incorrect path, change \BTpath to \BTnopath
-    in the output of this function, and if you want to highlight a cell, use
-    the \BThighlight macro.
-    Make sure to \input{boobytraps-latex-preample.tex} in your .tex file.
+    If you want to highlight an incorrect path (red and dashed), change \BTpath
+    to \BTnopath in the output of this function, or if you want to highlight an
+    alternate path (green and dashed), use \BTmaybepath. Use the \BThighlight
+    macro to highlight a cell (yellow background).
+    Make sure to \input{boobytraps-latex-preample.tex} in the preamble of your
+    .tex file.
     """
 
     print '\BTmap{' + str(scale) + '}{'
@@ -260,13 +260,13 @@ def generateSlide(map, traps, start, end, q, visited, c, neighbors, inaccessible
     print '\end{frame}'
 
 
-# TODO \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi really necessary?
 def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output the source code of a LaTeX
     Beamer slide detailing each step.
     Please note that this is really only tested with sampleinput9.txt.
-    Make sure to \input{boobytraps-latex-preample.tex} in your .tex file.
+    Make sure to \input{boobytraps-latex-preample.tex} in the preamble of your
+    .tex file.
     """
     graph = graph.graph
     q = Queue.Queue()
