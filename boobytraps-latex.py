@@ -6,13 +6,16 @@
 # The slides subcommand prints the source code of Beamer slides detailing all
 # steps of the path finding algorithm.
 #
-# Usage: Either of the following two options will work:
+# Usage: Either of the following two options will work (note that this is
+#        different from boobytraps.py, which can also read input directlyfrom a
+#        file):
 #
-#        cat INPUT_FILE | ./boobytraps-latex.py [map [OPTIONS]] [slides [OPTIONS]]
-#        ./gravedigger.py WIDTH HEIGHT | ./boobytraps-latex.py [map [OPTIONS]] [slides [OPTIONS]]
+#        cat INPUT_FILE | ./boobytraps-latex.py [map [OPTIONS] | slides [OPTIONS]]
+#        ./gravedigger.py [OPTIONS] WIDTH HEIGHT | ./boobytraps-latex.py [map [OPTIONS] | slides [OPTIONS]]
 #
-#        For OPTIONS, see boobytraps-latex.py -h.
+#        For OPTIONS, see ./boobytraps-latex.py map -h or ./boobytraps-latex.py slides -h.
 
+import argparse
 from boobytraps import *
 
 
@@ -352,34 +355,53 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale):
 
 
 def main():
-    # process options (hacky, i know)
-    printMap = len(sys.argv) > 1 and sys.argv[1] == "--map"
-    if printMap:
-        del sys.argv[1]
+    # process options
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest='subcommand', title='subcommands', help='choose from these subcommands')
 
-    generateSlides = len(sys.argv) > 1 and sys.argv[1] == "--slides"
-    if generateSlides:
-        del sys.argv[1]
+    parser_map = subparsers.add_parser('map', help='print the draw commands for a LaTeX representation of the map and path (using TikZ)')
+    parser_map.add_argument("--drawpath", dest="drawpath", action="store_true", help="draw the shortest path (default)")
+    parser_map.add_argument("--no-drawpath", dest="drawpath", action="store_false", help="dont't draw the shortest path")
+    parser_map.set_defaults(drawpath=True)
+    parser_map.add_argument("--drawgraph", dest="drawgraph", action="store_true", help="draw the graph")
+    parser_map.add_argument("--no-drawgraph", dest="drawgraph", action="store_false", help="don't draw the graph (default)")
+    parser_map.set_defaults(drawgraph=False)
+    parser_map.add_argument("--scale", type=float, help="scale factor for the map, should be < 1 for large maps as the unit is 1cm2 per cell (default: 1)")
+    parser_map.set_defaults(scale=1.0)
 
-    if not printMap:
-        printMap = len(sys.argv) > 1 and sys.argv[1] == "--map"
-        if printMap:
-            del sys.argv[1]
+    parser_slides = subparsers.add_parser('slides', help='print the source code of Beamer slides detailing all steps of the path finding algorithm')
+    # TODO highlighttraps
+    # TODO highlightstart
+    # TODO highlightend
+    # TODO highlightcurrent
+    # TODO highlightaccessibleneighbors
+    # TODO highlightinaccessibleneighbors
+    # TODO slidetitle
+    # TODO slidesubtitle
+    parser_slides.add_argument("--scale", type=float, help="scale factor for the map, should be < 1 for large maps as the unit is 1cm2 per cell (default: 1)")
+    parser_slides.set_defaults(scale=1.0)
+
+    args = parser.parse_args()
 
     # parse input
-    traps, map, graph, start, end = parseInput(fileinput.input())
-
-    # compute map scale factor appropriate for filling the left half of a beamer slide
-    scale = min(4.0 / map.width, 4.0 / map.height)
-
-    # raid the tomb and generate slides
-    if generateSlides:
-        raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale)
+    rawInput = [line for line in sys.stdin]
+    traps, map, graph, start, end = parseInput(rawInput)
 
     # raid the tomb and print the map
-    if printMap:
+    if args.subcommand == "map":
         moves, path, visited = raidTomb(graph, traps, start, end)
-        printLatexMapDrawCommands(map, start, end, False, path, [], [], [], scale, True)
+
+        # options
+        if not args.drawpath:
+            path = []
+        if not args.drawgraph:
+            graph = False
+
+        printLatexMapDrawCommands(map, start, end, graph, path, [], [], [], args.scale, True)
+
+    # raid the tomb and generate slides
+    if args.subcommand == "slides":
+        raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, args.scale)
 
 if __name__ == "__main__":
     main()

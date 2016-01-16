@@ -4,7 +4,7 @@
 # and writes the result to stdout. Optionally, outputs the random seed used
 # during map generation to stderr.
 #
-# Usage: See gravedigger.py -h, or get started quickly with:
+# Usage: See ./gravedigger.py -h, or get started quickly with:
 #
 #        ./gravedigger.py [OPTIONS] WIDTH HEIGHT
 

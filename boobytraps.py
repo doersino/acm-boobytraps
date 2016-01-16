@@ -8,7 +8,7 @@
 #
 #        ./boobytraps.py [-v | -v1 | -v2] INPUT_FILE
 #        cat INPUT_FILE | ./boobytraps.py [-v | -v1 | -v2]
-#        ./gravedigger.py WIDTH HEIGHT | ./boobytraps.py [-v | -v1 | -v2]
+#        ./gravedigger.py [OPTIONS] WIDTH HEIGHT | ./boobytraps.py [-v | -v1 | -v2]
 #
 #        -v  enables output of the map and highlighted path.
 #        -v1 is equivalent to -v.
