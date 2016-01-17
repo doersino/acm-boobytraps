@@ -196,7 +196,6 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
     return "(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")"
 
 
-# TODO improve separator
 def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args):
     """Output the source code of a single LaTeX Beamer slide."""
 
@@ -266,7 +265,6 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
     print "\end{frame}"
 
 
-# TODO test on impossible input
 def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale, args):
     """Find the shortest path between start and end cells ("raid the tomb")
     using modified breadth-first search and output the source code of a LaTeX
