@@ -228,7 +228,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
     # print current queue frame
     if step > 1:
         print "\BTvphantomfix c_{" + str(step-1) + "} &= " + formatQueueFrame(c, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args) + "\\\\"
-        print "&\hspace{0.25em}-\\\\"
+        print "&\hspace{0.08em}\Downarrow\\\\"
 
     # print visited sets, truncating large sets
     for trap in uniqueTraps(map):
