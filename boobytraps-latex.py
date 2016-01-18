@@ -190,6 +190,8 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
     # maximum triggered trap
     qfTrap = traps.getValue(qf['triggered'])
+    if not traps.isTrap(qfTrap):
+        qfTrap = '0'
     if traps.isTrap(qfTrap) and args.highlighttraps:
         qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
 

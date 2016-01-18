@@ -72,7 +72,7 @@ class Traps:
         """
         if index > 0:
             return self.trapDominationOrder[index-1]
-        return '0'
+        return 'o'
 
     def isTrap(self, value):
         """Check if a cell value is a trap."""
