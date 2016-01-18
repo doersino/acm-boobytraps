@@ -190,7 +190,7 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 
     # maximum triggered trap
     qfTrap = traps.getValue(qf['triggered'])
-    if traps.isTrap(qfTrap):
+    if traps.isTrap(qfTrap) and args.highlighttraps:
         qfTrap = "\\textcolor{\BTtrapcolor}{" + qfTrap + "}"
 
     return "(" + qfCell + ", [" + qfPath + "], " + qfTrap + ")"
@@ -241,13 +241,18 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
             formatString = cellFormatString(visitedCell, start, end, traps, accessibleNeighbors, inaccessibleNeighbors, c, args)
             formattedCells.append(formatString.format(visitedCell.x, visitedCell.y))
 
+        if traps.isTrap(trap) and args.highlighttraps:
+            formattedTrap = "\\textcolor{\BTtrapcolor}{" + trap + "}"
+        else:
+            formattedTrap = trap
+
         if not formattedCells:
-            print "\BTvphantomfix v_" + str(trap) + " &= \\varnothing\\\\"
+            print "\BTvphantomfix v_{" + formattedTrap + "} &= \\varnothing\\\\"
         else:
             if len(formattedCells) > 4:
                 del formattedCells[:-5]
                 formattedCells[0] = "\dots"
-            print "\BTvphantomfix v_" + str(trap) + " &= \{" + ",".join(formattedCells) + "\}\\\\"
+            print "\BTvphantomfix v_{" + formattedTrap + "} &= \{" + ",".join(formattedCells) + "\}\\\\"
 
     # print first few elements of queue, truncating long paths in queue frames
     queueContents = []
