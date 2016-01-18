@@ -199,6 +199,8 @@ def formatQueueFrame(qf, start, end, traps, accessibleNeighbors, inaccessibleNei
 def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighbors, inaccessibleNeighbors, step, scale, args):
     """Output the source code of a single LaTeX Beamer slide."""
 
+    print "%-------------------------------------------------------------------------------"
+    print
     print "\\begin{frame}"
 
     # print slide title and subtitle
@@ -209,6 +211,7 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
 
     print "\\begin{columns}[c,onlytextwidth]"
     print "\\begin{column}{.4\\textwidth}"
+    print "\parbox[c][\\textheight][c]{\\textwidth}{"
 
     # print map
     maybepaths = []
@@ -219,9 +222,11 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
         nopaths.append([c['cell'], neighbor])
     printLatexMapDrawCommands(map, start, end, graph if args.drawgraph else False, c['path'], maybepaths, nopaths, [c['cell']], scale, True)
 
+    print "}"
     print "\end{column}"
     print "\hspace{1em}"
     print "\\begin{column}{.5\\textwidth}"
+    print "\\vspace{-1.1em}"
     print "\\begin{align*}"
 
     # print current queue frame
@@ -263,6 +268,8 @@ def generateSlide(map, traps, start, end, graph, q, visited, c, accessibleNeighb
     print "\end{column}"
     print "\end{columns}"
     print "\end{frame}"
+    print
+    print "%-------------------------------------------------------------------------------"
 
 
 def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale, args):
@@ -316,6 +323,7 @@ def raidTombAndGenerateBeamerSlides(graph, traps, start, end, map, scale, args):
                     neighborVisited = neighborVisited or neighbor in visited[traps.getIndex(d.value)]
 
             if not neighborVisited:
+            #if neighbor not in visited[c['triggered']]:
 
                 # make sure the neigbor can be visited and update maximum triggered trap
                 triggered = c['triggered']
