@@ -79,19 +79,26 @@ Randomly generate a large map (with a fixed seed, using the "dungeon" mode and a
 ./gravedigger.py 78 40 --seed donghwa --complexity 15 --mode dungeon | ./boobytraps.py -v
 ```
 
+Randomly generate 40x20 maps (with a high map complexity) and print the random seed used for map generation until one with a shortest path from start to end is found, then highlight this path in the map (along with all visited cells), also output the time taken for each map generation/path finding attempt *(see screenshot)*:
+```
+false; while [ $? -ne 0 ]; do time ./gravedigger.py 40 20 --start 0,0 --end 39,19 --complexity 15 --printseed | ./boobytraps.py -v; done
+```
+
+![screenshot3](https://github.com/doersino/acm-boobytraps/raw/master/screenshot3.png)
+
 Randomly generate 40x20 maps (using the "dungeon" mode) until one with a shortest path from start to end is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 40 20 --mode dungeon | ./boobytraps.py -v; done
 ```
 
-Randomly generate giant 202x51 maps (using the "dungeon" mode and higher-than normal map complexity) and print the random seed used for map generation until one with a shortest path from the upper left cell to the lower right cell is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
+Randomly generate giant 202x51 maps (using the "dungeon" mode and higher-than normal map complexity) and print the random seed used for map generation until one with a shortest path from the upper left cell to the lower right cell is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt *(see screenshot)*:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complexity 15 --mode dungeon --start 0,0 --end 201,50 | ./boobytraps.py -v; done
 ```
 
 ![screenshot2](https://github.com/doersino/acm-boobytraps/raw/master/screenshot2.png)
 
-As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited fields as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
+As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited cells as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
 ```
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 200 200 --printseed --complexity 15 --mode dungeon --start 0,0 --end 199,199 | ./boobytraps.py -v2; done
 ```
