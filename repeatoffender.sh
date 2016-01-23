@@ -2,7 +2,7 @@
 
 # Feeds randomly generated square maps (using gravedigger.py) of all side lengths
 # from 1 to 200 into boobytraps.py, measures the runtime, and outputs the
-# results to stdout as well as a semicolon-separated CSV file.
+# results to stdout as well as a comma-separated CSV file.
 #
 # Usage: ./repeatoffender.sh [-n NUMBER_OF_SAMPLES] [-o OUTPUT_FILENAME]
 #
@@ -40,7 +40,7 @@ printf "\e[1mRunning \"./gravedigger.py --start 0,0 --end [WIDTH - 1],[HEIGHT - 
 TIMEFORMAT=%R
 
 # Write row of column titles
-echo "Map width/height; Number of map cells (i.e. width * height); Number of samples; Total time taken (in s); Time taken per sample (i.e. total time taken / number of samples, in s); Time taken per sample (in ms)" | tee /dev/tty | cat > "$OUTPUTFILE"
+echo "Map width/height, Number of map cells (i.e. width * height), Number of samples, Total time taken (in s), Time taken per sample (i.e. total time taken / number of samples; in s), Time taken per sample (in ms)" | tee /dev/tty | cat > "$OUTPUTFILE"
 
 for WH in {1..200}; do
     SE="$(expr $WH - 1)"
@@ -54,5 +54,5 @@ for WH in {1..200}; do
     TIMEPERSAMPLEMS="$(bc <<< "$TIMEPERSAMPLE * 1000")"
 
     # Write row
-    echo "$WH; $WHSQ; $N; $TIME; $TIMEPERSAMPLE; $TIMEPERSAMPLEMS" | tee /dev/tty | cat >> "$OUTPUTFILE"
+    echo "$WH, $WHSQ, $N, $TIME, $TIMEPERSAMPLE, $TIMEPERSAMPLEMS" | tee /dev/tty | cat >> "$OUTPUTFILE"
 done
