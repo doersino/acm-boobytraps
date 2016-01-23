@@ -50,7 +50,7 @@ for WH in {1..200}; do
 
     # Compute remaining columns
     WHSQ="$(bc <<< "$WH * $WH")"
-    TIMEPERSAMPLE="$(bc <<< "scale=4; $TIME / $N")"
+    TIMEPERSAMPLE="$(bc <<< "scale=8; $TIME / $N")"
     TIMEPERSAMPLEMS="$(bc <<< "$TIMEPERSAMPLE * 1000")"
 
     # Write row

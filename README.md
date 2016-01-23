@@ -143,6 +143,11 @@ Run `boobytraps.py` only 5 times for each map side length from 1 to 200 and writ
 ./repeatoffender.sh -n 5 -o test.csv --complexity 12 --mode dungeon
 ```
 
+Run `boobytraps.py` 300 times for each map side length from 1 to 200 and write the results to `repeatoffender-example.csv` (the remaining option is passed to `gravedigger.py` for random map generation):
+```
+./repeatoffender.sh -n 300 -o repeatoffender-example.csv --complexity 12
+```
+
 
 ### `tombraider.sh`
 
