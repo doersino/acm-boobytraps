@@ -35,6 +35,7 @@ Books tend to have one, so why shouldn't software?
 ### Other files
 
 * `README.md` is the file you're looking at right now.
+* `repeatoffender.sh` is a tool for benchmarking `boobytraps.py`.
 * `screenshot.png` shows the shortest path finder in action on the sample input.
 * `screenshot2.png` shows the map generator and shortest path finder in action.
 * `tombraider.sh` is a short shell script for semi-automated testing of my solution.
@@ -120,6 +121,19 @@ cat sampleinput9.txt | ./boobytraps-latex.py slides > boobytraps-latex-output-sa
 In the previous example, set slide title and subtitle (with output of the step number instead of `{}`), also draw the graph and write to standard output:
 ```
 cat sampleinput9.txt | ./boobytraps-latex.py slides --title "Beispiel" --subtitle "Schritt {}: TODO" --drawgraph
+```
+
+
+### `repeatoffender.sh`
+
+Run `boobytraps.py` 100 times for each map side length from 1 to 200 and write the results to `repeatoffender.csv`:
+```
+./repeatoffender.sh -n 100
+```
+
+Run `boobytraps.py` only 5 times for each map side length from 1 to 200 and write the results to `test.csv` (the remaining options are passed to `gravedigger.py` for random map generation):
+```
+./repeatoffender.sh -n 5 -o test.csv --complexity 12 --mode dungeon
 ```
 
 
