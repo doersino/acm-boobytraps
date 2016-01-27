@@ -125,7 +125,7 @@ class Map:
 
             # print all fields in the current row
             for x, field in enumerate(row):
-                prefix = ""
+                prefix = "\033[30m\033[48;5;231m"  # default: black text on white background
                 suffix = "\033[0m"
 
                 # highlight empty fields
