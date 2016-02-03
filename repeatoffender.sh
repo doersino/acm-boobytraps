@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Feeds randomly generated square maps (using gravedigger.py) of all side lengths
 # from 1 to 200 into boobytraps.py, measures the runtime, and outputs the

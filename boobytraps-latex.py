@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python2.7
 
 # Using boobytraps.py, generates LaTeX code snippets related to boobytraps.py:
 # The map subcommand prints the draw commands for a LaTeX representation of the

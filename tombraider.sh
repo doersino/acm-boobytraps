@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tests boobytraps.py with some input (if no input or input file is given,
 # sampleinput.txt will be used) and optionally verifies the output.
@@ -29,8 +29,8 @@ if [ "$1" = "-i" ]; then
 		fi
 	fi
 else
-	INPUT="$DEFAULT_INPUT"
-	OUTPUT="$DEFAULT_OUTPUT"
+	INPUT="$(cat $DEFAULT_INPUT)"
+	OUTPUT="$(cat $DEFAULT_OUTPUT)"
 fi
 
 # Print expected input and output

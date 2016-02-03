@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python2.7
 
 # Finds the shortest path in a map instance adhering to the rules defined in
 # boobytraps.pdf. Outputs the length of the path, as well as (optionally) a

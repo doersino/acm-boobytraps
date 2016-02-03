@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python2.7
 
 # Randomly generates different kinds of (large!) maps for testing boobytraps.py
 # and writes the result to stdout. Optionally, outputs the random seed used
