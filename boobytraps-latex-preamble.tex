@@ -16,38 +16,38 @@
 \newif\ifstartedinmathmode
 
 \newcommand*{\BTunderline}[1]{
-    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
-    \tikz[baseline=(underlined.base)]{
-        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
-        \draw[\BTpathcolor,solid,line width=1.16pt] (underlined.south west) -- (underlined.south east);
-    }
+	\relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+	\tikz[baseline=(underlined.base)]{
+		\node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+		\draw[\BTpathcolor,solid,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+	}
 }
 
 \newcommand*{\BTmaybeunderline}[1]{
-    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
-    \tikz[baseline=(underlined.base)]{
-        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
-        \draw[\BTmaybepathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
-    }
+	\relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+	\tikz[baseline=(underlined.base)]{
+		\node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+		\draw[\BTmaybepathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+	}
 }
 
 \newcommand*{\BTnounderline}[1]{
-    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
-    \tikz[baseline=(underlined.base)]{
-        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
-        \draw[\BTnopathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
-    }
+	\relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+	\tikz[baseline=(underlined.base)]{
+		\node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+		\draw[\BTnopathcolor,dotted,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+	}
 }
 
 \newcommand*{\BThighlighttext}[1]{
-    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
-    \tikz[baseline=(highlighted.base)]{
-        \node[rectangle,fill=\BThighlightcolor,inner sep=1.16pt] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
-    }
+	\relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+	\tikz[baseline=(highlighted.base)]{
+		\node[rectangle,fill=\BThighlightcolor,inner sep=1.16pt] (highlighted) {\ifstartedinmathmode$#1$\else#1\fi};
+	}
 }
 
 \newcommand*{\BTvphantomfix}{
-    \vphantom{\BTmaybeunderline{(0,0)}\BTnounderline{(0,0)}\BThighlighttext{(0,0)}[],()}
+	\vphantom{\BTmaybeunderline{(0,0)}\BTnounderline{(0,0)}\BThighlighttext{(0,0)}[],()}
 }
 
 \newcommand{\BTmap}[2]{ % scale factor, draw commands
