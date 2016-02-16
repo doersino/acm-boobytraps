@@ -14,6 +14,15 @@
 \def\BTedgecolor{black}
 
 \newif\ifstartedinmathmode
+
+\newcommand*{\BTunderline}[1]{
+    \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
+    \tikz[baseline=(underlined.base)]{
+        \node[inner sep=1pt,outer sep=0pt] (underlined) {\ifstartedinmathmode$#1$\else#1\fi};
+        \draw[\BTpathcolor,solid,line width=1.16pt] (underlined.south west) -- (underlined.south east);
+    }
+}
+
 \newcommand*{\BTmaybeunderline}[1]{
     \relax\ifmmode\startedinmathmodetrue\else\startedinmathmodefalse\fi
     \tikz[baseline=(underlined.base)]{
