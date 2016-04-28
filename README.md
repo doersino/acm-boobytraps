@@ -4,7 +4,7 @@ My Python 2.7 solution of the ACM Programming Contest problem ["Booby Traps"](ht
 
 ![screenshot](https://github.com/doersino/acm-boobytraps/raw/master/screenshot.png)
 
-This repository also contains PDF versions of the [slides](https://github.com/doersino/acm-boobytraps/raw/master/vortrag_boobytraps.pdf) I used during the presentation in the proseminar, as well as the [paper](https://github.com/doersino/acm-boobytraps/raw/master/ausarbeitung_boobytraps.pdf) I wrote (both in German).
+This repository also contains PDF versions of the [slides](https://github.com/doersino/acm-boobytraps/blob/master/vortrag_boobytraps.pdf) I used during the presentation in the proseminar, as well as the [paper](https://github.com/doersino/acm-boobytraps/blob/master/ausarbeitung_boobytraps.pdf) I wrote (both in German).
 
 
 ## Table of Contents
