@@ -2,7 +2,7 @@
 
 My Python 2.7 solution of the ACM Programming Contest problem ["Booby Traps"](https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&category=258&page=show_problem&problem=1649), created as part of my assignment for the ["Selected Fun Problems of the ACM Programming Contest" proseminar](http://db.inf.uni-tuebingen.de/teaching/SelectedFunProblemsoftheACMProgrammingContest-Proseminar-WS2015-2016.html) at Uni Tübingen during the 2015 fall semester, including a map generator and a LaTeX beamer slide and map visualization generator.
 
-![screenshot](https://github.com/doersino/acm-boobytraps/raw/master/screenshot.png)
+![screenshot](screenshot.png)
 
 This repository also contains PDF versions of the [slides](https://github.com/doersino/acm-boobytraps/blob/master/vortrag_boobytraps.pdf) I used during the presentation in the proseminar, as well as the [paper](https://github.com/doersino/acm-boobytraps/blob/master/ausarbeitung_boobytraps.pdf) I wrote (both in German).
 
@@ -93,7 +93,7 @@ Randomly generate 40x20 maps (with a high map complexity) and print the random s
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 40 20 --start 0,0 --end 39,19 --complexity 15 --printseed | ./boobytraps.py -v; done
 ```
 
-![screenshot3](https://github.com/doersino/acm-boobytraps/raw/master/screenshot3.png)
+![screenshot3](screenshot3.png)
 
 Randomly generate 40x20 maps (using the "dungeon" mode) until one with a shortest path from start to end is found, then highlight this path in the map, also output the time taken for each map generation/path finding attempt:
 ```
@@ -105,7 +105,7 @@ Randomly generate giant 202x51 maps (using the "dungeon" mode and higher-than no
 false; while [ $? -ne 0 ]; do time ./gravedigger.py 202 51 --printseed --complexity 15 --mode dungeon --start 0,0 --end 201,50 | ./boobytraps.py -v; done
 ```
 
-![screenshot2](https://github.com/doersino/acm-boobytraps/raw/master/screenshot2.png)
+![screenshot2](screenshot2.png)
 
 As above, but with the maximum map size permitted by the problem statement and additional highlighting of visited cells as well as the "best effort" path if the end could not be reached *(Note: This can take up to 40 seconds for each attempt and seriously slow down your terminal)*:
 ```
